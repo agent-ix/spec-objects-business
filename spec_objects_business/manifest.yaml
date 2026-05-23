@@ -1,0 +1,161 @@
+manifest_version: 1.0.0
+name: spec-objects-business
+version: 0.1.0
+description: 'Filament Module: tier-2 business ObjectTypes (DDD: domain, entity, value_object, aggregate_root, repository, event, state_machine, process)'
+archetypes: []
+grammars: []
+artifact_types: []
+lint_rules: []
+object_types:
+- name: domain
+  data_schema:
+    type: object
+  body_extraction:
+    yield_pattern:
+      match:
+        id: &id001
+          from: frontmatter_field
+          path:
+          - id
+          required: false
+        title: &id002
+          from: frontmatter_field
+          path:
+          - title
+          required: false
+        artifact_type: &id003
+          from: frontmatter_field
+          path:
+          - artifact_type
+          required: false
+        bounded_context:
+          from: section_body
+          after_heading: Bounded Context
+          required: false
+        entities:
+          from: section_body
+          after_heading: Entities
+          required: false
+        ubiquitous_language:
+          from: section_body
+          after_heading: Ubiquitous Language
+          required: false
+- name: entity
+  data_schema:
+    type: object
+  body_extraction:
+    yield_pattern:
+      match:
+        id: *id001
+        title: *id002
+        artifact_type: *id003
+        properties:
+          from: section_body
+          after_heading: Properties
+          required: false
+- name: value_object
+  data_schema:
+    type: object
+  body_extraction:
+    yield_pattern:
+      match:
+        id: *id001
+        title: *id002
+        artifact_type: *id003
+        properties:
+          from: section_body
+          after_heading: Properties
+          required: false
+        fields:
+          from: section_body
+          after_heading: Fields
+          required: false
+- name: aggregate_root
+  data_schema:
+    type: object
+  body_extraction:
+    yield_pattern:
+      match:
+        id: *id001
+        title: *id002
+        artifact_type: *id003
+        members:
+          from: section_body
+          after_heading: Members
+          required: false
+- name: nested_entity
+  data_schema:
+    type: object
+  body_extraction:
+    yield_pattern:
+      match:
+        id: *id001
+        title: *id002
+        artifact_type: *id003
+        parent:
+          from: section_body
+          after_heading: Parent
+          required: false
+- name: repository
+  data_schema:
+    type: object
+  body_extraction:
+    yield_pattern:
+      match:
+        id: *id001
+        title: *id002
+        artifact_type: *id003
+        operations:
+          from: section_body
+          after_heading: Operations
+          required: false
+- name: event
+  data_schema:
+    type: object
+  body_extraction:
+    yield_pattern:
+      match:
+        id: *id001
+        title: *id002
+        artifact_type: *id003
+        schema_json:
+          from: code_block
+          after_heading: Schema
+          required: false
+          language: json
+- name: state_machine
+  data_schema:
+    type: object
+  body_extraction:
+    yield_pattern:
+      match:
+        id: *id001
+        title: *id002
+        artifact_type: *id003
+        diagram:
+          from: code_block
+          after_heading: States & Transitions
+          required: false
+          language: mermaid
+- name: process
+  data_schema:
+    type: object
+  body_extraction:
+    yield_pattern:
+      match:
+        id: *id001
+        title: *id002
+        artifact_type: *id003
+        diagram:
+          from: code_block
+          after_heading: Workflow
+          required: false
+          language: mermaid
+        specification:
+          from: section_body
+          after_heading: Specification
+          required: false
+        algorithm:
+          from: section_body
+          after_heading: Algorithm
+          required: false
