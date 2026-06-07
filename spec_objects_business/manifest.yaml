@@ -2,6 +2,12 @@ manifest_version: 1.0.0
 name: spec-objects-business
 version: 0.1.0
 description: 'Filament Module: tier-2 business ObjectTypes (DDD: domain, entity, value_object, aggregate_root, repository, event, state_machine, process)'
+nav:
+  category:
+    slug: business
+    label: Business
+    icon: Boxes
+    order: 51
 archetypes: []
 grammars: []
 artifact_types: []
