@@ -23,25 +23,25 @@ object_types:
           from: frontmatter_field
           path:
           - id
-          required: false
+          required: true
         title: &id002
           from: frontmatter_field
           path:
           - title
-          required: false
+          required: true
         artifact_type: &id003
           from: frontmatter_field
           path:
           - artifact_type
-          required: false
+          required: true
         bounded_context:
           from: section_body
           after_heading: Bounded Context
-          required: false
+          required: true
         entities:
           from: section_body
           after_heading: Entities
-          required: false
+          required: true
         ubiquitous_language:
           from: section_body
           after_heading: Ubiquitous Language
@@ -58,7 +58,7 @@ object_types:
         properties:
           from: section_body
           after_heading: Properties
-          required: false
+          required: true
 - name: value_object
   data_schema:
     type: object
@@ -71,7 +71,7 @@ object_types:
         properties:
           from: section_body
           after_heading: Properties
-          required: false
+          required: true
         fields:
           from: section_body
           after_heading: Fields
@@ -88,7 +88,7 @@ object_types:
         members:
           from: section_body
           after_heading: Members
-          required: false
+          required: true
 - name: nested_entity
   data_schema:
     type: object
@@ -101,7 +101,7 @@ object_types:
         parent:
           from: section_body
           after_heading: Parent
-          required: false
+          required: true
 - name: repository
   data_schema:
     type: object
@@ -114,7 +114,7 @@ object_types:
         operations:
           from: section_body
           after_heading: Operations
-          required: false
+          required: true
 - name: event
   data_schema:
     type: object
@@ -127,7 +127,7 @@ object_types:
         schema_json:
           from: code_block
           after_heading: Schema
-          required: false
+          required: true
           language: json
 - name: state_machine
   data_schema:
@@ -141,7 +141,7 @@ object_types:
         diagram:
           from: code_block
           after_heading: States & Transitions
-          required: false
+          required: true
           language: mermaid
 - name: process
   data_schema:
@@ -155,7 +155,7 @@ object_types:
         diagram:
           from: code_block
           after_heading: Workflow
-          required: false
+          required: true
           language: mermaid
         specification:
           from: section_body
