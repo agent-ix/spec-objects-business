@@ -7,9 +7,15 @@ artifact_type: domain
      substantive content. Contract (manifest body_extraction asserts):
      - Frontmatter MUST carry id, title, artifact_type: domain.
      - "## Bounded Context" (H2, required): the context boundary and what it
-       owns vs. what it delegates to neighbouring contexts.
-     - "## Entities" (H2, required): the entities and aggregates that live
-       inside this bounded context.
+       owns vs. what it delegates to neighbouring contexts. This is the
+       domain object's kernel — the one thing only the domain FR can say.
+     - "## Entities" (H2, OPTIONAL): a summary list only. Entities are
+       first-class `entity` FRs linked from this domain via `contains`
+       relationship edges; do not duplicate their definitions here. Pure
+       grammar/protocol contexts may have no entities at all.
+     - "## Entity Relationship Diagram" (H2, OPTIONAL): a mermaid diagram of
+       the whole domain — valuable for human orientation when entities
+       exist; extracted as `erd`.
      - "## Ubiquitous Language" (H2, optional): the shared vocabulary used by
        domain experts and code alike. -->
 # [domain-001] Order Management
@@ -34,6 +40,24 @@ data stores directly.
   aggregate.
 - **Customer** — standalone entity identified by `customer_id`; referenced
   from Order by identity only.
+
+## Entity Relationship Diagram
+
+```mermaid
+erDiagram
+    ORDER ||--|{ ORDER_LINE : contains
+    CUSTOMER ||--o{ ORDER : places
+    ORDER {
+        uuid order_id PK
+        string state
+        money captured_total
+    }
+    ORDER_LINE {
+        int line_number PK
+        uuid sku
+        int quantity
+    }
+```
 
 ## Ubiquitous Language
 

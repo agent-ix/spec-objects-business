@@ -7,7 +7,11 @@ artifact_type: process
      with substantive content. Contract (manifest body_extraction asserts):
      - Frontmatter MUST carry id, title, artifact_type: process.
      - "## Workflow" (H2, required) MUST contain a fenced code block with
-       language `mermaid` diagramming the process flow.
+       language `mermaid` diagramming the process flow. Multiple diagrams
+       are kept (`multiple: true`) — split a complex flow into several
+       smaller diagrams rather than forcing one oversized one.
+     - "## States" (H2, OPTIONAL): mermaid state diagram(s) when the
+       process carries an explicit state model (extracted as `states`).
      - "## Specification" and "## Algorithm" (H2) are optional prose
        elaborations of the diagram.
      - Mermaid hygiene: quote flowchart labels containing parentheses, no
@@ -29,6 +33,21 @@ flowchart TD
     Capture -->|declined| Release[Release reservation and cancel order]
     Pick --> Ship[Hand over to carrier]
     Ship --> Done[Order marked Shipped]
+```
+
+## States
+
+```mermaid
+stateDiagram-v2
+    [*] --> reserving
+    reserving --> backordered: out of stock
+    reserving --> capturing: reserved
+    backordered --> reserving: stock arrived
+    capturing --> failed: declined
+    capturing --> picking: captured
+    picking --> shipped
+    shipped --> [*]
+    failed --> [*]
 ```
 
 ## Specification

@@ -205,6 +205,19 @@ def test_required_locators_satisfied_by_skeleton(name: str) -> None:
             assert matching[0][
                 1
             ].strip(), f"{name}: ```{lang} block under {heading!r} is empty"
+        elif kind == "table_row":
+            heading = loc.get("under_section")
+            assert heading, f"{name}: required table_row locator without under_section"
+            assert (SECTION_LEVEL, heading) in headings, (
+                f"{name}: required table_row heading {heading!r} (H2) "
+                f"absent from skeleton"
+            )
+            cols = (loc.get("assert") or {}).get("columns") or []
+            section_md = _split_sections(md).get(heading, "")
+            for col in cols:
+                assert (
+                    col in section_md
+                ), f"{name}: table under {heading!r} missing column {col!r}"
         else:  # pragma: no cover - guards against new locator kinds
             pytest.fail(f"{name}: unhandled required locator kind {kind!r}")
 
@@ -221,6 +234,10 @@ def test_skeleton_headings_all_asserted(name: str) -> None:
         loc["after_heading"]
         for loc in _locators(ot).values()
         if loc["from"] in ("section_body", "code_block")
+    } | {
+        loc["under_section"]
+        for loc in _locators(ot).values()
+        if loc["from"] in ("table_row", "list_item") and loc.get("under_section")
     }
     for level, text in _skeleton_headings(_skeleton_text(name)):
         if level != SECTION_LEVEL:
@@ -261,6 +278,10 @@ def test_asserted_section_bodies_substantive(name: str) -> None:
         loc["after_heading"]
         for loc in _locators(ot).values()
         if loc["from"] in ("section_body", "code_block")
+    } | {
+        loc["under_section"]
+        for loc in _locators(ot).values()
+        if loc["from"] in ("table_row", "list_item") and loc.get("under_section")
     }
     sections = _split_sections(_skeleton_text(name))
     assert sections, f"{name}: skeleton has no H2 sections"

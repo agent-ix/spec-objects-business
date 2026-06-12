@@ -1,7 +1,7 @@
 manifest_version: 1.0.0
 name: spec-objects-business
-version: 0.1.0
-description: 'Filament Module: tier-2 business ObjectTypes (DDD: domain, entity, value_object, aggregate_root, repository, event, state_machine, process)'
+version: 0.2.0
+description: 'Filament Module: tier-2 business ObjectTypes (DDD: domain, entity, value_object, aggregate_root, repository, event, state_machine, process, enumeration)'
 nav:
   category:
     slug: business
@@ -34,6 +34,12 @@ object_types:
           path:
           - artifact_type
           required: true
+        # Format-walkthrough decision #18 (2026-06-11): Bounded Context
+        # is the domain object's required kernel (20/20 wild domain FRs
+        # carry it; 0/20 had '## Entities'). `entities` is an OPTIONAL
+        # summary — entities are first-class `entity` FRs linked via
+        # `contains` edges, never duplicated inline. The optional `erd`
+        # extracts the whole-domain mermaid diagram.
         bounded_context:
           from: section_body
           after_heading: Bounded Context
@@ -41,7 +47,12 @@ object_types:
         entities:
           from: section_body
           after_heading: Entities
-          required: true
+          required: false
+        erd:
+          from: code_block
+          after_heading: Entity Relationship Diagram
+          language: mermaid
+          required: false
         ubiquitous_language:
           from: section_body
           after_heading: Ubiquitous Language
@@ -152,10 +163,21 @@ object_types:
         id: *id001
         title: *id002
         artifact_type: *id003
+        # Format-walkthrough decision #13 (2026-06-11): `multiple: true`
+        # keeps EVERY Workflow diagram (complex flows split into several
+        # smaller diagrams instead of one oversized one); the optional
+        # `states` anchor types state diagrams separately.
         diagram:
           from: code_block
           after_heading: Workflow
           required: true
+          multiple: true
+          language: mermaid
+        states:
+          from: code_block
+          after_heading: States
+          required: false
+          multiple: true
           language: mermaid
         specification:
           from: section_body
@@ -165,3 +187,25 @@ object_types:
           from: section_body
           after_heading: Algorithm
           required: false
+- name: enumeration
+  data_schema:
+    type: object
+  body_extraction:
+    yield_pattern:
+      match:
+        id: *id001
+        title: *id002
+        artifact_type: *id003
+        # Format-walkthrough decision #7 (2026-06-11): controlled label
+        # vocabularies (codec kinds, surface labels, ISA labels, step
+        # kinds) as first-class extractable objects instead of prose or
+        # values smuggled into data_schema JSON.
+        values_table:
+          from: table_row
+          under_section: Values
+          required: true
+          assert:
+            columns:
+            - Value
+            - Description
+            min_rows: 1
