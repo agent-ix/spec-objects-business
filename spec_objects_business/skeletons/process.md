@@ -1,11 +1,11 @@
 ---
 id: process-001
 title: "Order Fulfilment"
-artifact_type: process
+type: process
 ---
 <!-- process authoring skeleton (spec-objects-business). Fill every section
      with substantive content. Contract (manifest body_extraction asserts):
-     - Frontmatter MUST carry id, title, artifact_type: process.
+     - Frontmatter MUST carry id, title, type: process.
      - "## Workflow" (H2, required) MUST contain a fenced code block with
        language `mermaid` diagramming the process flow. Multiple diagrams
        are kept (`multiple: true`) — split a complex flow into several

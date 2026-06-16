@@ -1,12 +1,12 @@
 ---
 id: aggregate-root-001
 title: "Order"
-artifact_type: aggregate_root
+type: aggregate_root
 ---
 <!-- aggregate_root authoring skeleton (spec-objects-business). Fill every
      section with substantive content. Contract (manifest body_extraction
      asserts):
-     - Frontmatter MUST carry id, title, artifact_type: aggregate_root.
+     - Frontmatter MUST carry id, title, type: aggregate_root.
      - "## Members" (H2, required): everything inside the consistency
        boundary — the root, nested entities, owned value objects — and the
        invariants the root enforces over them. -->

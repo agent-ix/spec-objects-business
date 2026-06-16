@@ -1,11 +1,11 @@
 ---
 id: repository-001
 title: "OrderRepository"
-artifact_type: repository
+type: repository
 ---
 <!-- repository authoring skeleton (spec-objects-business). Fill every section
      with substantive content. Contract (manifest body_extraction asserts):
-     - Frontmatter MUST carry id, title, artifact_type: repository.
+     - Frontmatter MUST carry id, title, type: repository.
      - "## Operations" (H2, required): each operation with signature,
        behaviour, and failure semantics; the repository loads and saves whole
        aggregates only. -->

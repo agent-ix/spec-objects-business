@@ -1,11 +1,11 @@
 ---
 id: domain-001
 title: "Order Management"
-artifact_type: domain
+type: domain
 ---
 <!-- domain authoring skeleton (spec-objects-business). Fill every section with
      substantive content. Contract (manifest body_extraction asserts):
-     - Frontmatter MUST carry id, title, artifact_type: domain.
+     - Frontmatter MUST carry id, title, type: domain.
      - "## Bounded Context" (H2, required): the context boundary and what it
        owns vs. what it delegates to neighbouring contexts. This is the
        domain object's kernel — the one thing only the domain FR can say.

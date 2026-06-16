@@ -8,7 +8,7 @@ tables or id_patterns here):
   ``spec_objects_business/skeletons/<name>.md``;
 * every required locator is satisfied by the skeleton (heading at the
   conventional H2 level, code block with the asserted language, frontmatter
-  fields present with ``artifact_type`` equal to the type name);
+  fields present with ``type`` equal to the type name);
 * reverse direction: the skeleton carries no H2 heading the manifest does not
   assert (the skeleton cannot drift ahead of the contract);
 * asserted section bodies are substantive (non-empty, no placeholder tokens);
@@ -151,13 +151,12 @@ def test_no_orphan_skeletons() -> None:
 
 @pytest.mark.parametrize("name", _type_names(), ids=lambda n: n)
 def test_skeleton_frontmatter_required_fields(name: str) -> None:
-    """Frontmatter carries id/title/artifact_type; artifact_type == type name."""
+    """Frontmatter carries id/title/type; type == type name."""
     fm = _frontmatter(_skeleton_text(name))
-    for field in ("id", "title", "artifact_type"):
+    for field in ("id", "title", "type"):
         assert fm.get(field), f"{name}: frontmatter missing {field!r}"
-    assert fm["artifact_type"] == name, (
-        f"{name}: frontmatter artifact_type is {fm['artifact_type']!r}, "
-        f"expected {name!r}"
+    assert fm["type"] == name, (
+        f"{name}: frontmatter type is {fm['type']!r}, " f"expected {name!r}"
     )
 
 

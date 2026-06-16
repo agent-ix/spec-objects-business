@@ -29,10 +29,10 @@ object_types:
           path:
           - title
           required: true
-        artifact_type: &id003
+        type: &id003
           from: frontmatter_field
           path:
-          - artifact_type
+          - type
           required: true
         # Format-walkthrough decision #18 (2026-06-11): Bounded Context
         # is the domain object's required kernel (20/20 wild domain FRs
@@ -65,7 +65,7 @@ object_types:
       match:
         id: *id001
         title: *id002
-        artifact_type: *id003
+        type: *id003
         properties:
           from: section_body
           after_heading: Properties
@@ -78,7 +78,7 @@ object_types:
       match:
         id: *id001
         title: *id002
-        artifact_type: *id003
+        type: *id003
         properties:
           from: section_body
           after_heading: Properties
@@ -95,7 +95,7 @@ object_types:
       match:
         id: *id001
         title: *id002
-        artifact_type: *id003
+        type: *id003
         members:
           from: section_body
           after_heading: Members
@@ -108,7 +108,7 @@ object_types:
       match:
         id: *id001
         title: *id002
-        artifact_type: *id003
+        type: *id003
         parent:
           from: section_body
           after_heading: Parent
@@ -121,7 +121,7 @@ object_types:
       match:
         id: *id001
         title: *id002
-        artifact_type: *id003
+        type: *id003
         operations:
           from: section_body
           after_heading: Operations
@@ -134,7 +134,7 @@ object_types:
       match:
         id: *id001
         title: *id002
-        artifact_type: *id003
+        type: *id003
         schema_json:
           from: code_block
           after_heading: Schema
@@ -148,7 +148,7 @@ object_types:
       match:
         id: *id001
         title: *id002
-        artifact_type: *id003
+        type: *id003
         diagram:
           from: code_block
           after_heading: States & Transitions
@@ -162,7 +162,7 @@ object_types:
       match:
         id: *id001
         title: *id002
-        artifact_type: *id003
+        type: *id003
         # Format-walkthrough decision #13 (2026-06-11): `multiple: true`
         # keeps EVERY Workflow diagram (complex flows split into several
         # smaller diagrams instead of one oversized one); the optional
@@ -195,7 +195,7 @@ object_types:
       match:
         id: *id001
         title: *id002
-        artifact_type: *id003
+        type: *id003
         # Format-walkthrough decision #7 (2026-06-11): controlled label
         # vocabularies (codec kinds, surface labels, ISA labels, step
         # kinds) as first-class extractable objects instead of prose or

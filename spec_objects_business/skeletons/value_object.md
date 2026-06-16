@@ -1,12 +1,12 @@
 ---
 id: value-object-001
 title: "Money"
-artifact_type: value_object
+type: value_object
 ---
 <!-- value_object authoring skeleton (spec-objects-business). Fill every
      section with substantive content. Contract (manifest body_extraction
      asserts):
-     - Frontmatter MUST carry id, title, artifact_type: value_object.
+     - Frontmatter MUST carry id, title, type: value_object.
      - "## Properties" (H2, required): the immutable components of the value
        plus equality and validity rules. ("## Fields" is accepted as an
        optional legacy alternative heading; prefer Properties.) -->

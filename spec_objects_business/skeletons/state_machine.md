@@ -1,12 +1,12 @@
 ---
 id: state-machine-001
 title: "Order Lifecycle"
-artifact_type: state_machine
+type: state_machine
 ---
 <!-- state_machine authoring skeleton (spec-objects-business). Fill every
      section with substantive content. Contract (manifest body_extraction
      asserts):
-     - Frontmatter MUST carry id, title, artifact_type: state_machine.
+     - Frontmatter MUST carry id, title, type: state_machine.
      - "## States & Transitions" (H2, required) MUST contain a fenced code
        block with language `mermaid` holding a stateDiagram-v2 lifecycle.
      - Mermaid hygiene: no semicolons in transition labels, no spaces in

@@ -1,11 +1,11 @@
 ---
 id: entity-001
 title: "Customer"
-artifact_type: entity
+type: entity
 ---
 <!-- entity authoring skeleton (spec-objects-business). Fill every section with
      substantive content. Contract (manifest body_extraction asserts):
-     - Frontmatter MUST carry id, title, artifact_type: entity.
+     - Frontmatter MUST carry id, title, type: entity.
      - "## Properties" (H2, required): the entity's identity field plus each
        attribute with type and meaning. -->
 # [entity-001] Customer

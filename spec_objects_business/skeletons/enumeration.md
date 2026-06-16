@@ -1,12 +1,12 @@
 ---
 id: enumeration-001
 title: "Order state vocabulary"
-artifact_type: enumeration
+type: enumeration
 ---
 <!-- enumeration authoring skeleton (spec-objects-business). Fill every
      section with substantive content. Contract (manifest body_extraction
      asserts):
-     - Frontmatter MUST carry id, title, artifact_type: enumeration.
+     - Frontmatter MUST carry id, title, type: enumeration.
      - "## Values" (H2, required): a table with headers exactly
        Value | Description and at least one data row — the controlled
        label vocabulary itself.

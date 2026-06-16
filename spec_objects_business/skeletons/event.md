@@ -1,11 +1,11 @@
 ---
 id: event-001
 title: "OrderPlaced"
-artifact_type: event
+type: event
 ---
 <!-- event authoring skeleton (spec-objects-business). Fill every section with
      substantive content. Contract (manifest body_extraction asserts):
-     - Frontmatter MUST carry id, title, artifact_type: event.
+     - Frontmatter MUST carry id, title, type: event.
      - "## Schema" (H2, required) MUST contain a fenced code block with
        language `json` holding the event's JSON Schema payload contract. -->
 # [event-001] OrderPlaced

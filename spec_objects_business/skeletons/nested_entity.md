@@ -1,12 +1,12 @@
 ---
 id: nested-entity-001
 title: "OrderLine"
-artifact_type: nested_entity
+type: nested_entity
 ---
 <!-- nested_entity authoring skeleton (spec-objects-business). Fill every
      section with substantive content. Contract (manifest body_extraction
      asserts):
-     - Frontmatter MUST carry id, title, artifact_type: nested_entity.
+     - Frontmatter MUST carry id, title, type: nested_entity.
      - "## Parent" (H2, required): the owning aggregate root, the local
        identity scheme, and how the parent mediates every mutation. -->
 # [nested-entity-001] OrderLine
