@@ -65,5 +65,5 @@ criterion holds.
 
 ## Dependencies
 
-**Upstream**: FR-001 (Module manifest activates against filament-core), which this
+**Upstream**: [FR-001](../functional/FR-001-module-manifest-activates.md) (Module manifest activates against filament-core), which this
 test verifies. **Downstream**: none — no other test depends on this one.
