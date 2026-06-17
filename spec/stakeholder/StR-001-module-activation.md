@@ -35,6 +35,6 @@ Satisfaction is judged by demonstrating both outcomes against a running
 
 ## Dependencies
 
-**Upstream**: filament-core-service FR-035 (Module Manifest Schema).
+**Upstream**: filament-core-service [FR-035](ix://agent-ix/filament-core-service/FR-035) (Module Manifest Schema).
 **Downstream**: agent CLI generators and editors that consume this module's
 declared ObjectTypes, templates, and schemas.
