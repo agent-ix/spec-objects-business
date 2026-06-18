@@ -6,7 +6,14 @@ Agent-IX Filament module loaded by [`quire-cli`](https://github.com/agent-ix/qui
 
 ## Installing quire-cli
 
-This module is consumed by the `quire` binary from [`quire-cli`](https://github.com/agent-ix/quire-cli), published on the public npm registry, so no auth or registry config is needed:
+Add an `.npmrc` so the `@agent-ix` scope resolves from GitHub Packages:
+
+```ini
+@agent-ix:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
+```
+
+Then install the CLI globally:
 
 ```bash
 npm install -g @agent-ix/quire-cli
