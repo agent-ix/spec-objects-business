@@ -1,147 +1,90 @@
-# 🐍 spec-objects-business
+# spec-objects-business
 
-> Filament Module: tier-2 business ObjectTypes (domain, entity, value_object, aggregate_root, repository, event, state_machine, process)
+> Filament Module: tier-2 business ObjectTypes (DDD: domain, entity, value_object, aggregate_root, repository, event, state_machine, process, enumeration)
 
----
+Agent-IX Filament module loaded by [`quire-cli`](https://github.com/agent-ix/quire-cli) and [`ix-spec`](https://github.com/agent-ix/ix-spec).
 
-## 📐 Project Structure and Development Philosophy
+## Installing quire-cli
 
-- **Library Name:** `spec_objects_business`
-- **Layout:** Flat project layout (package at root, no `src/`)
-- **Language:** Python 3.13+
-- **Dependency Management:** [Poetry](https://python-poetry.org/)
-- **Build and CI:** GitHub Actions
-- **Publishing:** Google Artifact Registry (PyPI-compatible)
+Add an `.npmrc` so the `@agent-ix` scope resolves from GitHub Packages:
 
----
-
-## 🛠 Prerequisites
-
-- **Python 3.13+** installed on your system
-- **Poetry 2.x** installed (`pip install poetry` or [official installer](https://python-poetry.org/docs/#installation))
-- **devpi-client** (optional, for local publishing): `pip install devpi-client`
-
----
-
-## 🚀 Quick Start
-
-```bash
-# Install dependencies and create venv
-make install
-
-# Run tests
-make test
-
-# Format code
-make format
-
-# Lint code
-make lint
-
-# Build distribution
-make build
+```ini
+@agent-ix:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
 ```
 
----
-
-## 📦 Build Process
-
-- **Local Development**:
-  - `make install` - Install dependencies in Poetry venv
-  - `make test` - Run tests
-  - `make format` - Auto-format code (Black + Ruff)
-  - `make lint` - Run linting checks
-- **Artifact Building**:
-  - `make build` - Build wheel and sdist under `dist/`
-- **Artifact Upload**:
-  - Artifacts uploaded via `twine upload` in CI
-
----
-
-## 🚀 Continuous Integration (CI)
-
-- **GitHub Actions Workflow**:
-  - Triggers: `push`, `pull_request`, `tag v*.*.*`
-  - Runs tests and lint checks
-  - Builds artifacts with `poetry build`
-  - Publishes to Google Artifact Registry using `twine upload -r internal-pypi`
-
----
-
-## 🔑 Required GitHub Secrets
-
-| Secret Name | Purpose |
-|:------------|:--------|
-| `GCP_SERVICE_ACCOUNT_KEY` | Raw JSON of GCP Service Account Key |
-
-| Variable Name | Purpose |
-|:------------|:--------|
-| `GCP_REGION` | GCP Region for Artifact Registry (e.g., `us-west1`) |
-| `GCP_PROJECT_NAME` | GCP Project ID (e.g., `agent-ix`) |
-| `GCP_PYPI` | Artifact Registry repository name (e.g., `internal-pypi`) |
-
----
-
-## 🐳 Makefile Targets
-
-| Target | Description |
-|:-------|:------------|
-| `install` | Install dependencies in Poetry venv |
-| `build` | Build wheel and sdist artifacts |
-| `test` | Run tests |
-| `lint` | Run linting (Ruff + Black check) |
-| `format` | Auto-format code (Black + Ruff --fix) |
-| `shell` | Open Poetry shell |
-| `clean` | Remove all build artifacts |
-| `version` | Show project version |
-| `info` | Show Git and version info |
-| `update-lock` | Update poetry.lock |
-| `update-packages` | Update all dependencies |
-| `add-package p=<name>` | Add a production dependency |
-| `add-dev-package p=<name>` | Add a dev dependency |
-| `local-publish` | Build and publish to local PyPI |
-
----
-
-## 🏠 Local Development with Local PyPI
-
-For local development and testing, you can publish packages to the local PyPI proxy.
-
-### Prerequisites
-
-1. **Local Kubernetes cluster** running with PyPI proxy:
-   ```bash
-   # In the local repo
-   make up
-   make pypi-up
-   ```
-
-2. **devpi-client** installed locally:
-   ```bash
-   pip install devpi-client
-   ```
-
-### Publishing Locally
+Then install the CLI globally:
 
 ```bash
-make local-publish
+npm install -g @agent-ix/quire-cli
 ```
 
-### Installing from Local PyPI
+See [quire-cli install instructions](https://github.com/agent-ix/quire-cli#install) for details.
+
+## Object types provided
+
+| Object | `type:` | Description |
+|--------|---------|-------------|
+| Domain | `domain` | A bounded context defining what it owns vs. delegates to neighbouring contexts, with an optional entity summary, ERD, and ubiquitous language. |
+| Entity | `entity` | An object with a stable identity field plus its typed attributes and their meaning. |
+| Value object | `value_object` | An immutable value defined by its components, with equality and validity rules but no identity of its own. |
+| Aggregate root | `aggregate_root` | The consistency boundary — root, nested entities, owned value objects, and the invariants the root enforces over them. |
+| Nested entity | `nested_entity` | An entity owned by an aggregate root, with parent-local identity whose every mutation is mediated by the parent. |
+| Repository | `repository` | The collection-like access point that loads and saves whole aggregates, with each operation's signature, behaviour, and failure semantics. |
+| Event | `event` | A domain/integration event whose payload contract is given as a JSON Schema. |
+| State machine | `state_machine` | An object lifecycle expressed as a mermaid `stateDiagram-v2` of states and transitions. |
+| Process | `process` | A long-running workflow/saga diagrammed in mermaid (one or more flows), with optional state diagrams, specification, and algorithm. |
+| Enumeration | `enumeration` | A controlled label vocabulary (state names, kinds, codes) as a `Value | Description` table referenced by exact string. |
+
+## How this module is used
+
+### With ix-spec (recommended)
 
 ```bash
-pip install --index-url http://pypi.ix/root/dev/+simple/ spec_objects_business
+# Install this module as a plugin (from a local checkout)
+ix-spec plugin install path:../spec-objects-business
+
+# List the kinds the installed modules expose
+ix-spec catalog list
+
+# Author new artifacts from these object types
+ix-spec write . --types domain,aggregate_root
+
+# Review/validate the authored artifacts
+ix-spec review
 ```
 
----
+See [ix-spec](https://github.com/agent-ix/ix-spec).
 
-## 📜 Design Philosophy
+### With quire-cli directly
 
-- Native Poetry-based development (no Docker required for development)
-- Isolated Poetry virtualenv (no global pip pollution)
-- Direct uploads to Artifact Registry using correct PyPI-style authentication
-- Always source-driven — no hand-editing built artifacts
-- Dynamic, Git-tag-based versioning
-- Clear Makefile and CI workflows matching production standards
+```bash
+# Emit an authoring skeleton for a given kind
+quire schema domain --module ./spec_objects_business
 
----
+# Validate Markdown spec artifacts against the module
+quire validate spec/**/*.md --module ./spec_objects_business
+
+# Extract structured object bodies from a document
+quire extract spec/order-management.md --module ./spec_objects_business
+```
+
+See [quire-cli usage instructions](https://github.com/agent-ix/quire-cli#usage-instructions).
+
+## Development
+
+Python 3.13+, [Poetry](https://python-poetry.org/) managed, flat layout (package `spec_objects_business` at root). Versioning is dynamic from the Git tag; CI (GitHub Actions on `push`/`pull_request`/`tag v*.*.*`) runs tests + lint and publishes the wheel/sdist to Google Artifact Registry (PyPI-compatible) via `twine`.
+
+```bash
+make install                  # install deps into the Poetry venv
+make test                     # run pytest
+make lint                     # ruff + black check
+make format                   # ruff + black format
+make build                    # build wheel + sdist under dist/
+make update-lock              # update poetry.lock
+make use-local p=<name>       # switch a dep to local pypi.ix
+make use-upstream p=<name>    # switch a dep back to upstream
+make local-publish            # build + publish to local pypi.ix
+```
+
+Required CI secrets/vars: `GCP_SERVICE_ACCOUNT_KEY`, `GCP_REGION`, `GCP_PROJECT_NAME`, `GCP_PYPI`.
