@@ -2,7 +2,7 @@
 
 > Filament Module: tier-2 business ObjectTypes (DDD: domain, entity, value_object, aggregate_root, repository, event, state_machine, process, enumeration)
 
-Agent-IX Filament module loaded by [`quire-cli`](https://github.com/agent-ix/quire-cli) and [`ix-spec`](https://github.com/agent-ix/ix-spec).
+Agent-IX Filament module loaded by [`quire-cli`](https://github.com/agent-ix/quire-cli) and [`quoin`](https://github.com/agent-ix/quoin).
 
 ## Installing quire-cli
 
@@ -38,23 +38,23 @@ See [quire-cli install instructions](https://github.com/agent-ix/quire-cli#insta
 
 ## How this module is used
 
-### With ix-spec (recommended)
+### With quoin (recommended)
 
 ```bash
 # Install this module as a plugin (from a local checkout)
-ix-spec plugin install path:../spec-objects-business
+quoin plugin install path:../spec-objects-business
 
 # List the kinds the installed modules expose
-ix-spec catalog list
+quoin catalog list
 
 # Author new artifacts from these object types
-ix-spec write . --types domain,aggregate_root
+quoin write . --types domain,aggregate_root
 
 # Review/validate the authored artifacts
-ix-spec review
+quoin review
 ```
 
-See [ix-spec](https://github.com/agent-ix/ix-spec).
+See [quoin](https://github.com/agent-ix/quoin).
 
 ### With quire-cli directly
 
