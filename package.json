@@ -2,7 +2,7 @@
   "name": "@agent-ix/spec-objects-business",
   "version": "0.0.0-managed",
   "description": "Filament Module: tier-2 business ObjectTypes (domain, entity, value_object, aggregate_root, repository, event, state_machine, process)",
-  "license": "MIT",
+  "license": "AGPL-3.0-or-later",
   "author": "Agent IX <agents@agent-ix.dev>",
   "keywords": [
     "agent-ix",
