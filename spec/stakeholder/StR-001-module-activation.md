@@ -23,12 +23,11 @@ need exists.
 
 ## Validation Criteria
 
-This need is considered satisfied when:
 
-- A Module activation against `filament-core` registers the contents this module
-  declares (StR-001-AC-1).
-- Agent CLI generators (`minijinja-cli`) can produce valid artifacts using the
-  templates and schemas this module ships (StR-001-AC-2).
+| ID | Criteria | Validation |
+|----|----------|------------|
+| StR-001-VC-1 | A Module activation against `filament-core` registers the contents this module declares (StR-001-AC-1). | Inspection |
+| StR-001-VC-2 | Agent CLI generators (`minijinja-cli`) can produce valid artifacts using the templates and schemas this module ships (StR-001-AC-2). | Demonstration |
 
 Satisfaction is judged by demonstrating both outcomes against a running
 `filament-core` instance with this module's manifest.
