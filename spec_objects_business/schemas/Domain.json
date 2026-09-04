@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.3.0/Domain.json",
+  "type": "object",
+  "properties": {
+    "members": {
+      "type": "array",
+      "items": {
+        "$ref": "https://schemas.agent-ix.org/semantic-core/0.1.0/RelationDecl.json"
+      }
+    },
+    "vocabulary": {
+      "type": "array",
+      "items": {
+        "$ref": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.3.0/Term.json"
+      }
+    },
+    "clauses": {
+      "type": "array",
+      "items": {
+        "$ref": "https://schemas.agent-ix.org/semantic-core/0.1.0/ClauseRef.json"
+      }
+    }
+  },
+  "unevaluatedProperties": {
+    "not": {}
+  },
+  "description": "A bounded context. A domain declares a boundary, not data: `fields` and\n`operations` are forbidden by the seal."
+}

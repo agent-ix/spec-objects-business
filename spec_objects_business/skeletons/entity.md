@@ -2,23 +2,47 @@
 id: entity-001
 title: "Customer"
 type: entity
+object: entity
 ---
 <!-- entity authoring skeleton (spec-objects-business). Fill every section with
      substantive content. Contract (manifest body_extraction asserts):
-     - Frontmatter MUST carry id, title, type: entity.
-     - "## Properties" (H2, required): the entity's identity field plus each
-       attribute with type and meaning. -->
+     - Frontmatter MUST carry id, title, type: entity, object: entity.
+     - "## Properties" (H2, required): one typed row per attribute, header
+       exactly `Field | Type | Multiplicity | Constraints`. At least one row
+       carries the `identity` constraint.
+     - "## Invariants" (H2): one `### <clauseId>` per clause, each owning
+       exactly one ```ocl``` fence. -->
 # [entity-001] Customer
 
 ## Properties
 
-- **customer_id** (`uuid`, identity) — stable identifier assigned at
-  registration; all cross-aggregate references use this id.
-- **email** (`string`) — unique contact address; verified before the first
-  order may be placed.
-- **display_name** (`string`) — name shown on order confirmations and
-  shipping labels.
-- **default_shipping_address** (`Address`) — value object copied onto new
-  orders as the proposed delivery address.
-- **status** (`enum: active | suspended | closed`) — suspended customers may
-  view orders but may not place new ones.
+| Field | Type | Multiplicity | Constraints |
+|---|---|---|---|
+| customer_id | UUID | 1..1 | identity |
+| email | String | 1..1 | minLength: 3, maxLength: 254 |
+| display_name | String | 1..1 | minLength: 1 |
+| default_shipping_address | Money | 0..1 | |
+| status | OrderStatus | 1..1 | |
+| registered_at | Timestamp | 1..1 | |
+
+## Invariants
+
+The clauses the Customer declaration enforces. Each clause owns one
+`ocl` fence under its own `### <clauseId>` heading; the fence text is carried
+verbatim and never evaluated here.
+
+### EmailIsVerifiedBeforeFirstOrder
+
+```ocl
+context Customer
+inv EmailIsVerifiedBeforeFirstOrder:
+  self.status <> OrderStatus::Placed or self.email->notEmpty()
+```
+
+### SuspendedCustomerPlacesNoOrder
+
+```ocl
+context Customer
+inv SuspendedCustomerPlacesNoOrder:
+  self.status = OrderStatus::Cancelled implies self.orders->forAll(o | o.placedAt < self.registeredAt)
+```

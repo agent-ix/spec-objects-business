@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.3.0/Repository.json",
+  "type": "object",
+  "properties": {
+    "operations": {
+      "type": "array",
+      "items": {
+        "$ref": "https://schemas.agent-ix.org/semantic-core/0.1.0/OperationDecl.json"
+      },
+      "minItems": 1
+    },
+    "clauses": {
+      "type": "array",
+      "items": {
+        "$ref": "https://schemas.agent-ix.org/semantic-core/0.1.0/ClauseRef.json"
+      }
+    },
+    "persists": {
+      "type": "array",
+      "items": {
+        "$ref": "https://schemas.agent-ix.org/semantic-core/0.1.0/SemanticId.json"
+      }
+    }
+  },
+  "required": [
+    "operations"
+  ],
+  "unevaluatedProperties": {
+    "not": {}
+  },
+  "description": "A repository: persistence operations over an aggregate. `fields` is forbidden by the seal."
+}

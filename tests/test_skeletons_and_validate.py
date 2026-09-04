@@ -137,18 +137,27 @@ def _split_sections(markdown: str, level: int = SECTION_LEVEL) -> dict[str, str]
 # ─── Skeleton presence + frontmatter ─────────────────────────────────────
 
 
+@pytest.mark.trace("TC-050")
 @pytest.mark.parametrize("name", _type_names(), ids=lambda n: n)
 def test_skeleton_exists(name: str) -> None:
     assert _skeleton_path(name).exists(), f"missing skeleton {_skeleton_path(name)}"
 
 
+@pytest.mark.trace("TC-059")
 def test_no_orphan_skeletons() -> None:
-    """Every skeleton file corresponds to a declared object type."""
+    """Every skeleton file corresponds to a declared object type.
+
+    A `<type>.sysml.md` file is the alternate Properties form of `<type>.md`
+    (FR-005): the same declarations authored as one ``sysml`` fence, under the
+    table skeleton's `id` and `title`.
+    """
     names = set(_type_names())
     for path in SKELETONS_DIR.glob("*.md"):
-        assert path.stem in names, f"skeleton {path.name} has no object type"
+        stem = path.stem.removesuffix(".sysml")
+        assert stem in names, f"skeleton {path.name} has no object type"
 
 
+@pytest.mark.trace("TC-059")
 @pytest.mark.parametrize("name", _type_names(), ids=lambda n: n)
 def test_skeleton_frontmatter_required_fields(name: str) -> None:
     """Frontmatter carries id/title/type; type == type name."""
@@ -163,6 +172,7 @@ def test_skeleton_frontmatter_required_fields(name: str) -> None:
 # ─── Forward parity: every asserted locator is satisfied ─────────────────
 
 
+@pytest.mark.trace("TC-055")
 @pytest.mark.parametrize("name", _type_names(), ids=lambda n: n)
 def test_required_locators_satisfied_by_skeleton(name: str) -> None:
     """Every ``required: true`` locator is satisfied: section_body headings

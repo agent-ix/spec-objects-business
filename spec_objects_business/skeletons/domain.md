@@ -1,33 +1,33 @@
 ---
 id: domain-001
-title: "Order Management"
+title: "OrderManagement"
 type: domain
+object: domain
 ---
 <!-- domain authoring skeleton (spec-objects-business). Fill every section with
      substantive content. Contract (manifest body_extraction asserts):
-     - Frontmatter MUST carry id, title, type: domain.
+     - Frontmatter MUST carry id, title, type: domain, object: domain.
      - "## Bounded Context" (H2, required): the context boundary and what it
        owns vs. what it delegates to neighbouring contexts. This is the
        domain object's kernel — the one thing only the domain FR can say.
      - "## Entities" (H2, OPTIONAL): a summary list only. Entities are
        first-class `entity` FRs linked from this domain via `contains`
-       relationship edges; do not duplicate their definitions here. Pure
-       grammar/protocol contexts may have no entities at all.
+       relationship edges; do not duplicate their definitions here.
      - "## Entity Relationship Diagram" (H2, OPTIONAL): a mermaid diagram of
-       the whole domain — valuable for human orientation when entities
-       exist; extracted as `erd`.
-     - "## Ubiquitous Language" (H2, optional): the shared vocabulary used by
-       domain experts and code alike. -->
-# [domain-001] Order Management
+       the whole domain, extracted as `erd`.
+     - "## Ubiquitous Language" (H2, optional): the shared vocabulary.
+     A domain declares a boundary, not data: it carries no "## Properties"
+     and no "## Invariants" (Domain.json forbids `fields` and `operations`). -->
+# [domain-001] OrderManagement
 
 ## Bounded Context
 
-The Order Management context owns the lifecycle of a customer order from the
+The OrderManagement context owns the lifecycle of a customer order from the
 moment a cart is converted into an order until the order is shipped or
 cancelled. It is the system of record for order state, order lines, and
 captured totals. Pricing and tax computation belong to the Pricing context;
 stock levels belong to the Inventory context; card authorisation belongs to
-the Payments context. Order Management consumes those contexts through
+the Payments context. OrderManagement consumes those contexts through
 published events and anti-corruption adapters and never reaches into their
 data stores directly.
 

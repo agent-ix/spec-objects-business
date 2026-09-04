@@ -7,11 +7,12 @@ type: StR
 
 ## Stakeholder Need
 
-The Filament platform, spec authors, and agent CLI generators require that
-DDD-driven specifications **SHALL** yield extractable graph entities for domains,
-entities, value objects, aggregates, repositories, events, processes, and state
-machines. The need is stated from the perspective of those consumers and avoids
-prescribing a specific encoding.
+The Filament platform, spec authors, and agent CLI generators require that the
+module **SHALL** make DDD-driven specifications yield extractable graph entities
+for domains, entities, value objects, aggregates, repositories, events,
+processes, and state machines, each carrying a structural contract a consumer
+can read without reading the prose. The need is stated from the perspective of
+those consumers and avoids prescribing a specific encoding.
 
 ## Rationale
 
@@ -26,11 +27,13 @@ need exists.
 
 | ID | Criteria | Validation |
 |----|----------|------------|
-| StR-001-VC-1 | A Module activation against `filament-core` registers the contents this module declares (StR-001-AC-1). | Inspection |
-| StR-001-VC-2 | Agent CLI generators (`minijinja-cli`) can produce valid artifacts using the templates and schemas this module ships (StR-001-AC-2). | Demonstration |
+| StR-001-VC-1 | A Module activation against `filament-core` registers the contents this module declares. | Demonstration |
+| StR-001-VC-2 | Spec authors and agent generators can produce artifacts that validate against the skeletons and schemas this module ships. | Demonstration |
+| StR-001-VC-3 | Every business object type carries one typed structural contract that the downstream frontends (`agent-ix/quire-contract-ir#52`, `agent-ix/filament-core-data#36`) can consume read-only, so an entity and an enumeration are distinguishable to a consumer without reading the prose. | Demonstration |
 
-Satisfaction is judged by demonstrating both outcomes against a running
-`filament-core` instance with this module's manifest.
+Satisfaction is judged by demonstrating the first two outcomes against a
+running `filament-core` instance with this module's manifest, and the third
+against the shipped schemas and skeletons read as fixtures.
 
 ## Dependencies
 
