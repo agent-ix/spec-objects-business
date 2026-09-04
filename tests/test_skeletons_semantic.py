@@ -231,22 +231,34 @@ def test_a_properties_section_with_both_forms_is_refused(quire_engine):
 
 @pytest.mark.trace("TC-058", "FR-005-CON-1")
 def test_the_branch_edits_no_corpus_repository_or_vendored_fixture():
-    """FR-005-CON-1, inspection over the branch diff against `main`."""
+    """FR-005-CON-1, inspection over the tracked tree.
+
+    Stated over the tree rather than over ``origin/main...HEAD``. A branch
+    diff is a fixed historical fact, but computing it against a moving ref
+    makes the assertion change meaning once the branch merges: the range
+    empties, ``assert changed`` fails, and this repository's ``main`` goes red
+    for a branch that is no longer a branch. It did — from 567e5c4 until this
+    fix.
+
+    The tree form is merge-invariant and strictly stronger: it says these
+    paths are absent from the repository at all, not merely that one branch
+    left them alone.
+    """
     import subprocess
 
     from tests.conftest import REPO_ROOT
 
-    diff = subprocess.run(
-        ["git", "-C", str(REPO_ROOT), "diff", "--name-only", "origin/main...HEAD"],
+    listing = subprocess.run(
+        ["git", "-C", str(REPO_ROOT), "ls-files"],
         capture_output=True,
         text=True,
         check=False,
     )
-    if diff.returncode != 0:  # pragma: no cover - a detached clone has no origin/main
-        pytest.fail(f"cannot read the branch diff: {diff.stderr.strip()}")
-    changed = [line for line in diff.stdout.splitlines() if line]
-    assert changed, "the branch changes nothing"
-    for path in changed:
+    if listing.returncode != 0:
+        pytest.fail(f"cannot list the tracked tree: {listing.stderr.strip()}")
+    tracked = [line for line in listing.stdout.splitlines() if line]
+    assert tracked, "the repository tracks no files, so this gate did not run"
+    for path in tracked:
         assert not path.startswith("corpus/"), path
         assert "fixtures/semantic-module" not in path, path
         assert "/vendor/" not in path, path
