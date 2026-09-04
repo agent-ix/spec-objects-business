@@ -43,55 +43,71 @@ def quoin(*args: str) -> subprocess.CompletedProcess:
     return subprocess.run([QUOIN, *args], capture_output=True, text=True, check=False)
 
 
-@pytest.mark.trace("TC-027", "FR-003-AC-5")
-@pytest.mark.trace(
-    "TC-070",
-    "IT-002-SC-01",
-    "IT-002-SC-02",
-    "IT-002-SC-03",
-    "IT-002-SC-04",
-    "IT-002-SC-05",
-    "IT-002-SC-06",
-)
-@pytest.mark.integration
-@needs_quoin
-def test_the_module_installs_into_quoin_and_the_prior_state_is_restored():
+def roundtrip():
+    """Record, install, inspect, and restore — the IT-002 procedure. Returns
+    the per-step observations so each criterion can assert its own."""
     import json
 
-    # IT-002-SC-01: record the listing before touching anything.
     before = quoin("module")
     assert before.returncode == 0, before.stderr
     recorded = before.stdout
-
+    observed = {"recorded": recorded}
     try:
-        # IT-002-SC-02: install with no `semantic.*` error diagnostic.
         install = quoin("module", "install", f"path:{PACKAGE_ROOT}")
-        assert install.returncode == 0, install.stderr
-        combined = install.stdout + install.stderr
-        assert "semantic." not in combined or "error" not in combined.lower(), combined
-
-        # IT-002-SC-03: the module is listed, sourced from the path.
-        listing = quoin("module")
-        assert listing.returncode == 0
-        assert "spec-objects-business" in listing.stdout
-
-        # IT-002-SC-04: the derived package manifest names every export.
-        # A contract check on quoin FR-075, not a claim this module owns.
-        installed_root = os.path.expanduser(
-            "~/.ix/filament/modules/spec-objects-business"
-        )
-        package_manifest = os.path.join(
-            installed_root, "semantic", "package-manifest.json"
-        )
-        assert os.path.isfile(package_manifest), package_manifest
-        derived = json.loads(open(package_manifest).read())
-        assert derived["package"]["identity"] == "agent-ix/spec-objects-business"
-        assert len(derived["exports"]) == len(OBJECT_TYPES)
+        observed["install"] = install
+        if install.returncode == 0:
+            listing = quoin("module")
+            observed["listing"] = listing
+            manifest_path = os.path.expanduser(
+                "~/.ix/filament/modules/spec-objects-business/semantic/package-manifest.json"
+            )
+            observed["package_manifest_path"] = manifest_path
+            if os.path.isfile(manifest_path):
+                with open(manifest_path) as handle:
+                    observed["package_manifest"] = json.load(handle)
     finally:
-        # IT-002-SC-05/SC-06: the restore runs even when a step above failed.
+        # The restore (spec step 5) runs whether or not the steps above passed,
+        # so a failed install never leaves the operator's global module store
+        # half-written. The criteria it discharges are asserted by the tests.
         quoin("module", "install", "spec-objects-business")
-        after = quoin("module")
-        assert after.stdout == recorded, (
-            "the prior quoin module state was not restored:\n"
-            f"before:\n{recorded}\nafter:\n{after.stdout}"
-        )
+        observed["after"] = quoin("module").stdout
+    return observed
+
+
+@pytest.mark.trace("TC-027", "FR-003-AC-5")
+@pytest.mark.integration
+@needs_quoin
+def test_quoin_module_install_succeeds_and_lists_the_module():
+    observed = roundtrip()
+    install = observed["install"]
+    assert install.returncode == 0, install.stderr
+    combined = install.stdout + install.stderr
+    assert "semantic." not in combined or "error" not in combined.lower(), combined
+    assert "spec-objects-business" in observed["listing"].stdout
+    assert (
+        observed["after"] == observed["recorded"]
+    ), "the prior quoin module state was not restored"
+
+
+@pytest.mark.trace("TC-070", "IT-002-SC-01", "IT-002-SC-02", "IT-002-SC-03")
+@pytest.mark.integration
+@needs_quoin
+def test_the_install_records_the_prior_listing_installs_and_lists_the_module():
+    observed = roundtrip()
+    assert observed["recorded"] is not None  # step 1: the listing was captured
+    assert observed["install"].returncode == 0  # step 2: install exits zero
+    combined = observed["install"].stdout + observed["install"].stderr
+    assert "semantic." not in combined or "error" not in combined.lower(), combined
+    assert "spec-objects-business" in observed["listing"].stdout  # step 3
+
+
+@pytest.mark.trace("IT-002-SC-04", "IT-002-SC-05", "IT-002-SC-06")
+@pytest.mark.integration
+@needs_quoin
+def test_the_roundtrip_derives_the_package_manifest_and_restores_state():
+    observed = roundtrip()
+    derived = observed.get("package_manifest")  # step 4: derived manifest
+    assert derived is not None, observed.get("package_manifest_path")
+    assert derived["package"]["identity"] == "agent-ix/spec-objects-business"
+    assert len(derived["exports"]) == len(OBJECT_TYPES)
+    assert observed["after"] == observed["recorded"]  # step 5: state restored

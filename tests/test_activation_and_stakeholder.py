@@ -92,8 +92,7 @@ def test_reactivation_is_a_content_hash_no_op():
     assert hashes[0] == hashes[1]
 
 
-@pytest.mark.trace("TC-004", "FR-001-AC-4")
-@pytest.mark.trace("TC-005", "StR-001-VC-1")
+@pytest.mark.trace("TC-004", "FR-001-AC-4", "TC-005", "StR-001-VC-1")
 @pytest.mark.integration
 @needs_filament_core
 def test_every_declared_contribution_is_readable_from_the_registry_endpoints():

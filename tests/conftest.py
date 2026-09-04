@@ -131,9 +131,9 @@ def require_quire():
     """Import quire, or fail the test naming the provisioning path."""
     try:
         import quire
-    except ImportError as error:  # pragma: no cover - environment guard
+    except ImportError as error:
         pytest.fail(f"{QUIRE_MISSING} (import error: {error})")
-    if not hasattr(quire, "extract_semantic"):  # pragma: no cover - environment guard
+    if not hasattr(quire, "extract_semantic"):
         pytest.fail(
             f"`extract_semantic` is missing from the installed quire: {QUIRE_MISSING}"
         )
@@ -207,7 +207,7 @@ def schema_registry():
     """
     from referencing import Registry, Resource
 
-    if not SEMANTIC_CORE_DIR.is_dir():  # pragma: no cover - environment guard
+    if not SEMANTIC_CORE_DIR.is_dir():
         pytest.fail(
             "@agent-ix/semantic-core is not installed, so `$ref`s to the grammar "
             "cannot resolve. Run `npm ci` (FR-002-CON-4: `@agent-ix` resolves "

@@ -178,7 +178,7 @@ def test_the_built_wheel_and_sdist_carry_every_exported_schema(tmp_path):
         text=True,
         check=False,
     )
-    if build.returncode != 0:  # pragma: no cover - build environment guard
+    if build.returncode != 0:
         pytest.fail(f"`poetry build` failed:\n{build.stdout}\n{build.stderr}")
     wheel = next(dist.glob("*.whl"))
     with zipfile.ZipFile(wheel) as archive:
@@ -277,7 +277,7 @@ def test_the_npm_tarball_ships_the_schemas_beside_the_manifest(tmp_path):
             text=True,
             check=False,
         )
-        if pack.returncode != 0:  # pragma: no cover - packaging environment guard
+        if pack.returncode != 0:
             pytest.fail(f"`npm pack` failed:\n{pack.stdout}\n{pack.stderr}")
         # `postpack` removes the staged copies again; assert it actually ran,
         # because a leftover root manifest.yaml silently breaks `quire validate`.
