@@ -1,7 +1,27 @@
 manifest_version: 1.0.0
 name: spec-objects-business
-version: 0.2.0
-description: 'Filament Module: tier-2 business ObjectTypes (DDD: domain, entity, value_object, aggregate_root, repository, event, state_machine, process, enumeration)'
+version: 0.3.0
+description: 'Filament Module: tier-2 business ObjectTypes (DDD: domain, entity, value_object, aggregate_root, nested_entity, repository, event, state_machine, process, enumeration)'
+semantic:
+  contract_version: 1.0.0
+  semantic_core: 0.1.0
+  package: agent-ix/spec-objects-business
+  exports:
+  - domain
+  - entity
+  - value_object
+  - aggregate_root
+  - nested_entity
+  - repository
+  - event
+  - state_machine
+  - process
+  - enumeration
+  imports: {}
+  targets: [json-schema, markdown]
+  mappings: [typed-table, sysml-fence, ocl-clause]
+  compatibility_posture: additive
+  legacy_forms: warning
 nav:
   category:
     slug: business
@@ -17,7 +37,8 @@ object_types:
   allowed_links:
     contains: [entity, aggregate_root, value_object, repository, event, state_machine, process, enumeration]
   data_schema:
-    type: object
+    schema: schemas/Domain.json
+    digest: sha256:e59103a3718f19aa7b1c9fadabd409cd776776c2ec968b6a93e62d3db9da484c
   body_extraction:
     yield_pattern:
       match:
@@ -66,13 +87,18 @@ object_types:
     owns: [state_machine]
     references: [entity, aggregate_root, enumeration]
   data_schema:
-    type: object
+    schema: schemas/Entity.json
+    digest: sha256:e06e39445e314d31de3206dc6d715da7245da23f5fcc9745a6147c50ca439790
   body_extraction:
     yield_pattern:
       match:
         id: *id001
         title: *id002
         type: *id003
+        invariants:
+          from: section_body
+          after_heading: Invariants
+          required: false
         properties:
           from: section_body
           after_heading: Properties
@@ -83,13 +109,18 @@ object_types:
     composes: [value_object, enumeration]
     references: [enumeration]
   data_schema:
-    type: object
+    schema: schemas/ValueObject.json
+    digest: sha256:228cc48f5e1162d47df61ba8579a7ec4219d73a026c3951d38d7bc7bf0241fde
   body_extraction:
     yield_pattern:
       match:
         id: *id001
         title: *id002
         type: *id003
+        invariants:
+          from: section_body
+          after_heading: Invariants
+          required: false
         properties:
           from: section_body
           after_heading: Properties
@@ -106,13 +137,22 @@ object_types:
     emits: [event]
     references: [aggregate_root, enumeration]
   data_schema:
-    type: object
+    schema: schemas/AggregateRoot.json
+    digest: sha256:34c88c2b11f03f071d5ea642f2457003c062ba9855e7da99bb5932d7eafe29ab
   body_extraction:
     yield_pattern:
       match:
         id: *id001
         title: *id002
         type: *id003
+        properties:
+          from: section_body
+          after_heading: Properties
+          required: false
+        invariants:
+          from: section_body
+          after_heading: Invariants
+          required: false
         members:
           from: section_body
           after_heading: Members
@@ -123,13 +163,22 @@ object_types:
     contains: [value_object]
     references: [enumeration]
   data_schema:
-    type: object
+    schema: schemas/NestedEntity.json
+    digest: sha256:6cb95ea5737df45d199d716c0e38dd6033899b43044b12910a7f487491dec236
   body_extraction:
     yield_pattern:
       match:
         id: *id001
         title: *id002
         type: *id003
+        properties:
+          from: section_body
+          after_heading: Properties
+          required: false
+        invariants:
+          from: section_body
+          after_heading: Invariants
+          required: false
         parent:
           from: section_body
           after_heading: Parent
@@ -139,7 +188,8 @@ object_types:
     persists: [aggregate_root, entity]
     references: [data_schema]
   data_schema:
-    type: object
+    schema: schemas/Repository.json
+    digest: sha256:60077f326124031679d4a79f1e3d9c497c31d9456fb6dd753cb22ad6f52340bc
   body_extraction:
     yield_pattern:
       match:
@@ -156,13 +206,22 @@ object_types:
     carries: [value_object, entity]
     references: [aggregate_root, enumeration]
   data_schema:
-    type: object
+    schema: schemas/Event.json
+    digest: sha256:e1dbf2249b6cdd89712480d828279121be8ddfd870f0bc6373b94c72aa2231e6
   body_extraction:
     yield_pattern:
       match:
         id: *id001
         title: *id002
         type: *id003
+        properties:
+          from: section_body
+          after_heading: Properties
+          required: false
+        invariants:
+          from: section_body
+          after_heading: Invariants
+          required: false
         schema_json:
           from: code_block
           after_heading: Schema
@@ -174,13 +233,26 @@ object_types:
     raises: [event]
     references: [enumeration]
   data_schema:
-    type: object
+    schema: schemas/StateMachine.json
+    digest: sha256:ff54d529c04018b62954a61463c60d44b312df313a9cf217e6789b5c047a7a3b
   body_extraction:
     yield_pattern:
       match:
         id: *id001
         title: *id002
         type: *id003
+        properties:
+          from: section_body
+          after_heading: Properties
+          required: false
+        invariants:
+          from: section_body
+          after_heading: Invariants
+          required: false
+        operations:
+          from: section_body
+          after_heading: Operations
+          required: false
         diagram:
           from: code_block
           after_heading: States & Transitions
@@ -196,13 +268,22 @@ object_types:
     writes: [aggregate_root, entity]
     operates_on: [domain-object]
   data_schema:
-    type: object
+    schema: schemas/Process.json
+    digest: sha256:84aa7fe0b9b704bd201857284c0c3bd22e389898304010e6006e84b6e1767439
   body_extraction:
     yield_pattern:
       match:
         id: *id001
         title: *id002
         type: *id003
+        properties:
+          from: section_body
+          after_heading: Properties
+          required: false
+        invariants:
+          from: section_body
+          after_heading: Invariants
+          required: false
         # Format-walkthrough decision #13 (2026-06-11): `multiple: true`
         # keeps EVERY Workflow diagram (complex flows split into several
         # smaller diagrams instead of one oversized one); the optional
@@ -231,7 +312,8 @@ object_types:
   allowed_links:
     references: [enumeration]
   data_schema:
-    type: object
+    schema: schemas/Enumeration.json
+    digest: sha256:ac3a95648b40260a5476a23573d6cccf170c10265dd1cb37e26c93cb6246c891
   body_extraction:
     yield_pattern:
       match:

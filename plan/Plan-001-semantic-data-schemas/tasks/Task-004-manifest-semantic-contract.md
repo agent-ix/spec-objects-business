@@ -2,7 +2,7 @@
 id: Task-004
 title: "FR-003 — manifest 0.3.0, semantic block and reference-form data_schema"
 type: Task
-status: not_started
+status: done
 track: A
 priority: P0
 relationships:

@@ -2,7 +2,7 @@
 id: Task-010
 title: "FR-001/StR-001 — activation re-verification and trace tags"
 type: Task
-status: not_started
+status: done
 track: B
 priority: P1
 relationships:

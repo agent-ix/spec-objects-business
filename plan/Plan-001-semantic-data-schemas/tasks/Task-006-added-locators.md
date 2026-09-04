@@ -2,7 +2,7 @@
 id: Task-006
 title: "FR-003/FR-005 — required:false locators for the sections the skeletons introduced"
 type: Task
-status: not_started
+status: done
 track: A
 priority: P1
 relationships:

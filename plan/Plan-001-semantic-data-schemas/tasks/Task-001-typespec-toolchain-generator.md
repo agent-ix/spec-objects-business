@@ -2,7 +2,7 @@
 id: Task-001
 title: "FR-002 — TypeSpec toolchain, schema generator and drift gate"
 type: Task
-status: not_started
+status: done
 track: A
 priority: P0
 relationships:

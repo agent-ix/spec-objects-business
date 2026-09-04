@@ -284,4 +284,4 @@ is runnable outside this workstation.
 | FND-108 | Applied: FR-002 Behavior adds `--check` writes nothing, a `tsp compile` failure or zero module models exits non-zero without touching committed output, and the Node 20 / missing-`tsp` failure. |
 | FND-109 | Applied: FR-002 Behavior requires the `.gitattributes` `eol=lf` rule for `*.json` and `*.tsp`. |
 | FND-110 | Applied: the skip clause is gone. See dependency.md FND-141. |
-| FND-111 | Applied: FR-003 Behavior states that one refused schema fails every object type of the module (quire-rs FR-069), which is why every digest is regenerated together. |
+| FND-111 | Applied, with the granularity corrected against the engine: FR-003 Behavior now states what quire 0.46.0 actually does — a refused schema drops that object type alone, while an unknown `semantic` key drops every object type of the module. The finding's "all ten archetypes disappear" reading holds for the unknown-key case only. Both refusals are silent; `agent-ix/quire-rs#221` and `agent-ix/quire-rs#394` record that, and FR-003-AC-6's naming half is an explicit expected failure citing them. |

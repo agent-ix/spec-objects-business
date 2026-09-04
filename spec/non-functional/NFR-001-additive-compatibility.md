@@ -50,12 +50,20 @@ extraction record.
 
 ## Verification
 
-NFR-001-AC-2 is currently unsatisfiable by any module schema: Quire
-validates the declaration record of a legacy-form artifact as `{}`
-(`semantic.record-invalid: … "fields" is a required property`, quire wheel
-0.46.0), which `agent-ix/quire-rs#391` records as an engine defect. The
-criterion stands; its test is marked blocked on that issue rather than the
-schema relaxed.
+NFR-001-AC-2 holds on the population this NFR measures, and the measurement
+says why: no 0.2.0 skeleton carries a frontmatter `object:` key, so Quire
+runs headings-only validation on it and never assembles or checks a typed
+record. That is what makes 0.3.0 additive for the artifacts that exist today,
+and it is asserted rather than assumed.
+
+The engine defect behind it is real but differently scoped: once a
+legacy-form artifact *does* declare `object:`, quire 0.46.0 assembles its
+declaration record as `{}` and validates it against the type schema
+unconditionally, so it fails `semantic.record-invalid` at error severity even
+under `legacy_forms: warning`. `agent-ix/quire-rs#391` owns that rule. The
+module carries that case as an explicit expected failure beside NFR-001-AC-2
+rather than relaxing a schema, so the day the engine changes, the row turns
+red and is noticed.
 
 A checked-in copy of the 0.2.0 `body_extraction` and of all ten 0.2.0
 skeletons is compared against the 0.3.0 manifest and validated under it: the

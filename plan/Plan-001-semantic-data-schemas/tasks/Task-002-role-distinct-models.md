@@ -2,7 +2,7 @@
 id: Task-002
 title: "FR-004 — the ten role-distinct models and six support models"
 type: Task
-status: not_started
+status: done
 track: A
 priority: P0
 relationships:

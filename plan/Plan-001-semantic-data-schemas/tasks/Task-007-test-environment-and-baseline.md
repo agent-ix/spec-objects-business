@@ -2,7 +2,7 @@
 id: Task-007
 title: "Test environment — Quire provisioning, the no-vacuous-skip gate and the 0.2.0 baseline"
 type: Task
-status: not_started
+status: done
 track: B
 priority: P0
 relationships:

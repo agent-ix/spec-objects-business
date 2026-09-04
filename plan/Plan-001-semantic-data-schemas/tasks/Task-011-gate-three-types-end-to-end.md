@@ -2,7 +2,7 @@
 id: Task-011
 title: "Gate — Entity, ValueObject and Event end-to-end through the real validator"
 type: Task
-status: not_started
+status: done
 track: Gate
 priority: P0
 relationships:

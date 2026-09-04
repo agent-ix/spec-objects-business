@@ -2,7 +2,7 @@
 id: Task-003
 title: "FR-002 — emitted set, toolchain.json, digests and packaging"
 type: Task
-status: not_started
+status: done
 track: A
 priority: P0
 relationships:

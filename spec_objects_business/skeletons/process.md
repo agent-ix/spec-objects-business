@@ -1,73 +1,104 @@
 ---
 id: process-001
-title: "Order Fulfilment"
+title: "OrderFulfilment"
 type: process
+object: process
 ---
-<!-- process authoring skeleton (spec-objects-business). Fill every section
-     with substantive content. Contract (manifest body_extraction asserts):
-     - Frontmatter MUST carry id, title, type: process.
-     - "## Workflow" (H2, required) MUST contain a fenced code block with
-       language `mermaid` diagramming the process flow. Multiple diagrams
-       are kept (`multiple: true`) — split a complex flow into several
-       smaller diagrams rather than forcing one oversized one.
-     - "## States" (H2, OPTIONAL): mermaid state diagram(s) when the
-       process carries an explicit state model (extracted as `states`).
-     - "## Specification" and "## Algorithm" (H2) are optional prose
-       elaborations of the diagram.
-     - Mermaid hygiene: quote flowchart labels containing parentheses, no
-       semicolons inside label text. -->
-# [process-001] Order Fulfilment
+<!-- process authoring skeleton (spec-objects-business). Contract:
+     - Frontmatter MUST carry id, title, type: process, object: process.
+     - "## Properties" (H2): the process's typed fields; at least one carries
+       `identity` — the correlation key that ties every step to one run.
+     - "## Invariants" (H2): one `### <clauseId>` per clause.
+     - "## Workflow" (H2, required) holds fenced `mermaid` diagrams
+       (`multiple: true`) — split a complex flow into several smaller
+       diagrams rather than one oversized one. Derived view of the typed
+       declarations.
+     - "## States" (H2, OPTIONAL): mermaid state diagram(s).
+     - "## Specification" and "## Algorithm" (H2) are optional prose.
+     - Mermaid hygiene: quote labels containing parentheses, no semicolons
+       inside label text. -->
+# [process-001] OrderFulfilment
 
-Order Fulfilment is the long-running process that turns a placed order into a
+OrderFulfilment is the long-running process that turns a placed order into a
 shipped one. It reacts to OrderPlaced and coordinates Inventory, Payments,
 and the warehouse.
+
+## Properties
+
+| Field | Type | Multiplicity | Constraints |
+|---|---|---|---|
+| correlation_id | UUID | 1..1 | identity |
+| order_id | UUID | 1..1 | |
+| started_at | Timestamp | 1..1 | |
+| reservation_deadline | Duration | 1..1 | |
+| compensated | Boolean | 1..1 | |
+
+## Invariants
+
+The clauses the OrderFulfilment declaration enforces. Each clause owns one
+`ocl` fence under its own `### <clauseId>` heading; the fence text is carried
+verbatim and never evaluated here.
+
+### OneRunPerOrder
+
+```ocl
+context OrderFulfilment
+inv OneRunPerOrder:
+  OrderFulfilment.allInstances()->isUnique(r | r.order_id)
+```
+
+### CompensationFollowsAFailedCapture
+
+```ocl
+context OrderFulfilment
+inv CompensationFollowsAFailedCapture:
+  self.compensated implies self.captureFailed()
+```
 
 ## Workflow
 
 ```mermaid
 flowchart TD
-    Placed[OrderPlaced received] --> Reserve[Reserve stock]
-    Reserve -->|reserved| Capture[Capture payment]
-    Reserve -->|out of stock| Backorder[Queue backorder and notify customer]
-    Capture -->|captured| Pick[Pick and pack]
-    Capture -->|declined| Release[Release reservation and cancel order]
-    Pick --> Ship[Hand over to carrier]
-    Ship --> Done[Order marked Shipped]
+    A[OrderPlaced received] --> B[Reserve stock]
+    B --> C{Stock reserved}
+    C -- yes --> D[Capture payment]
+    C -- no --> E[Cancel order]
+    D --> F{Payment captured}
+    F -- yes --> G[Release to warehouse]
+    F -- no --> H[Release stock reservation]
+```
+
+```mermaid
+flowchart TD
+    G[Release to warehouse] --> I[Pick and pack]
+    I --> J[Hand to carrier]
+    J --> K[Emit OrderShipped]
 ```
 
 ## States
 
 ```mermaid
 stateDiagram-v2
-    [*] --> reserving
-    reserving --> backordered: out of stock
-    reserving --> capturing: reserved
-    backordered --> reserving: stock arrived
-    capturing --> failed: declined
-    capturing --> picking: captured
-    picking --> shipped
-    shipped --> [*]
-    failed --> [*]
+    [*] --> Reserving
+    Reserving --> Capturing: stock_reserved
+    Reserving --> Compensating: stock_unavailable
+    Capturing --> Fulfilling: payment_captured
+    Capturing --> Compensating: payment_declined
+    Fulfilling --> [*]
+    Compensating --> [*]
 ```
 
 ## Specification
 
-The process is an event-driven saga keyed by `order_id`. Each step is
-idempotent: redelivered events are detected via the step's recorded outcome
-and skipped. Stock is reserved before payment capture so the customer is
-never charged for unavailable goods. Compensation runs in reverse order — a
-declined capture releases the reservation and cancels the order, emitting
-OrderCancelled.
+The process is correlated by `correlation_id` and is idempotent per
+`order_id`: a duplicate OrderPlaced for an order already in flight is
+discarded. `reservation_deadline` bounds how long stock may be held before
+the run compensates.
 
 ## Algorithm
 
-1. On OrderPlaced, open a fulfilment record in state `reserving`.
-2. Request stock reservation for every order line.
-3. If any line cannot be reserved, move to `backordered`, notify the
-   customer, and pause until stock arrives.
-4. On successful reservation, request payment capture for `grand_total`.
-5. If capture is declined, release the reservation, cancel the order, and
-   close the record as `failed`.
-6. On capture, dispatch a pick-and-pack job to the warehouse.
-7. When the carrier confirms handover, mark the order `Shipped` and close
-   the record as `completed`.
+1. On OrderPlaced, start a run keyed by a fresh `correlation_id`.
+2. Reserve stock for every line; on refusal, compensate and cancel the order.
+3. Capture payment for `grand_total`; on decline, release the reservation.
+4. Release the order to the warehouse and wait for the shipment confirmation.
+5. Emit OrderShipped and close the run.

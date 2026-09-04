@@ -2,7 +2,7 @@
 id: Task-009
 title: "IT-002 — Quoin install roundtrip with unconditional state restore"
 type: Task
-status: not_started
+status: blocked
 track: C
 priority: P1
 relationships:

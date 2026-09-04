@@ -2,14 +2,49 @@
 id: nested-entity-001
 title: "OrderLine"
 type: nested_entity
+object: nested_entity
 ---
-<!-- nested_entity authoring skeleton (spec-objects-business). Fill every
-     section with substantive content. Contract (manifest body_extraction
-     asserts):
-     - Frontmatter MUST carry id, title, type: nested_entity.
-     - "## Parent" (H2, required): the owning aggregate root, the local
-       identity scheme, and how the parent mediates every mutation. -->
+<!-- nested_entity authoring skeleton (spec-objects-business). Contract:
+     - Frontmatter MUST carry id, title, type: nested_entity, object: nested_entity.
+     - "## Properties" (H2): typed fields; at least one carries `identity`,
+       and that identity is local to the owner — a rule the schema cannot
+       express and the reader does not check.
+     - "## Invariants" (H2): one `### <clauseId>` per clause.
+     - "## Parent" (H2, required): the owning aggregate root and how it
+       mediates every mutation. Derived view; `owner` is the typed key. -->
 # [nested-entity-001] OrderLine
+
+## Properties
+
+| Field | Type | Multiplicity | Constraints |
+|---|---|---|---|
+| line_number | Integer | 1..1 | identity, min: 1 |
+| product_id | UUID | 1..1 | |
+| quantity | Integer | 1..1 | min: 1 |
+| unit_price | Money | 1..1 | |
+| line_total | Money | 1..1 | |
+
+## Invariants
+
+The clauses the OrderLine declaration enforces. Each clause owns one
+`ocl` fence under its own `### <clauseId>` heading; the fence text is carried
+verbatim and never evaluated here.
+
+### LineTotalIsQuantityTimesUnitPrice
+
+```ocl
+context OrderLine
+inv LineTotalIsQuantityTimesUnitPrice:
+  self.line_total = self.unit_price.multiply(self.quantity)
+```
+
+### QuantityIsPositive
+
+```ocl
+context OrderLine
+inv QuantityIsPositive:
+  self.quantity >= 1
+```
 
 ## Parent
 

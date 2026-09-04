@@ -71,9 +71,17 @@ module activates against `filament-core`.
   and the extractor by `agent-ix/quire-rs` once the mapping is published;
   the schemas declare the keys as optional so the engine can fill them
   without a schema change.
-- Record validation of a legacy-form artifact: `agent-ix/quire-rs#391`
-  (the engine validates an `unavailable` record as `{}`); NFR-001-AC-2 is
-  blocked on it and is not worked around by relaxing a schema.
+- Naming what a module load refused: `agent-ix/quire-rs#221` (an unknown
+  manifest key empties the model silently) and `agent-ix/quire-rs#394` (a
+  `data_schema` digest mismatch drops the object type with no diagnostic).
+  FR-003-AC-6's "naming the key or the path" half is blocked on them and is
+  carried as an explicit expected failure.
+- Record validation of a legacy-form artifact that declares `object:`:
+  `agent-ix/quire-rs#391` (the engine validates an `unavailable` record as
+  `{}`, so a legacy form errors even under `legacy_forms: warning`).
+  NFR-001-AC-2 itself holds — no 0.2.0 artifact carries `object:` — and the
+  defect is carried as an explicit expected failure beside it rather than
+  worked around by relaxing a schema.
 - Publishing the Quire 0.46.0 wheel to an index a repository may commit
   against: `agent-ix/quire-rs#392`. `internal-pypi` serves 0.33.0 at most and
   no `quire-rs` tag carries the semantic layer, so this module provisions the

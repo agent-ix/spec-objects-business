@@ -2,7 +2,7 @@
 id: Task-005
 title: "FR-005 — executable skeletons, sysml alternates and negative fixtures"
 type: Task
-status: not_started
+status: done
 track: A
 priority: P0
 relationships:

@@ -188,17 +188,35 @@ waits on A4 because it re-posts the changed manifest. Track C begins once A6 lan
 
 | Task     | Track | Owns (references)        | Verified by (verifies)                                  | Status      |
 | -------- | ----- | ------------------------ | ------------------------------------------------------- | ----------- |
-| Task-001 | A     | FR-002                   | TC-013, TC-014, TC-016, TC-017, TC-072, TC-073, TC-074   | not_started |
-| Task-002 | A     | FR-004, US-001           | TC-030…TC-041                                            | not_started |
-| Task-011 | Gate  | FR-004                   | TC-031, TC-032, TC-034                                   | not_started |
-| Task-003 | A     | FR-002                   | TC-010, TC-011, TC-012, TC-015, TC-071                   | not_started |
-| Task-004 | A     | FR-003                   | TC-020, TC-021, TC-022, TC-024, TC-026                   | not_started |
-| Task-005 | A     | FR-005, US-001           | TC-050…TC-057, TC-059                                    | not_started |
-| Task-006 | A     | FR-003, FR-005           | TC-023, TC-025                                           | not_started |
-| Task-007 | B     | FR-005, FR-002           | TC-018, TC-019, TC-058                                   | not_started |
+| Task-001 | A     | FR-002                   | TC-013, TC-014, TC-016, TC-017, TC-072, TC-073, TC-074   | done |
+| Task-002 | A     | FR-004, US-001           | TC-030…TC-041                                            | done |
+| Task-011 | Gate  | FR-004                   | TC-031, TC-032, TC-034                                   | done |
+| Task-003 | A     | FR-002                   | TC-010, TC-011, TC-012, TC-015, TC-071                   | done |
+| Task-004 | A     | FR-003                   | TC-020, TC-021, TC-022, TC-024, TC-026                   | done |
+| Task-005 | A     | FR-005, US-001           | TC-050…TC-057, TC-059                                    | done |
+| Task-006 | A     | FR-003, FR-005           | TC-023, TC-025                                           | done |
+| Task-007 | B     | FR-005, FR-002           | TC-018, TC-019, TC-058                                   | done |
 | Task-008 | C     | NFR-001                  | TC-060, TC-061, TC-062, TC-063                           | not_started |
-| Task-009 | C     | FR-003, IT-002           | TC-027, TC-070                                           | not_started |
-| Task-010 | B     | FR-001, StR-001, IT-001  | TC-001…TC-006, TC-075                                    | not_started |
+| Task-009 | C     | FR-003, IT-002           | TC-027, TC-070                                           | blocked |
+| Task-010 | B     | FR-001, StR-001, IT-001  | TC-001…TC-006, TC-075                                    | done |
+
+## Status
+
+All eleven tasks are landed except Task-009 (IT-002), which is `blocked`: no
+released Quoin carries the semantic installer and the roundtrip mutates the
+operator's global module store, so it runs only behind
+`QUOIN_INSTALL_ROUNDTRIP=1` with such a build on `PATH`. `quire coverage`
+reports 101/101 matrix rows backed; the rows still `🚧` in `spec/tests.md` are
+the ones needing an environment this repository cannot provision (a running
+`filament-core-service` at `a77f31e` or later, a Quoin built from `main`).
+
+Two engine defects surfaced while landing this and are carried as explicit
+expected failures rather than relaxed rules: `agent-ix/quire-rs#391` (a
+legacy-form artifact that declares `object:` errors under
+`legacy_forms: warning`) and `agent-ix/quire-rs#221` / `agent-ix/quire-rs#394`
+(a refused module names neither the key nor the schema path). A third,
+`agent-ix/quire-rs#392`, is why `quire` is provisioned by `make dev-quire`
+rather than declared as a dependency.
 
 ## Coordination Rules
 
