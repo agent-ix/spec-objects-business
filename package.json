@@ -29,5 +29,12 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/agent-ix/spec-objects-business.git"
+  },
+  "devDependencies": {
+    "@typespec/compiler": "1.15.0",
+    "@typespec/json-schema": "1.15.0"
+  },
+  "dependencies": {
+    "@agent-ix/semantic-core": "0.1.0"
   }
 }
