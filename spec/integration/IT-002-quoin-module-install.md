@@ -25,8 +25,9 @@ filesystem; no network read is involved.
 
 ## Preconditions
 
-Quoin is built and installed globally from `/home/peter/dev/quoin` (`make
-build && npm i -g .`). The current `quoin module` listing is recorded so the
+A Quoin built from `agent-ix/quoin` main at or after `3e842ce` is on `PATH`
+(from a checkout: `make build && npm i -g .`; no release tag carries the
+semantic module yet). The current `quoin module` listing is recorded so the
 prior `spec-objects-business` entry (source, ref, sha) can be restored.
 
 ## Inputs
@@ -39,7 +40,7 @@ The module directory `spec_objects_business/` from this branch, containing
 1. Record `quoin module` output before the install.
    - IT-002-SC-01: the listing is captured, including any existing
      `spec-objects-business` entry.
-2. Run `quoin module install path:/home/peter/dev/spec-objects-business/spec_objects_business`.
+2. Run `quoin module install path:<checkout>/spec_objects_business`.
    - IT-002-SC-02: exit code 0 and no `semantic.*` diagnostic at `error` severity.
 3. Run `quoin module`.
    - IT-002-SC-03: the listing contains `spec-objects-business` sourced from
@@ -48,9 +49,11 @@ The module directory `spec_objects_business/` from this branch, containing
    - IT-002-SC-04: `semantic/package-manifest.json` exists with
      `package.identity` `agent-ix/spec-objects-business` and one export per
      `semantic.exports` entry.
-5. Restore the prior state: re-install the recorded source and ref, or remove
-   the module if none was installed.
+5. Restore the prior state unconditionally, whether or not steps 2–4 passed:
+   re-install the recorded source and ref, or remove the module if none was
+   installed.
    - IT-002-SC-05: `quoin module` equals the recording of step 1.
+   - IT-002-SC-06: the restore step runs even when an earlier step failed.
 
 ## Expected Results
 

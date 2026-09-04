@@ -27,7 +27,9 @@ reads of the registry endpoints (`/api/v1/archetypes`, `/api/v1/object-types`,
 
 ## Preconditions
 
-A `filament-core-service` instance is running and reachable on a clean cluster
+A `filament-core-service` instance at revision `a77f31e` or later (the
+revision that admits the `semantic` block; no release tag contains it, so a
+main build is required) is running and reachable on a clean cluster
 (or the kind dev cluster) with an empty `modules` table, so that the absence of
 duplicate rows after re-activation is meaningful. This repo's
 `spec_objects_business/manifest.yaml` is available as the activation payload.
@@ -49,7 +51,9 @@ Each step performs one discrete action and has its own success criterion.
 3. GET `/api/v1/archetypes`, `/api/v1/object-types`, `/api/v1/grammars`, and
    `/api/v1/artifact-types`.
    - IT-001-SC-03: every item declared by the manifest is present with the
-     declared attributes.
+     declared attributes; while `agent-ix/filament-core-service#23` is open the
+     registered `data_schema` of each exported object type is the reference
+     object as posted (`{schema, digest}`), not a resolved snapshot.
 4. Re-POST the same manifest unchanged.
    - IT-001-SC-04: the activation is an idempotent no-op (same `modules.id`, same
      SHA-256 content hash, no row duplication).

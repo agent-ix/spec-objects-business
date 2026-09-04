@@ -5,8 +5,6 @@ type: FR
 relationships:
   - target: "ix://agent-ix/spec-objects-business/US-001"
     type: "implements"
-  - target: "ix://agent-ix/spec-objects-business/FR-002"
-    type: "depends_on"
   - target: "ix://agent-ix/filament-core-data/FR-031"
     type: "depends_on"
 ---
@@ -18,8 +16,10 @@ The TypeSpec source SHALL declare one model per business object type whose
 emitted schema validates that type's declaration record
 `{ fields?, relations?, clauses?, operations?, … }` with type-specific
 required keys, forbidden keys, and item rules, so that no type is a
-placeholder and the ten DDD roles are told apart by the shape of their
-records rather than by name alone.
+placeholder and each DDD role refuses the records that violate its own
+rules; full pairwise disjointness is not claimed, because the keys that
+would separate a minimal entity from a nested entity or a process (`owner`,
+`steps`) are not yet populated by the extractor.
 
 ## Inputs
 
@@ -35,15 +35,22 @@ records rather than by name alone.
 
 - Ten object-type models, each emitted as `schemas/<Model>.json`, sealed
   (`unevaluatedProperties: {not: {}}`).
-- Support models emitted as sibling files: `IdentityField` and
-  `OccurrenceField` (open marker schemas used by `contains`), `Term`,
+- Support models emitted as sibling files: `IdentityField`, `OccurrenceField`,
+  and `OccurrenceTypeRef` (open marker schemas used by `contains`), `Term`,
   `Transition`, `ProcessStep`, and the `StepKind` enum.
 
 ## Behavior
 
-The per-type contract; "identity field" means a `FieldDecl` with
-`identity: true`, "occurrence field" a `FieldDecl` whose `type.target` is
-`Timestamp`.
+Each model SHALL enforce its row of the following table. "Identity field"
+means a `FieldDecl` with `identity: true`; "occurrence field" a `FieldDecl`
+whose `type.target` is `Timestamp`. Both readings are semantic-core 0.1.0
+reader conventions (the flag is set only by a bare `identity` keyword in a
+Constraints cell and is absent, not `false`, otherwise; the kernel scalar is
+the bare token `Timestamp`), so a semantic-core release that renders
+`identity: false` or namespaces kernel scalars is a breaking change to these
+schemas and SHALL be handled by a manifest version bump, not by widening a
+rule. Where a row admits "≥ 1 identity field", two or more identity rows are
+admitted: a composite key is a legitimate declaration and no rule forbids it.
 
 | Object type | Model | Required keys | Optional keys | Item rules |
 |---|---|---|---|---|
@@ -61,17 +68,20 @@ The per-type contract; "identity field" means a `FieldDecl` with
 - `Term` SHALL be `{ term: string (minLength 1), doc: string }`.
 - `Transition` SHALL be `{ from: Identifier, to: Identifier, trigger: Identifier, guard?: ClauseRef, emits?: SemanticId }`.
 - `ProcessStep` SHALL be `{ name: Identifier, kind: StepKind, consumes?: SemanticId[], emits?: SemanticId[], doc?: string }` with `StepKind` the closed set `command`, `event`, `decision`, `compensation`, `wait`.
-- Every `fields`, `params`, `clauses`, and `operations` item SHALL be validated by `$ref` to the semantic-core 0.1.0 model, never by a copied definition.
-- Every cross-reference a declaration makes (`type.target`, `RelationDecl.target`, `emits`, `persists`, `source`) SHALL be a `SemanticId` or `KernelScalar` per semantic-core, so a reference to an undeclared type is the placeholder `ix://<org>/<repo>/unresolved/<Token>` and reported by the extractor rather than silently accepted as a string.
+- Every `fields`, `params`, `clauses`, `operations`, `relations`, `members`, `owner`, `values`, and `states` item SHALL be validated by `$ref` to the semantic-core 0.1.0 model, never by a copied definition.
+- The TypeSpec source SHALL express the item rules through the official emitter's decorators over open marker models: `@contains(IdentityField)` for "≥ 1 identity field", `@contains(IdentityField) @minContains(0) @maxContains(0)` for "0 identity fields", and, because JSON Schema admits one `contains` per array, the event occurrence rule as an `@extension("allOf", …)` clause whose `contains` references `OccurrenceField.json` (a marker whose `type.target` is `Timestamp`); the generator normalizes that relative `$ref` per FR-002.
+- Every cross-reference a declaration makes (`type.target`, `RelationDecl.target`, `emits`, `persists`, `source`, `Transition.emits`, `ProcessStep.consumes`/`emits`) SHALL be a `SemanticId` or `KernelScalar` per semantic-core, so a bare token is rejected by the schema; resolution against the bundle, and the placeholder `ix://<org>/<repo>/unresolved/<Token>` with its `semantic.unresolved-type` finding, exist today for `type.target` only (quire-rs FR-070) and for the other keys once `agent-ix/quoin#335` publishes their mapping.
 - Each schema SHALL describe the declared shape only, never a runtime occurrence (an entity row, an emitted event instance), which is why `Event` carries no identity field and no `eventId`: occurrence identity belongs to the runtime record, not the declaration.
-- Where a key is declared but the current extractor does not populate it (`members`, `vocabulary`, `owner`, `emits`, `persists`, `source`, `states`, `transitions`, `steps`, `values`), the key SHALL be optional, so a record produced by today's extractor validates and a future extractor can fill it without a schema change.
+- Where a key is declared but the current extractor does not populate it (`members`, `vocabulary`, `owner`, `emits`, `persists`, `source`, `states`, `transitions`, `steps`, `values`) — and likewise `relations` — the key SHALL be optional, so a record produced by today's extractor validates and a future extractor can fill it without a schema change.
+- The test suite SHALL verify every criterion over a key the extractor does not populate against a hand-built JSON record rather than an extracted one, naming that limitation in the test itself, so that no row claims extraction evidence it does not have; the extraction path for those keys is `agent-ix/quoin#335` (mapping) and its quire-rs successor.
+- A `Transition` SHALL name a `states[].value` of the same record in `from` and in `to`, and an `operations[].name` of the same record in `trigger`. JSON Schema cannot express either rule, so both are reader rules stated here for the extractor that first populates `states` and `transitions`; neither is claimed as a schema refusal.
 
 ## Constraints
 
 | ID | Constraint | Type | Validation |
 |----|------------|------|------------|
 | FR-004-CON-1 | No model SHALL redeclare a semantic-core model or scalar; the module namespace contributes archetype shapes only (semantic-core NFR-014 kernel discipline). | Architecture | Test |
-| FR-004-CON-2 | A record that satisfies no required key SHALL fail every type whose required set is non-empty; the two open-required types (`Domain`, `Enumeration`) are distinguished by their forbidden and optional keys. | Integrity | Test |
+| FR-004-CON-2 | The empty record `{}` SHALL fail every type whose required set is non-empty and pass only `Domain` and `Enumeration`, which are distinguished from each other by their optional keys alone. | Integrity | Test |
 
 ## Acceptance Criteria
 
@@ -87,8 +97,10 @@ The per-type contract; "identity field" means a `FieldDecl` with
 | FR-004-AC-8 | A process record with an identity field validates, with `steps` accepted when present; a step whose `kind` is outside `StepKind` fails. | Test |
 | FR-004-AC-9 | Empty records `{}` validate against `Domain.json` and `Enumeration.json` and fail against every other type; a domain or enumeration record with `fields` fails. | Test |
 | FR-004-AC-10 | A `type.target` of `ix://agent-ix/spec-objects-business/unresolved/Mystery` is accepted by the schema (it is a `SemanticId`) and reported by the extractor as `semantic.unresolved-type`; a bare `Mystery` string is rejected by the schema. | Test |
+| FR-004-AC-11 | A nested-entity record with one identity field validates against `NestedEntity.json`, with `owner` accepted when present; a record carrying `relations` fails. | Test |
 
 ## Dependencies
 
-- **Upstream**: [FR-002](./FR-002-emitted-json-schemas.md); semantic-core FR-031 (`ix://agent-ix/filament-core-data/FR-031`)
+- **Upstream**: semantic-core FR-031 (`ix://agent-ix/filament-core-data/FR-031`)
+- **Build**: [FR-002](./FR-002-emitted-json-schemas.md) emits these models
 - **Downstream**: [FR-005](./FR-005-executable-skeletons.md); `agent-ix/quire-contract-ir#52` and `agent-ix/filament-core-data#36` read these schemas as fixtures

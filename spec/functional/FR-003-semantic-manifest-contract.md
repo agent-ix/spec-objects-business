@@ -25,8 +25,12 @@ against them, while every existing extraction locator keeps its meaning.
 ## Inputs
 
 - The emitted schemas and digests of [FR-002](./FR-002-emitted-json-schemas.md).
-- The module-manifest schema with the `semantic` block
-  (`agent-ix/filament-core-service`, vendored by Quoin and Quire).
+- The module-manifest schema with the `semantic` block, at
+  `agent-ix/filament-core-service` revision `a77f31e` (CR-003) — the same
+  revision FR-001 names, and the revision Quoin and Quire each vendor
+  byte-identically (`sha256:69cf9738…`). All three consumers therefore judge
+  this manifest against one schema; a consumer vendoring an older copy is a
+  skew defect on that consumer, not a change here.
 
 ## Outputs
 
@@ -42,17 +46,17 @@ against them, while every existing extraction locator keeps its meaning.
 - The manifest `version` SHALL be `0.3.0`, because the emitted `$id` embeds it and the previous version was `0.2.0`.
 - Every `body_extraction` locator present at version 0.2.0 SHALL remain present with the same `from`, heading, `language`, `required`, `multiple`, and `assert` facets.
 - The `properties` string locator (`section_body` after `Properties`) on `entity` and `value_object` SHALL stay in place, so the untyped `properties` string continues to be yielded beside the semantic record.
-- Where a skeleton gains a `## Properties`, `## Invariants`, or `## Operations` section (FR-005), the object type SHALL gain a matching `required: false` `section_body` locator, so the section is asserted by the manifest and remains optional for existing artifacts.
-- The manifest SHALL load through Quire's registry loader with no `ArchetypeLoadFailure` for any object type and with the recorded schema digest equal to the manifest digest.
+- Where an object type gains a locator after 0.2.0, that locator SHALL be `required: false`, so existing artifacts stay valid (the additions themselves are specified by FR-005).
+- The manifest SHALL load through Quire's registry loader with no `ArchetypeLoadFailure` for any object type and with the recorded schema digest equal to the manifest digest; one refused schema fails every object type of the module (quire-rs FR-069), which is why every digest is regenerated together.
 - The manifest SHALL install through `quoin module install path:<module dir>` with no `semantic.*` error diagnostic.
 - When the install has completed, `quoin module` SHALL list `spec-objects-business`.
-- If Quoin or Quire rejects the manifest, then the module maintainer SHALL correct the manifest or schemas in this module rather than relax the contract keys, digests, or `$id` rules.
+- If Quoin or Quire rejects the manifest, then this module SHALL correct its own manifest or schemas rather than relax the contract keys, the digests, or the `$id` rules to make a consumer accept them.
 
 ## Constraints
 
 | ID | Constraint | Type | Validation |
 |----|------------|------|------------|
-| FR-003-CON-1 | The `semantic` block SHALL contain no key outside the admitted list; an unknown key is rejected by both consumers. | Compatibility | Test |
+| FR-003-CON-1 | The `semantic` block SHALL contain no key outside the admitted list. Quire's loader refusal of an unknown key is verified here (FR-003-AC-6); Quoin's refusal is the neighbour's own obligation (quoin FR-070) and is assumed, evidenced only by the clean install of IT-002. | Compatibility | Test |
 | FR-003-CON-2 | The manifest SHALL mark every locator added after 0.2.0 `required: false`. | Compatibility | Test |
 
 ## Acceptance Criteria
@@ -69,4 +73,4 @@ against them, while every existing extraction locator keeps its meaning.
 ## Dependencies
 
 - **Upstream**: [FR-001](./FR-001-module-manifest-activates.md), [FR-002](./FR-002-emitted-json-schemas.md); quoin FR-070/FR-073 (`ix://agent-ix/quoin/FR-070`, `ix://agent-ix/quoin/FR-073`); quire-rs FR-069 (`ix://agent-ix/quire-rs/FR-069`)
-- **Downstream**: [FR-004](./FR-004-role-schemas.md), [FR-005](./FR-005-executable-skeletons.md), [IT-002](../integration/IT-002-quoin-module-install.md)
+- **Downstream**: [FR-005](./FR-005-executable-skeletons.md), [IT-002](../integration/IT-002-quoin-module-install.md)

@@ -15,3 +15,4 @@ okf_version: "0.1"
 * [Usecase](./usecase/index.md) - Use-case artifacts.
 * [Spec](./spec.md)
 * [Test Matrix](./tests.md)
+* [Reviews](./reviews/4-semantic-data-schemas/base.md) - SpecReviews for issue #4.

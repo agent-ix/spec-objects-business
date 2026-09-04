@@ -6,6 +6,8 @@ quality_attribute: compatibility
 relationships:
   - target: "ix://agent-ix/spec-objects-business/FR-003"
     type: "constrains"
+  - target: "ix://agent-ix/spec-objects-business/FR-004"
+    type: "constrains"
   - target: "ix://agent-ix/spec-objects-business/FR-005"
     type: "constrains"
 ---
@@ -13,10 +15,15 @@ relationships:
 
 ## Statement
 
-The module SHALL keep every artifact that validated against version 0.2.0
-validating against version 0.3.0 with at most warning-level semantic
-findings, while the untyped `properties` string and every 0.2.0 locator yield
-stay byte-identical.
+The module SHALL keep every artifact of the checked-in 0.2.0 skeleton set —
+the ten skeletons as they stood at manifest version 0.2.0, which is the
+population this NFR measures — validating against version 0.3.0 with at most
+warning-level semantic findings.
+
+The module SHALL keep every 0.2.0 `body_extraction` locator definition
+unchanged at 0.3.0, and SHALL keep the untyped `properties` string those
+locators yield byte-identical between the two versions. Yields of the other
+0.2.0 locators are unmeasured and are not claimed.
 
 ## Scope
 
@@ -37,17 +44,33 @@ extraction record.
 | Metric | Target | Threshold | Method |
 |--------|--------|-----------|--------|
 | 0.2.0 locators changed | 0 | 0 | Test |
-| Legacy-form 0.2.0 entity skeleton under 0.3.0: error findings | 0 | 0 | Test |
-| Legacy-form 0.2.0 entity skeleton under 0.3.0: `semantic.legacy-properties-form` warnings | 1 | 1 | Test |
-| `properties` string for the legacy skeleton, 0.2.0 vs 0.3.0 | identical | identical | Test |
+| Checked-in 0.2.0 skeleton set under 0.3.0: error findings, per skeleton | 0 | 0 | Test |
+| Each legacy-form `## Properties` skeleton under 0.3.0: `semantic.legacy-properties-form` warnings | 1 | 1 | Test |
+| `properties` string for each legacy skeleton, 0.2.0 vs 0.3.0 | identical | identical | Test |
 
 ## Verification
 
-A checked-in copy of the 0.2.0 `body_extraction` and of the 0.2.0 entity
-skeleton is compared against the 0.3.0 manifest and validated under it: the
-locators are equal, the legacy skeleton validates with exactly one
-legacy-form warning and no error, and its extracted `properties` string is
-unchanged.
+NFR-001-AC-2 is currently unsatisfiable by any module schema: Quire
+validates the declaration record of a legacy-form artifact as `{}`
+(`semantic.record-invalid: … "fields" is a required property`, quire wheel
+0.46.0), which `agent-ix/quire-rs#391` records as an engine defect. The
+criterion stands; its test is marked blocked on that issue rather than the
+schema relaxed.
+
+A checked-in copy of the 0.2.0 `body_extraction` and of all ten 0.2.0
+skeletons is compared against the 0.3.0 manifest and validated under it: the
+locator definitions are equal, each legacy skeleton validates with no error
+and — where it carries a legacy-form `## Properties` — exactly one
+legacy-form warning, and its extracted `properties` string is unchanged.
+
+## Acceptance Criteria
+
+| ID | Criteria | Verification |
+|----|----------|--------------|
+| NFR-001-AC-1 | Every 0.2.0 `body_extraction` locator is present in 0.3.0 with identical facets (0 changed). | Test |
+| NFR-001-AC-2 | Every skeleton of the checked-in 0.2.0 set validates under 0.3.0 with 0 error findings. | Test |
+| NFR-001-AC-3 | Each 0.2.0 skeleton carrying a legacy-form `## Properties` yields exactly 1 `semantic.legacy-properties-form` warning. | Test |
+| NFR-001-AC-4 | Each such skeleton's extracted `properties` string is byte-identical under 0.2.0 and 0.3.0. | Test |
 
 ## Dependencies
 
