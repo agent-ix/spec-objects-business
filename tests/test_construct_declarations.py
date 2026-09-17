@@ -257,16 +257,13 @@ def test_ten_kinds_declare_a_construct_and_the_manifest_validates(quire_engine):
 
 
 @pytest.mark.trace("TC-108", "FR-008-AC-6")
-def test_only_event_declares_immutable(quire_engine):
-    manifest = load_manifest()
+def test_only_event_declares_immutable():
     for kind in CONSTRUCT_KINDS:
         construct = object_type(kind)["construct"]
         if kind == "event":
             assert construct["immutable"] is True
         else:
             assert "immutable" not in construct, kind
-    violations = quire_engine.validate_manifest(manifest, str(VENDORED_SCHEMA))
-    assert violations == [], violations
 
 
 @pytest.mark.trace("TC-100", "FR-008-AC-2")
