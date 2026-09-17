@@ -31,6 +31,7 @@ MANIFEST_PATH = PACKAGE_ROOT / "manifest.yaml"
 SCHEMAS_DIR = PACKAGE_ROOT / "schemas"
 SKELETONS_DIR = PACKAGE_ROOT / "skeletons"
 NEGATIVE_DIR = REPO_ROOT / "tests" / "fixtures" / "negative"
+POSITIVE_DIR = REPO_ROOT / "tests" / "fixtures" / "positive"
 BASELINE_DIR = REPO_ROOT / "tests" / "fixtures" / "baseline-0.2.0"
 SEMANTIC_CORE_DIR = (
     REPO_ROOT
@@ -41,7 +42,7 @@ SEMANTIC_CORE_DIR = (
     / "json-schema"
 )
 
-SEMANTIC_CORE_BASE = "https://schemas.agent-ix.org/semantic-core/0.1.0/"
+SEMANTIC_CORE_BASE = "https://schemas.agent-ix.org/semantic-core/0.2.0/"
 
 QUIRE_MISSING = (
     "the Quire wheel exposing `extract_semantic` is not installed in this "
@@ -75,6 +76,39 @@ MODEL_OF = {
     "process": "Process",
     "enumeration": "Enumeration",
 }
+
+# FR-006: the model tables quire-rs extracts (its TABLE_SPECS column sets),
+# and the locator of each object type that declares one.
+TABLE_SPECS = {
+    "values": ["Value", "Description"],
+    "states": ["State", "Description"],
+    "transitions": ["From", "To", "Trigger", "Guard", "Emits"],
+    "steps": ["Step", "Kind", "Consumes", "Emits", "Description"],
+    "members": ["Member", "Multiplicity"],
+    "vocabulary": ["Term", "Description"],
+}
+
+MODEL_TABLES = {
+    "domain": {"vocabulary": ("vocabulary", "Ubiquitous Language")},
+    "aggregate_root": {"members": ("members", "Members")},
+    "state_machine": {
+        "states": ("states", "States"),
+        "transitions": ("transitions", "Transitions"),
+    },
+    "process": {"steps": ("steps", "Workflow"), "states": ("states", "States")},
+    "enumeration": {"values_table": ("values", "Values")},
+}
+
+# The 0.2.0 locators whose sections FR-006 declares as model tables.
+SUPERSEDED_020_LOCATORS = {
+    "domain": {"ubiquitous_language"},
+    "aggregate_root": {"members"},
+    "state_machine": {"diagram"},
+    "process": {"diagram", "states"},
+}
+
+# The object types whose FR-006 model tables are required.
+REQUIRED_MODEL_TABLE_TYPES = ("aggregate_root", "state_machine", "process")
 
 SUPPORT_MODELS = (
     "IdentityField",
@@ -166,6 +200,7 @@ def semantic_module(semantic_block: dict[str, Any]) -> dict[str, Any]:
         "imports": semantic_block["imports"],
         "compatibilityPosture": semantic_block["compatibility_posture"],
         "legacyForms": semantic_block["legacy_forms"],
+        "mappings": semantic_block["mappings"],
     }
 
 

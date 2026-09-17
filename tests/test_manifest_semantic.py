@@ -14,10 +14,12 @@ import yaml
 from tests.conftest import (
     BASELINE_DIR,
     MODEL_OF,
+    MODEL_TABLES,
     OBJECT_TYPES,
     PACKAGE_ROOT,
     REPO_ROOT,
     SKELETONS_DIR,
+    SUPERSEDED_020_LOCATORS,
     locators,
     object_type,
     object_types,
@@ -56,12 +58,22 @@ def test_the_semantic_block_carries_the_nine_admitted_keys_and_ten_exports(
 ):
     assert set(semantic_block) == ADMITTED_KEYS
     assert semantic_block["contract_version"] == "1.0.0"
-    assert semantic_block["semantic_core"] == "0.1.0"
+    assert semantic_block["semantic_core"] == "0.2.0"
     assert semantic_block["package"] == "agent-ix/spec-objects-business"
     assert semantic_block["exports"] == list(OBJECT_TYPES)
     assert semantic_block["imports"] == {}
     assert semantic_block["targets"] == ["json-schema", "markdown"]
-    assert semantic_block["mappings"] == ["typed-table", "sysml-fence", "ocl-clause"]
+    assert semantic_block["mappings"] == [
+        "typed-table",
+        "sysml-fence",
+        "quire-clause",
+        "generalization",
+        "abstract-types",
+        "presence",
+        "subsetting",
+        "redefinition",
+        "effect-frames",
+    ]
     assert semantic_block["compatibility_posture"] == "additive"
     assert semantic_block["legacy_forms"] == "warning"
 
@@ -90,8 +102,13 @@ def test_every_020_locator_is_unchanged_against_the_checked_in_baseline():
         old = (extraction or {})["yield_pattern"]["match"]
         new = (current or {})["yield_pattern"]["match"]
         for key, facets in old.items():
-            assert key in new, f"{name}.{key} was dropped at 0.3.0"
-            assert new[key] == facets, f"{name}.{key} changed facets at 0.3.0"
+            if key in SUPERSEDED_020_LOCATORS.get(name, set()):
+                assert key not in new or key in MODEL_TABLES.get(
+                    name, {}
+                ), f"{name}.{key} is superseded by an FR-006 model table"
+                continue
+            assert key in new, f"{name}.{key} was dropped"
+            assert new[key] == facets, f"{name}.{key} changed facets"
 
 
 @pytest.mark.trace("TC-023", "FR-003-AC-3", "FR-003-CON-2")
@@ -101,7 +118,7 @@ def test_every_locator_added_after_020_is_optional():
     for name, extraction in baseline["object_types"].items():
         old = set((extraction or {})["yield_pattern"]["match"])
         for key, facets in locators(object_type(name)).items():
-            if key in old:
+            if key in old or key in MODEL_TABLES.get(name, {}):
                 continue
             added += 1
             assert (

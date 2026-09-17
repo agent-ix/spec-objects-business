@@ -30,7 +30,7 @@ def field(name: str, target: str = "String", *, identity: bool = False) -> dict:
     return decl
 
 
-CLAUSE = {"language": "ocl", "clauseId": "SomeInvariant"}
+CLAUSE = {"language": "quire", "clauseId": "SomeInvariant"}
 OPERATION = {"name": "get", "params": [field("order_id", "UUID")]}
 RELATION = {
     "verb": "contains",

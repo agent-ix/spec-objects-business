@@ -23,38 +23,29 @@ attribute placed_at : Timestamp[0..1]
 ## Invariants
 
 The clauses the Order declaration enforces. Each clause owns one
-`ocl` fence under its own `### <clauseId>` heading; the fence text is carried
-verbatim and never evaluated here.
+`quire` fence under its own `### <clauseId>` heading.
 
 ### GrandTotalIsSubtotalPlusShipping
 
-```ocl
-context Order
-inv GrandTotalIsSubtotalPlusShipping:
-  self.grand_total = self.subtotal.add(self.shipping_fee)
+```quire
+self.grand_total.amount = self.subtotal.amount + self.shipping_fee.amount
 ```
 
 ### PlacedOrderCarriesAtLeastOneLine
 
-```ocl
-context Order
-inv PlacedOrderCarriesAtLeastOneLine:
-  self.status <> OrderStatus::Draft implies self.lines->size() >= 1
+```quire
+self.status != "Draft" implies size(self.lines) >= 1
 ```
 
 ### LinesAreAmendedOnlyWhileDraft
 
-```ocl
-context Order
-inv LinesAreAmendedOnlyWhileDraft:
-  self.lines->exists(l | l.isDirty()) implies self.status = OrderStatus::Draft
+```quire
+exists(l in self.lines: l.amended) implies self.status = "Draft"
 ```
 
 ## Members
 
-- **Order** (root) — identified by `order_id`; the only member addressable
-  from outside the aggregate.
-- **OrderLine** (nested entity, 1..n) — created, amended, and removed only
-  through Order methods.
-- **Money: subtotal, shipping_fee, grand_total** (owned value objects).
-- **ShippingAddress** (owned value object) — frozen when the order is placed.
+| Member | Multiplicity |
+|---|---|
+| OrderLine | 1..* |
+| Money | 3..3 |

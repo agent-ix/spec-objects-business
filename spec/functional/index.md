@@ -12,3 +12,4 @@ description: "Index of artifacts in this directory."
 * [FR-003: Declare the semantic-module contract in the manifest](./FR-003-semantic-manifest-contract.md)
 * [FR-004: Give every business object type a role-distinct declaration schema](./FR-004-role-schemas.md)
 * [FR-005: Make every skeleton an executable typed fixture](./FR-005-executable-skeletons.md)
+* [FR-006: Declare every object-type model table in the manifest](./FR-006-model-table-locators.md)

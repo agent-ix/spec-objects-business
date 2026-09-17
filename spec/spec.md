@@ -47,10 +47,15 @@ module activates against `filament-core`.
 - The functional requirement that the manifest activates idempotently against
   `filament-core-service`, and the integration test that verifies it.
 - The semantic-module contract (issue #4): a TypeSpec source importing
-  `@agent-ix/semantic-core` 0.1.0, the emitted JSON Schema per object type
+  `@agent-ix/semantic-core` 0.2.0, the emitted JSON Schema per object type
   shipped under `spec_objects_business/schemas/`, the manifest `semantic`
   block with reference-form `data_schema`, and the skeletons rewritten as
   executable typed fixtures with negative counterparts.
+- The object-type model tables (values, states, transitions, steps, members,
+  vocabulary) declared as manifest `table_row` locators, and the mapping
+  tokens for generalization, abstract types, field presence, subsetting,
+  redefinition, and operation effect frames, which Quire extracts as the
+  manifest directs and refuses where the manifest is silent.
 
 ### Out of Scope
 
@@ -63,14 +68,9 @@ module activates against `filament-core`.
   (`agent-ix/filament-core-data#19`) and published only behind the promotion
   gate (`agent-ix/quoin#290`); the semantic-core language packages are
   `agent-ix/filament-core-data#11`. None is produced or faked here.
-- Extraction of the declared-but-not-yet-extracted keys (`values`,
-  `members`, `owner`, `states`, `transitions`, `steps`, `emits`, `persists`,
-  `source`, `vocabulary`) from Markdown: the mapping is owned by
-  `agent-ix/quoin#335` (FR-071/FR-072 define `Properties`, `Invariants`,
-  and `Operations` only; the enumeration `## Values` form is disputed there)
-  and the extractor by `agent-ix/quire-rs` once the mapping is published;
-  the schemas declare the keys as optional so the engine can fill them
-  without a schema change.
+- Extraction of the record keys no model table declares (`owner`, `emits`,
+  `persists`, `source`, `relations`) from Markdown; the schemas declare them
+  as optional so the engine can fill them without a schema change.
 - Naming what a module load refused: `agent-ix/quire-rs#221` (an unknown
   manifest key empties the model silently) and `agent-ix/quire-rs#394` (a
   `data_schema` digest mismatch drops the object type with no diagnostic).
@@ -119,8 +119,9 @@ the maintainer's story of declaring those types against semantic-core
 (`usecase/`) to the functional requirements (`functional/`): FR-001 activates
 the manifest against `filament-core`; FR-002 emits the schemas; FR-003
 declares the semantic contract in the manifest; FR-004 fixes each type's
-role-distinct schema; FR-005 makes the skeletons executable fixtures. NFR-001
-bounds the change to additive compatibility. Integration tests in
+role-distinct schema; FR-005 makes the skeletons executable fixtures; FR-006
+declares the object-type model tables the engine extracts. NFR-001 bounds
+the change to additive compatibility outside those tables. Integration tests in
 `integration/` verify the activation and Quoin-install boundaries; the third
 external boundary, the Quire engine (loader, extraction, record surface), has
 no IT artifact of its own — the FR-003 and FR-005 test harness is this
@@ -138,4 +139,4 @@ Inputs. The Test Matrix in `tests.md` records every criterion's test case.
 - `agent-ix/quoin` FR-070..FR-075 (semantic-module contract, mappings,
   `data_schema` by digest, legacy forms, package manifests).
 - `agent-ix/quire-rs` FR-069..FR-072 (contract at load, typed Properties,
-  clauses and operations, extraction surface).
+  clauses and operations, extraction surface) and FR-075 (model features).

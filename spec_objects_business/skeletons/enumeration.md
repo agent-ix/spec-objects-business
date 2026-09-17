@@ -7,10 +7,8 @@ object: enumeration
 <!-- enumeration authoring skeleton (spec-objects-business). Contract:
      - Frontmatter MUST carry id, title, type: enumeration, object: enumeration.
      - "## Values" (H2, required) is a `Value | Description` table with at
-       least one row. The 0.2.0 `values_table` locator asserts this form and
-       NFR-001 forbids changing it; quoin FR-071 maps an enumeration's
-       `## Values` from a bullet list instead, and which form the engine
-       reads into `EnumValue[]` is decided by agent-ix/quoin#335.
+       least one row. The `values_table` locator declares it, and the engine
+       reads each row as one enumeration value; a list there is refused.
      An enumeration declares labels, not data: Enumeration.json forbids
      `fields` and `operations`, so there is no "## Properties" section and no
      "## Invariants". -->

@@ -27,23 +27,18 @@ object: nested_entity
 ## Invariants
 
 The clauses the OrderLine declaration enforces. Each clause owns one
-`ocl` fence under its own `### <clauseId>` heading; the fence text is carried
-verbatim and never evaluated here.
+`quire` fence under its own `### <clauseId>` heading.
 
 ### LineTotalIsQuantityTimesUnitPrice
 
-```ocl
-context OrderLine
-inv LineTotalIsQuantityTimesUnitPrice:
-  self.line_total = self.unit_price.multiply(self.quantity)
+```quire
+self.line_total.amount = self.quantity * self.unit_price.amount
 ```
 
 ### QuantityIsPositive
 
-```ocl
-context OrderLine
-inv QuantityIsPositive:
-  self.quantity >= 1
+```quire
+self.quantity >= 1
 ```
 
 ## Parent

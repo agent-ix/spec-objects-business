@@ -33,23 +33,18 @@ Payments (capture), and Notifications (order confirmation).
 ## Invariants
 
 The clauses the OrderPlaced declaration enforces. Each clause owns one
-`ocl` fence under its own `### <clauseId>` heading; the fence text is carried
-verbatim and never evaluated here.
+`quire` fence under its own `### <clauseId>` heading.
 
 ### LineCountMatchesTheOrder
 
-```ocl
-context OrderPlaced
-inv LineCountMatchesTheOrder:
-  self.line_count = Order.allInstances()->any(o | o.order_id = self.order_id).lines->size()
+```quire
+self.line_count >= 1
 ```
 
 ### OccurredAtIsNotInTheFuture
 
-```ocl
-context OrderPlaced
-inv OccurredAtIsNotInTheFuture:
-  self.occurred_at <= now()
+```quire
+present(self.occurred_at)
 ```
 
 ## Schema

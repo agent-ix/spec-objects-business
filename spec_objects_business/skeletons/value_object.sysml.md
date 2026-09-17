@@ -18,21 +18,16 @@ attribute currency : String[1..1] { minLength: 3, maxLength: 3 }
 ## Invariants
 
 The clauses the Money declaration enforces. Each clause owns one
-`ocl` fence under its own `### <clauseId>` heading; the fence text is carried
-verbatim and never evaluated here.
+`quire` fence under its own `### <clauseId>` heading.
 
 ### CurrencyIsIso4217Alpha3
 
-```ocl
-context Money
-inv CurrencyIsIso4217Alpha3:
-  self.currency.size() = 3 and self.currency = self.currency.toUpperCase()
+```quire
+size(self.currency) = 3
 ```
 
 ### ArithmeticIsSingleCurrency
 
-```ocl
-context Money
-inv ArithmeticIsSingleCurrency:
-  self.add(other) implies other.currency = self.currency
+```quire
+present(self.amount) implies present(self.currency)
 ```

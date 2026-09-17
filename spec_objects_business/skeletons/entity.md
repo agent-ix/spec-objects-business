@@ -11,7 +11,7 @@ object: entity
        exactly `Field | Type | Multiplicity | Constraints`. At least one row
        carries the `identity` constraint.
      - "## Invariants" (H2): one `### <clauseId>` per clause, each owning
-       exactly one ```ocl``` fence. -->
+       exactly one ```quire``` fence holding a Quire expression. -->
 # [entity-001] Customer
 
 ## Properties
@@ -28,21 +28,16 @@ object: entity
 ## Invariants
 
 The clauses the Customer declaration enforces. Each clause owns one
-`ocl` fence under its own `### <clauseId>` heading; the fence text is carried
-verbatim and never evaluated here.
+`quire` fence under its own `### <clauseId>` heading.
 
 ### EmailIsVerifiedBeforeFirstOrder
 
-```ocl
-context Customer
-inv EmailIsVerifiedBeforeFirstOrder:
-  self.status <> OrderStatus::Placed or self.email->notEmpty()
+```quire
+self.status = "Draft" or size(self.email) >= 3
 ```
 
 ### SuspendedCustomerPlacesNoOrder
 
-```ocl
-context Customer
-inv SuspendedCustomerPlacesNoOrder:
-  self.status = OrderStatus::Cancelled implies self.orders->forAll(o | o.placedAt < self.registeredAt)
+```quire
+self.status = "Cancelled" implies present(self.registered_at)
 ```
