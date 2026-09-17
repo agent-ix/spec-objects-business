@@ -30,7 +30,7 @@ REQUIRED = {
     ("state_machine", "transitions"): True,
     ("process", "steps"): True,
     ("process", "states"): False,
-    ("enumeration", "values_table"): True,
+    ("enumeration", "values"): True,
     ("population", "members"): True,
 }
 
@@ -58,7 +58,7 @@ KEY_COLUMN = {
 # The model-table locator each model-table negative fixture refuses, keyed by
 # fixture; its object type is the fixture's frontmatter `type`.
 MODEL_NEGATIVE_LOCATOR = {
-    "enumeration-values-as-list.md": "values_table",
+    "enumeration-values-as-list.md": "values",
     "state_machine-states-as-diagram.md": "states",
     "state_machine-transition-unknown-state.md": "transitions",
     "state_machine-transition-unknown-trigger.md": "transitions",

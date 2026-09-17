@@ -470,7 +470,7 @@ object_types:
         # vocabularies (codec kinds, surface labels, ISA labels, step
         # kinds) as first-class extractable objects instead of prose or
         # values smuggled into data_schema JSON.
-        values_table:
+        values:
           from: table_row
           under_section: Values
           required: true

@@ -102,7 +102,7 @@ MODEL_TABLES = {
         "transitions": ("transitions", "Transitions"),
     },
     "process": {"steps": ("steps", "Workflow"), "states": ("states", "States")},
-    "enumeration": {"values_table": ("values", "Values")},
+    "enumeration": {"values": ("values", "Values")},
     "population": {"members": ("population", "Members")},
 }
 
@@ -112,6 +112,7 @@ SUPERSEDED_020_LOCATORS = {
     "aggregate_root": {"members"},
     "state_machine": {"diagram"},
     "process": {"diagram", "states"},
+    "enumeration": {"values_table"},
 }
 
 # The object types whose FR-006 model tables are required.
