@@ -5,7 +5,11 @@ type: aggregate_root
 object: aggregate_root
 ---
 <!-- aggregate_root authoring skeleton, alternate Properties form: exactly the
-     fields of aggregate_root.md as one ```sysml``` fence (FR-005-AC-2). -->
+     fields of aggregate_root.md as one ```sysml``` fence (FR-005-AC-2).
+     - "## Relationships" (H2, optional): a `| Name | Verb | Target | Multiplicity |`
+       table, one row per domain relationship. Verb is an `edge_types` verb
+       this type's allowed_links admit, never an inverse label or
+       `specializes`; Target is an artifact id; Multiplicity is required. -->
 # [aggregate-root-001] Order
 
 ## Properties
@@ -56,3 +60,11 @@ self.status = OrderManagement::OrderStatus::Draft implies not present(self.place
 |---|---|
 | OrderLine | 0..* |
 | Money | 3..3 |
+
+## Relationships
+
+| Name | Verb | Target | Multiplicity |
+|---|---|---|---|
+| lines | aggregates | nested-entity-001 | 0..* |
+| totals | contains | value-object-001 | 3..3 |
+| status | references | enumeration-001 | 1..1 |

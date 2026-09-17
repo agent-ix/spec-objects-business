@@ -21,4 +21,5 @@ okf_version: "0.1"
 * [Task-010](./tasks/Task-010-activation-reverification-and-tags.md) - FR-001/StR-001 activation re-verification and trace tags.
 * [Task-011](./tasks/Task-011-gate-three-types-end-to-end.md) - Gate: Entity, ValueObject and Event end-to-end.
 * [Task-012](./tasks/Task-012-model-features-population.md) - FR-006 model tables, the population type and manifest 0.4.0.
+* [Task-013](./tasks/Task-013-relationships-table.md) - FR-007 Relationships table, edge verbs and manifest 0.5.0.
 * [Update Log](./log.md) - Chronological log of changes to this bundle.

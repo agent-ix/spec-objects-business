@@ -20,7 +20,7 @@ using AgentIx.Semantic.Core;
  * this base and `manifest.yaml`'s `version` in one commit and re-runs
  * `make schemas`.
  */
-@jsonSchema("https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.4.0/")
+@jsonSchema("https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.5.0/")
 namespace AgentIx.SpecObjects.Business;
 
 // ---------------------------------------------------------------------------

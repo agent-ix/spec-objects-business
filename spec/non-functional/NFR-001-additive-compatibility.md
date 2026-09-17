@@ -12,6 +12,8 @@ relationships:
     type: "constrains"
   - target: "ix://agent-ix/spec-objects-business/FR-006"
     type: "depends_on"
+  - target: "ix://agent-ix/spec-objects-business/FR-007"
+    type: "depends_on"
 ---
 # NFR-001: Compatibility of the semantic contract
 
@@ -24,7 +26,8 @@ no model-table section in an undeclared form validates with at most
 warning-level semantic findings, and the untyped `properties` string is
 byte-identical between 0.2.0 and the current manifest.
 
-The declared model-table sections (FR-006) SHALL refuse every form the
+The declared model-table sections (FR-006) and the `entity` and
+`aggregate_root` `## Relationships` table (FR-007) SHALL refuse every form the
 manifest does not declare. That refusal is breaking for an artifact that
 authors one of those sections in another form, so the manifest declares
 `compatibility_posture: strict` (FR-003).
@@ -37,7 +40,9 @@ authors one of those sections in another form, so the manifest declares
 - Breaking: the declared model-table sections (`domain` `Ubiquitous Language`,
   `aggregate_root` `Members`, `state_machine` `States` and `Transitions`,
   `process` `Workflow` and `States`, `enumeration` `Values`, `population`
-  `Members`), which hold only their declared table and prose.
+  `Members`), which hold only their declared table and prose, and the
+  `entity` and `aggregate_root` `Relationships` table, whose rows are checked
+  against `edge_types` and `allowed_links`.
 - Operational context: existing corpus artifacts authored in legacy
   Properties forms (bullet lists, free-column tables) under `legacy_forms:
   warning`; no corpus repository is edited.
@@ -94,5 +99,5 @@ extracted `properties` string is unchanged.
 
 ## Dependencies
 
-- **Upstream**: [FR-003](../functional/FR-003-semantic-manifest-contract.md), [FR-005](../functional/FR-005-executable-skeletons.md), [FR-006](../functional/FR-006-model-table-locators.md); quoin FR-074 (`ix://agent-ix/quoin/FR-074`)
+- **Upstream**: [FR-003](../functional/FR-003-semantic-manifest-contract.md), [FR-005](../functional/FR-005-executable-skeletons.md), [FR-006](../functional/FR-006-model-table-locators.md), [FR-007](../functional/FR-007-relationships-table.md); quoin FR-074 (`ix://agent-ix/quoin/FR-074`)
 - **Downstream**: corpus promotion (`agent-ix/quoin#291` sweep), outside this module

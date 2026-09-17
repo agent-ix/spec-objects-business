@@ -15,6 +15,7 @@ import re
 import pytest
 
 from tests.conftest import (
+    BUNDLE_PACKAGE,
     NEGATIVE_DIR,
     PACKAGE_ROOT,
     SKELETONS_DIR,
@@ -150,7 +151,9 @@ def test_availability_states_match_each_type(
 @pytest.mark.trace("TC-054", "FR-005-AC-5")
 def test_every_negative_fixture_fails_for_its_own_reason(quire_engine):
     fixtures = sorted(NEGATIVE_DIR.glob("*.md"))
-    assert len(fixtures) >= 20, "the twenty named negative cases are not all present"
+    assert (
+        len(fixtures) >= 24
+    ), "the twenty-four named negative cases are not all present"
     expected_codes = {
         "semantic.record-invalid",
         "semantic.properties-both-forms",
@@ -169,7 +172,9 @@ def test_every_negative_fixture_fails_for_its_own_reason(quire_engine):
         assert front["expect"] in expected_codes, path.name
         assert front["because"], f"{path.name} does not say why it must fail"
         seen.add(front["expect"])
-        result = quire_engine.validate_document(front["type"], str(PACKAGE_ROOT), text)
+        result = quire_engine.validate_document(
+            front["type"], str(PACKAGE_ROOT), text, bundle_package=BUNDLE_PACKAGE
+        )
         assert not result["is_valid"], path.name
         messages = [e["message"] for e in result["errors"]]
         assert any(front["expect"] in m for m in messages), (path.name, messages)

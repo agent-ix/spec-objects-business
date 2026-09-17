@@ -27,6 +27,9 @@ import yaml
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parent.parent
 PACKAGE_ROOT = REPO_ROOT / "spec_objects_business"
+# The bundle every skeleton and fixture belongs to: relationship targets
+# qualify under it (FR-007).
+BUNDLE_PACKAGE = "agent-ix/spec-objects-business"
 MANIFEST_PATH = PACKAGE_ROOT / "manifest.yaml"
 SCHEMAS_DIR = PACKAGE_ROOT / "schemas"
 SKELETONS_DIR = PACKAGE_ROOT / "skeletons"
