@@ -24,7 +24,7 @@ from tests.conftest import object_type
 from tests.test_role_schemas import CLAUSE, OPERATION, RELATION, field, ok
 
 
-@pytest.mark.trace("TC-108", "FR-008-AC-6")
+@pytest.mark.trace("TC-109", "FR-008-AC-7")
 def test_value_object_refuses_an_operation(schema_registry):
     """FR-208 `record-value-type/v1`: an operation is `unsupported_construct`."""
     value_object = schema_registry("ValueObject")
@@ -33,7 +33,7 @@ def test_value_object_refuses_an_operation(schema_registry):
     assert not ok(value_object, {**record, "operations": [OPERATION]})
 
 
-@pytest.mark.trace("TC-108", "FR-008-AC-6")
+@pytest.mark.trace("TC-109", "FR-008-AC-7")
 def test_event_refuses_an_operation(schema_registry):
     """FR-208 `event-type/v1`: an operation is `invalid_model_binding`."""
     event = schema_registry("Event")
@@ -42,7 +42,7 @@ def test_event_refuses_an_operation(schema_registry):
     assert not ok(event, {**record, "operations": [OPERATION]})
 
 
-@pytest.mark.trace("TC-108", "FR-008-AC-6")
+@pytest.mark.trace("TC-109", "FR-008-AC-7")
 def test_repository_refuses_a_clause(schema_registry):
     """FR-208 `persistence-interface/v1`: a `quire` clause is
     `unsupported_construct`."""
@@ -52,7 +52,7 @@ def test_repository_refuses_a_clause(schema_registry):
     assert not ok(repository, {**record, "clauses": [CLAUSE]})
 
 
-@pytest.mark.trace("TC-108", "FR-008-AC-6")
+@pytest.mark.trace("TC-109", "FR-008-AC-7")
 def test_repository_refuses_an_operation_contract(schema_registry):
     """FR-208 `persistence-interface/v1`: a `Pre:`/`Post:` contract is
     `unsupported_construct`; an operation with no contract still passes."""
@@ -62,7 +62,7 @@ def test_repository_refuses_an_operation_contract(schema_registry):
     assert not ok(repository, {"operations": [{**OPERATION, "post": [CLAUSE]}]})
 
 
-@pytest.mark.trace("TC-108", "FR-008-AC-6")
+@pytest.mark.trace("TC-109", "FR-008-AC-7")
 def test_domain_refuses_a_field_an_operation_and_a_clause(schema_registry):
     """FR-208 `namespace/v1`: a field or an operation is `invalid_model_binding`;
     a `quire` clause is `unsupported_construct`."""
@@ -74,7 +74,7 @@ def test_domain_refuses_a_field_an_operation_and_a_clause(schema_registry):
     assert not ok(domain, {**record, "clauses": [CLAUSE]})
 
 
-@pytest.mark.trace("TC-108", "FR-008-AC-6")
+@pytest.mark.trace("TC-109", "FR-008-AC-7")
 def test_repository_and_domain_admit_no_specializes_link():
     """FR-208: `supertypes` on a persistence interface or a namespace is
     `unsupported_construct`. Neither is field-bearing (FR-006-AC-7), so

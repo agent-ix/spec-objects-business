@@ -68,7 +68,7 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | FR-005 | FR-005-AC-1..8, FR-005-CON-1..2 | TC-050..TC-059 | 🚧 AC-5's dangling `Post:` case (TC-054) is an expected failure blocked on quire-rs#431 |
 | FR-006 | FR-006-AC-1..8, FR-006-CON-1 | TC-080..TC-088 | 🚧 AC-3's `pre`/`post` frame half (TC-082) is an expected failure blocked on quire-rs#431; CON-1 (TC-088) is an expected failure blocked on filament-core-service#31; AC-8 is an Inspection |
 | FR-007 | FR-007-AC-1..10 | TC-089..TC-098 | 🚧 AC-9 (TC-097, per type) is an expected failure blocked on quire-rs#435 and AC-10 (TC-098) pins that blocker; AC-6 asserts the null line `agent-ix/quire-rs#440` fixes |
-| FR-008 | FR-008-AC-1..6 | TC-099..TC-102, TC-106, TC-108 | ✅ AC-1 holds `population` without a construct while filament-core-data#174 is open |
+| FR-008 | FR-008-AC-1..7 | TC-099..TC-102, TC-106, TC-108, TC-109 | ✅ AC-1 holds `population` without a construct while filament-core-data#174 is open |
 | FR-009 | FR-009-AC-1..4 | TC-103..TC-105, TC-107 | 🚧 AC-4 (TC-107) is an expected failure blocked on quire-rs#451 |
 
 ### Non-Functional Requirement Coverage
