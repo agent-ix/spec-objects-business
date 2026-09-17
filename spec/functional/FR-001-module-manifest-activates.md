@@ -32,7 +32,7 @@ the service's storage layout is filament-core-service's own concern.
 
 ## Behavior
 
-- The manifest **SHALL** validate against `module-manifest.schema.json` v1.0.0 at filament-core-service revision `e33070e` or later (CR-004, the revision that admits `ObjectTypeEntry.construct` beside the CR-003 `semantic` block and reference-form `data_schema`); the same revision is the one Quoin and Quire vendor, so all three consumers judge the manifest against one schema (FR-003 Inputs pins the same value).
+- The manifest **SHALL** validate against `module-manifest.schema.json` v1.0.0 at filament-core-service revision `5b2af8b` or later (CR-004, the revision that admits `ObjectTypeEntry.construct` beside the CR-003 `semantic` block and reference-form `data_schema`); the same revision is the one Quoin and Quire vendor, so all three consumers judge the manifest against one schema (FR-003 Inputs pins the same value).
 - The manifest **SHALL** activate such that re-posting identical bytes yields the same content hash and no duplicated contribution, which filament-core-service delivers per FR-026-AC-1.
 - While `agent-ix/filament-core-service#23` is open, the service stores a reference-form `data_schema` verbatim rather than resolving it into a snapshot, so the registered `data_schema` of every exported object type **SHALL** be the reference object as posted (`{schema, digest}`), and FR-001-AC-4 is read against that value.
 

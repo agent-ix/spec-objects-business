@@ -2,7 +2,7 @@
 
 Each of the ten construct kinds declares its semantic IR `construct:` once, as
 filament-core-data#172 reads it (FR-142, its `business` module table), in the
-shape the FR-035 module-manifest schema at filament-core-service `e33070e`
+shape the FR-035 module-manifest schema at filament-core-service `5b2af8b`
 admits. `population` declares none.
 """
 
@@ -96,6 +96,7 @@ DECLARATIONS = {
         "members": {"fields": "required", "occurrenceField": "required"},
         "rules": ["identity_field_forbidden", "occurrence_field_required"],
         "meaning": "quire.meaning.model.event-type/v1",
+        "immutable": True,
     },
     "state_machine": {
         "identity": "none",
@@ -252,6 +253,19 @@ def test_ten_kinds_declare_a_construct_and_the_manifest_validates(quire_engine):
     assert len(CONSTRUCT_KINDS) == 10
     assert "construct" not in object_type("population")
     violations = quire_engine.validate_manifest(load_manifest(), str(VENDORED_SCHEMA))
+    assert violations == [], violations
+
+
+@pytest.mark.trace("TC-108", "FR-008-AC-6")
+def test_only_event_declares_immutable(quire_engine):
+    manifest = load_manifest()
+    for kind in CONSTRUCT_KINDS:
+        construct = object_type(kind)["construct"]
+        if kind == "event":
+            assert construct["immutable"] is True
+        else:
+            assert "immutable" not in construct, kind
+    violations = quire_engine.validate_manifest(manifest, str(VENDORED_SCHEMA))
     assert violations == [], violations
 
 

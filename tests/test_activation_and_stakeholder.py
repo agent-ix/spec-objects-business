@@ -3,7 +3,7 @@ StR-001 validation criteria.
 
 FR-001-AC-1 and StR-001-VC-3 are discharged here against the committed tree.
 FR-001-AC-2..AC-4, StR-001-VC-1 and StR-001-VC-2 need a running
-`filament-core-service` at revision `e33070e` or later; they are environment-
+`filament-core-service` at revision `5b2af8b` or later; they are environment-
 gated and their matrix rows stay `🚧` with that note. That is pre-existing
 debt from issue #1, not this issue's, and it is not the semantic suite: the
 Quire rows fail rather than skip (see `conftest.py`).
@@ -25,13 +25,13 @@ from tests.conftest import (
     load_manifest,
 )
 
-# The filament-core-service module-manifest schema at revision `e33070e`
+# The filament-core-service module-manifest schema at revision `5b2af8b`
 # (CR-004, the revision that adds `ObjectTypeEntry.construct` on top of the
 # CR-003 `semantic` block and reference-form `data_schema`). FR-001, FR-003,
 # FR-008 and IT-001 all judge this manifest against this one revision.
 VENDORED_SCHEMA = REPO_ROOT / "tests" / "fixtures" / "module-manifest.schema.json"
 VENDORED_SCHEMA_DIGEST = (
-    "6782f74f453095ec57abdeb6cf31fa993a4d5d27946d1baff9a7a2dff0647293"
+    "d0cd01c92f123e77e8c8fd4b69a48cdeb7f91e154091716c1410168f410d6906"
 )
 
 FILAMENT_CORE_URL = os.environ.get("FILAMENT_CORE_URL")
@@ -39,7 +39,7 @@ needs_filament_core = pytest.mark.skipif(
     not FILAMENT_CORE_URL,
     reason=(
         "FR-001-AC-2..AC-4 / IT-001 need a running filament-core-service at "
-        "revision e33070e or later (no release tag contains it). Set "
+        "revision 5b2af8b or later (no release tag contains it). Set "
         "FILAMENT_CORE_URL to run them; the matrix row stays 🚧 until then."
     ),
 )
@@ -49,7 +49,7 @@ needs_filament_core = pytest.mark.skipif(
 def test_the_manifest_validates_against_the_pinned_fr035_schema(quire_engine):
     digest = hashlib.sha256(VENDORED_SCHEMA.read_bytes()).hexdigest()
     assert digest == VENDORED_SCHEMA_DIGEST, (
-        "the vendored module-manifest schema is not the e33070e revision the "
+        "the vendored module-manifest schema is not the 5b2af8b revision the "
         "spec pins; FR-001 and FR-003 would judge the manifest against "
         "different schemas"
     )
