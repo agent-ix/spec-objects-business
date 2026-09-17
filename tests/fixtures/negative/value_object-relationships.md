@@ -1,12 +1,12 @@
 ---
-id: negative-025
+id: negative_025
 title: "MoneyWithRelationships"
 type: value_object
 object: value_object
 expect: semantic.record-invalid
 because: "a value object record admits no relations key, so a Relationships table on it fails the ValueObject schema"
 ---
-# [negative-025] MoneyWithRelationships
+# [negative_025] MoneyWithRelationships
 
 ## Properties
 
@@ -19,4 +19,4 @@ because: "a value object record admits no relations key, so a Relationships tabl
 
 | Name | Verb | Target | Multiplicity |
 |---|---|---|---|
-| currency_code | references | enumeration-001 | 1..1 |
+| currency_code | references | enumeration_001 | 1..1 |

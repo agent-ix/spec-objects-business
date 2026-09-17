@@ -1,5 +1,5 @@
 ---
-id: enumeration-001
+id: enumeration_001
 title: "OrderStatus"
 type: enumeration
 object: enumeration
@@ -7,12 +7,12 @@ object: enumeration
 <!-- enumeration authoring skeleton (spec-objects-business). Contract:
      - Frontmatter MUST carry id, title, type: enumeration, object: enumeration.
      - "## Values" (H2, required) is a `Value | Description` table with at
-       least one row. The `values_table` locator declares it, and the engine
+       least one row. The `values` locator declares it, and the engine
        reads each row as one enumeration value; a list there is refused.
      An enumeration declares labels, not data: Enumeration.json forbids
      `fields` and `operations`, so there is no "## Properties" section and no
      "## Invariants". -->
-# [enumeration-001] OrderStatus
+# [enumeration_001] OrderStatus
 
 ## Values
 

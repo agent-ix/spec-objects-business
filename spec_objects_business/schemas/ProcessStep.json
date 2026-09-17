@@ -1,13 +1,13 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.5.0/ProcessStep.json",
+  "$id": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.6.0/ProcessStep.json",
   "type": "object",
   "properties": {
     "name": {
       "$ref": "https://schemas.agent-ix.org/semantic-core/0.2.0/Identifier.json"
     },
     "kind": {
-      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.5.0/StepKind.json"
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.6.0/StepKind.json"
     },
     "consumes": {
       "type": "array",

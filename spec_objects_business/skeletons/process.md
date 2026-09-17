@@ -1,5 +1,5 @@
 ---
-id: process-001
+id: process_001
 title: "OrderFulfilment"
 type: process
 object: process
@@ -17,7 +17,7 @@ object: process
      - Only the declared tables belong under Workflow and States; a diagram
        or list there is refused.
      - "## Specification" and "## Algorithm" (H2) are optional prose. -->
-# [process-001] OrderFulfilment
+# [process_001] OrderFulfilment
 
 OrderFulfilment is the long-running process that turns a placed order into a
 shipped one. It reacts to OrderPlaced and coordinates Inventory, Payments,

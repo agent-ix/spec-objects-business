@@ -1,12 +1,12 @@
 ---
-id: value-object-001
+id: value_object_001
 title: "Money"
 type: value_object
 object: value_object
 ---
 <!-- value_object authoring skeleton, alternate Properties form: exactly the
      fields of value_object.md as one ```sysml``` fence (FR-005-AC-2). -->
-# [value-object-001] Money
+# [value_object_001] Money
 
 ## Properties
 

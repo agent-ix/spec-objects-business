@@ -1,12 +1,12 @@
 ---
-id: negative-010
+id: negative_010
 title: "OrderLifecycleWithUnknownState"
 type: state_machine
 object: state_machine
 expect: semantic.unknown-state
 because: "a transition From and To name rows of the States table; Archived is not one"
 ---
-# [negative-010] OrderLifecycleWithUnknownState
+# [negative_010] OrderLifecycleWithUnknownState
 
 ## Properties
 

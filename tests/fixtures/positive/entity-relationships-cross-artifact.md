@@ -1,10 +1,10 @@
 ---
-id: positive-007
+id: positive_007
 title: "LegacyCustomer"
 type: entity
 object: entity
 ---
-# [positive-007] LegacyCustomer
+# [positive_007] LegacyCustomer
 
 ## Properties
 
@@ -16,4 +16,4 @@ object: entity
 
 | Name | Verb | Target | Multiplicity |
 |---|---|---|---|
-| last_order | references | aggregate-root-999 | 0..1 |
+| last_order | references | aggregate_root_999 | 0..1 |

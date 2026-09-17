@@ -76,7 +76,7 @@ module activates against `filament-core`.
   `agent-ix/spec-objects-business#9`. `relations` are extracted from the
   FR-007 `## Relationships` table.
 - Inline Quire expressions in a transition `Guard` or an operation's
-  `Requires:`/`Ensures:` lines (`agent-ix/quire-rs#433`); today those name
+  `Pre:`/`Post:` lines (`agent-ix/quire-rs#433`); today those name
   clause ids only.
 - Checking `quire` fence expressions mechanically: `agent-ix/quire-spec-language#133`.
   Clause validity is an Inspection (FR-006-AC-8) until that checker exists.
@@ -130,7 +130,8 @@ the manifest against `filament-core`; FR-002 emits the schemas; FR-003
 declares the semantic contract in the manifest; FR-004 fixes each type's
 role-distinct schema; FR-005 makes the skeletons executable fixtures; FR-006
 declares the object-type model tables the engine extracts; FR-007 declares the
-`## Relationships` table and the edge verbs its rows use. NFR-001 states
+`## Relationships` table and the edge verbs its rows use; FR-008 declares each
+object type's semantic IR construct; FR-009 fixes the underscore object id. NFR-001 states
 where the contract is additive and why the model-table sections are strict. Integration tests in
 `integration/` verify the activation and Quoin-install boundaries; the third
 external boundary, the Quire engine (loader, extraction, record surface), has

@@ -1,12 +1,12 @@
 ---
-id: negative-009
+id: negative_009
 title: "OrderLifecycleWithStateDiagram"
 type: state_machine
 object: state_machine
 expect: semantic.feature-not-extractable
 because: "the States section holds only the declared State table; a mermaid diagram there is a form the manifest does not declare"
 ---
-# [negative-009] OrderLifecycleWithStateDiagram
+# [negative_009] OrderLifecycleWithStateDiagram
 
 ## Properties
 

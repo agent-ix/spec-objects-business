@@ -1,12 +1,12 @@
 ---
-id: negative-023
+id: negative_023
 title: "CustomerContainingAnEntity"
 type: entity
 object: entity
 expect: semantic.invalid-model-cell
-because: "an entity contains nested entities and value objects; the target negative-023 is an entity"
+because: "an entity contains nested entities and value objects; the target negative_023 is an entity"
 ---
-# [negative-023] CustomerContainingAnEntity
+# [negative_023] CustomerContainingAnEntity
 
 ## Properties
 
@@ -18,4 +18,4 @@ because: "an entity contains nested entities and value objects; the target negat
 
 | Name | Verb | Target | Multiplicity |
 |---|---|---|---|
-| sub_account | contains | negative-023 | 0..* |
+| sub_account | contains | negative_023 | 0..* |

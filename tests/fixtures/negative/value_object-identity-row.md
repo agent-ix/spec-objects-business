@@ -1,12 +1,12 @@
 ---
-id: negative-001
+id: negative_001
 title: "MoneyWithIdentity"
 type: value_object
 object: value_object
 expect: semantic.record-invalid
 because: "a value object has no identity of its own; ValueObject.json admits 0 identity fields"
 ---
-# [negative-001] MoneyWithIdentity
+# [negative_001] MoneyWithIdentity
 
 ## Properties
 

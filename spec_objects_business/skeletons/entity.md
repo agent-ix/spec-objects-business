@@ -1,5 +1,5 @@
 ---
-id: entity-001
+id: entity_001
 title: "Customer"
 type: entity
 object: entity
@@ -12,7 +12,7 @@ object: entity
        carries the `identity` constraint.
      - "## Invariants" (H2): one `### <clauseId>` per clause, each owning
        exactly one ```quire``` fence holding a Quire expression. -->
-# [entity-001] Customer
+# [entity_001] Customer
 
 ## Properties
 

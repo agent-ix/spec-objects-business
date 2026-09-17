@@ -1,10 +1,10 @@
 ---
-id: positive-003
+id: positive_003
 title: "ReturnStatus"
 type: enumeration
 object: enumeration
 ---
-# [positive-003] ReturnStatus
+# [positive_003] ReturnStatus
 
 The states of a return, which ReturnLifecycle's `current_state` redefines
 OrderLifecycle's `current_state` to.

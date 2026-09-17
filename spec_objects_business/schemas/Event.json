@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.5.0/Event.json",
+  "$id": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.6.0/Event.json",
   "type": "object",
   "properties": {
     "fields": {
@@ -10,7 +10,7 @@
       },
       "minItems": 1,
       "contains": {
-        "$ref": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.5.0/IdentityField.json"
+        "$ref": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.6.0/IdentityField.json"
       },
       "minContains": 0,
       "maxContains": 0
@@ -37,7 +37,7 @@
       "properties": {
         "fields": {
           "contains": {
-            "$ref": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.5.0/OccurrenceField.json"
+            "$ref": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.6.0/OccurrenceField.json"
           }
         }
       }

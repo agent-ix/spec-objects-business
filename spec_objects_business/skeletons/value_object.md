@@ -1,5 +1,5 @@
 ---
-id: value-object-001
+id: value_object_001
 title: "Money"
 type: value_object
 object: value_object
@@ -12,7 +12,7 @@ object: value_object
        (ValueObject.json refuses one).
      - "## Invariants" (H2): one `### <clauseId>` per clause with one ```quire```
        fence holding a Quire expression. -->
-# [value-object-001] Money
+# [value_object_001] Money
 
 ## Properties
 

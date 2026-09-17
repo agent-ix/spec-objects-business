@@ -1,12 +1,12 @@
 ---
-id: negative-008
+id: negative_008
 title: "CustomerWithBadTypeToken"
 type: entity
 object: entity
 expect: semantic.invalid-type-token
 because: "a Type cell holds a kernel scalar or an Identifier naming another declaration"
 ---
-# [negative-008] CustomerWithBadTypeToken
+# [negative_008] CustomerWithBadTypeToken
 
 ## Properties
 

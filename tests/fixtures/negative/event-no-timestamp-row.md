@@ -1,12 +1,12 @@
 ---
-id: negative-003
+id: negative_003
 title: "OrderPlacedWithoutOccurrence"
 type: event
 object: event
 expect: semantic.record-invalid
 because: "Event.json requires at least one occurrence field whose type targets Timestamp"
 ---
-# [negative-003] OrderPlacedWithoutOccurrence
+# [negative_003] OrderPlacedWithoutOccurrence
 
 ## Properties
 

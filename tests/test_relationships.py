@@ -254,7 +254,7 @@ def test_every_relationships_negative_fails_for_its_own_reason(
         assert not record.get("relations"), name
         if reason == "inverse-verb":
             assert "aggregates" in diagnostic["message"], diagnostic
-            assert "aggregate-root-001" in diagnostic["message"], diagnostic
+            assert "aggregate_root_001" in diagnostic["message"], diagnostic
 
 
 @pytest.mark.trace("TC-093", "FR-007-AC-5")
@@ -340,7 +340,7 @@ def test_validate_document_lowers_a_target_in_another_artifact_with_an_advisory(
     assert result["is_valid"], result["errors"]
     row = (
         text.splitlines().index(
-            "| last_order | references | aggregate-root-999 | 0..1 |"
+            "| last_order | references | aggregate_root_999 | 0..1 |"
         )
         + 1
     )
@@ -350,18 +350,18 @@ def test_validate_document_lowers_a_target_in_another_artifact_with_an_advisory(
         if w["message"].startswith("semantic.unresolved-target:")
     ]
     assert [w["line"] for w in advisories] == [row], result["warnings"]
-    assert "aggregate-root-999" in advisories[0]["message"]
+    assert "aggregate_root_999" in advisories[0]["message"]
     assert "no bundle index" in advisories[0]["message"]
 
 
 # The typed-key rows FR-007-AC-9 lowers: object type, row, record key, target.
 TYPED_KEY_ROWS = (
-    ("process", "| done | emits | event-001 | 0..1 |", "emits", "event-001"),
+    ("process", "| done | emits | event_001 | 0..1 |", "emits", "event_001"),
     (
         "repository",
-        "| orders | persists | aggregate-root-001 | 0..* |",
+        "| orders | persists | aggregate_root_001 | 0..* |",
         "persists",
-        "aggregate-root-001",
+        "aggregate_root_001",
     ),
 )
 

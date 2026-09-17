@@ -14,12 +14,15 @@ import pytest
 
 from tests.conftest import (
     BASELINE_DIR,
+    OBJECT_ID_LOCATOR_REGEX,
     PACKAGE_ROOT,
     REQUIRED_MODEL_TABLE_TYPES,
     SUPERSEDED_020_LOCATORS,
     frontmatter,
+    locator_facets_since_020,
     locators,
     object_type,
+    with_object_id,
 )
 
 LEGACY_PROPERTIES_SKELETONS = ("entity", "value_object")
@@ -60,8 +63,9 @@ def test_no_baseline_locator_definition_changed():
         for key, facets in old.items():
             if key in SUPERSEDED_020_LOCATORS.get(name, set()):
                 continue
-            if new.get(key) != facets:
+            if key not in new or locator_facets_since_020(key, new[key]) != facets:
                 changed.append(f"{name}.{key}")
+        assert new["id"]["regex"] == OBJECT_ID_LOCATOR_REGEX, name
     assert changed == []
 
 
@@ -70,13 +74,15 @@ def test_every_baseline_skeleton_validates_under_the_new_manifest(quire_engine):
     """Measured, not assumed: the 0.2.0 skeletons carry no frontmatter
     `object:` key, so Quire runs headings-only validation on them and the
     typed record is never assembled or checked. The skeletons of the types
-    whose FR-006 model tables are required are outside the population."""
+    whose FR-006 model tables are required are outside the population. Each
+    is measured with its id in the FR-009 underscore form; the hyphenated
+    form is refused (TC-104)."""
     baseline = baseline_skeletons()
     assert len(baseline) == 10
     failures = {}
     measured = 0
     for path in baseline:
-        text = path.read_text()
+        text = with_object_id(path.read_text())
         if frontmatter(text)["type"] in REQUIRED_MODEL_TABLE_TYPES:
             continue
         measured += 1
@@ -133,7 +139,8 @@ def test_the_properties_string_is_byte_identical_across_versions(quire_engine):
     the current locators must leave it untouched."""
     for name in LEGACY_PROPERTIES_SKELETONS:
         path = BASELINE_DIR / "skeletons" / f"{name}.md"
-        extracted = quire_engine.extract(name, str(PACKAGE_ROOT), path.read_text())
+        text = with_object_id(path.read_text())
+        extracted = quire_engine.extract(name, str(PACKAGE_ROOT), text)
         records = extracted["extraction"]
         assert len(records) == 1, (name, records)
         assert records[0]["properties"] == expected_properties_string(path), name

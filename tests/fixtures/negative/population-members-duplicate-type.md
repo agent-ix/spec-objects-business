@@ -1,12 +1,12 @@
 ---
-id: negative-019
+id: negative_019
 title: "OrderPopulationWithDuplicateType"
 type: population
 object: population
 expect: semantic.duplicate-model-entry
 because: "each member Type is declared once; Order is declared twice"
 ---
-# [negative-019] OrderPopulationWithDuplicateType
+# [negative_019] OrderPopulationWithDuplicateType
 
 ## Members
 

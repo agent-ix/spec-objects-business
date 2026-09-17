@@ -1,12 +1,12 @@
 ---
-id: negative-007
-title: "OrderRepositoryWithDanglingEnsures"
+id: negative_007
+title: "OrderRepositoryWithDanglingPost"
 type: repository
 object: repository
 expect: semantic.dangling-clause-ref
-because: "a Requires:/Ensures: line names a clause id declared in the same artifact; this one names none"
+because: "a Pre:/Post: line names a clause id declared in the same artifact; this one names none"
 ---
-# [negative-007] OrderRepositoryWithDanglingEnsures
+# [negative_007] OrderRepositoryWithDanglingPost
 
 ## Operations
 
@@ -20,4 +20,4 @@ Persist the whole aggregate atomically.
 |---|---|---|---|
 | order | Order | 1..1 | |
 
-Ensures: NoSuchClause
+Post: NoSuchClause

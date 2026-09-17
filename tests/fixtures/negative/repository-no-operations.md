@@ -1,12 +1,12 @@
 ---
-id: negative-005
+id: negative_005
 title: "OrderRepositoryWithoutOperations"
 type: repository
 object: repository
 expect: semantic.record-invalid
 because: "Repository.json requires at least one operation; a prose-only Operations section yields an empty array"
 ---
-# [negative-005] OrderRepositoryWithoutOperations
+# [negative_005] OrderRepositoryWithoutOperations
 
 ## Operations
 

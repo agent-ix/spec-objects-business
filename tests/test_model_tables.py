@@ -30,7 +30,7 @@ REQUIRED = {
     ("state_machine", "transitions"): True,
     ("process", "steps"): True,
     ("process", "states"): False,
-    ("enumeration", "values_table"): True,
+    ("enumeration", "values"): True,
     ("population", "members"): True,
 }
 
@@ -58,7 +58,7 @@ KEY_COLUMN = {
 # The model-table locator each model-table negative fixture refuses, keyed by
 # fixture; its object type is the fixture's frontmatter `type`.
 MODEL_NEGATIVE_LOCATOR = {
-    "enumeration-values-as-list.md": "values_table",
+    "enumeration-values-as-list.md": "values",
     "state_machine-states-as-diagram.md": "states",
     "state_machine-transition-unknown-state.md": "transitions",
     "state_machine-transition-unknown-trigger.md": "transitions",
@@ -188,11 +188,14 @@ def test_every_skeleton_extracts_its_model_tables_row_for_row(
             assert actual == expected, (name, feature)
 
 
+DECLARED_MODEL_FIXTURE = POSITIVE_DIR / "state_machine-declared-model.md"
+
+
 @pytest.mark.trace("TC-082", "FR-006-AC-3")
 def test_the_declared_model_fixture_extracts_every_mapping_feature(
     quire_engine, semantic_module
 ):
-    path = POSITIVE_DIR / "state_machine-declared-model.md"
+    path = DECLARED_MODEL_FIXTURE
     text = path.read_text()
     result = quire_engine.validate_document("state_machine", str(PACKAGE_ROOT), text)
     assert result["is_valid"], result["errors"]
@@ -217,8 +220,6 @@ def test_the_declared_model_fixture_extracts_every_mapping_feature(
     ]
     (frame,) = model["operationFrames"]
     assert frame["operation"] == "exchange"
-    assert frame["requires"] == ["ReturnedItemsAreAtMostTheItems"]
-    assert frame["ensures"] == ["ExchangedReturnHasReturnedItems"]
     assert frame["modifies"] == [
         "self.current_state",
         "self.returned_items",
@@ -235,6 +236,25 @@ def test_the_declared_model_fixture_extracts_every_mapping_feature(
         for d in record.get("diagnostics", [])
         if d.get("code") == "semantic.feature-not-extractable"
     ]
+
+
+@pytest.mark.trace("TC-082", "FR-006-AC-3")
+@pytest.mark.xfail(
+    strict=True,
+    reason=(
+        "FR-006-AC-3: the operation frame carries the `Pre:`/`Post:` lines as "
+        "`pre`/`post`. quire-rs main still reads the renamed contract keywords "
+        "into the renamed frame keys; agent-ix/quire-rs#431 reverts it. An "
+        "expected failure, not a skip."
+    ),
+)
+def test_the_declared_model_frame_carries_its_pre_and_post_lines(
+    quire_engine, semantic_module
+):
+    record = extract(quire_engine, semantic_module, DECLARED_MODEL_FIXTURE)
+    (frame,) = record["model"]["operationFrames"]
+    assert frame["pre"] == ["ReturnedItemsAreAtMostTheItems"]
+    assert frame["post"] == ["ExchangedReturnHasReturnedItems"]
 
 
 @pytest.mark.trace("TC-083", "FR-006-AC-4")
@@ -265,13 +285,17 @@ def test_every_model_table_and_undeclared_form_has_a_refusing_fixture(quire_engi
 
 
 @pytest.mark.trace("TC-087", "FR-006-AC-5")
-def test_skeleton_clauses_are_quire_and_contract_lines_are_requires_ensures(
+def test_skeleton_clauses_are_quire_and_contract_lines_are_pre_post(
     quire_engine, semantic_module, bundle_index
 ):
+    contract_lines = []
     for path in sorted(SKELETONS_DIR.glob("*.md")):
         text = path.read_text()
         assert not re.search(r"^```ocl", text, re.M), path.name
-        assert not re.search(r"^(Pre|Post):", text, re.M), path.name
+        assert not re.search(r"^(Requires|Ensures):", text, re.M), path.name
+        contract_lines += [
+            (path.name, m.group(1)) for m in re.finditer(r"^(Pre|Post):", text, re.M)
+        ]
         assert (
             not re.search(r"^```mermaid", text, re.M) or path.name == "domain.md"
         ), path.name
@@ -283,6 +307,8 @@ def test_skeleton_clauses_are_quire_and_contract_lines_are_requires_ensures(
             for d in record.get("diagnostics", [])
             if d.get("code") == "semantic.clause-language-unchecked"
         ], path.name
+    # The state_machine skeleton writes the `Post:` line of its operation.
+    assert ("state_machine.md", "Post") in contract_lines, contract_lines
 
 
 @pytest.mark.trace("TC-085", "FR-006-AC-6")

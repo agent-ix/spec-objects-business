@@ -14,3 +14,5 @@ description: "Index of artifacts in this directory."
 * [FR-005: Make every skeleton an executable typed fixture](./FR-005-executable-skeletons.md)
 * [FR-006: Declare every object-type model table in the manifest](./FR-006-model-table-locators.md)
 * [FR-007: Declare domain relationships as a Relationships table](./FR-007-relationships-table.md)
+* [FR-008: Declare the semantic IR construct of each object type](./FR-008-construct-declarations.md)
+* [FR-009: Write object ids with underscores](./FR-009-object-ids.md)

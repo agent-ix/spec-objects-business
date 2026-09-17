@@ -172,7 +172,7 @@ def test_process_requires_a_correlation_identity_and_admits_typed_steps(
     assert ok(process, record)
     assert ok(process, {**record, "steps": [{"name": "reserve", "kind": "command"}]})
     assert ok(
-        process, {**record, "emits": ["ix://agent-ix/spec-objects-business/event-001"]}
+        process, {**record, "emits": ["ix://agent-ix/spec-objects-business/event_001"]}
     )
     assert not ok(
         process, {**record, "steps": [{"name": "reserve", "kind": "teleport"}]}

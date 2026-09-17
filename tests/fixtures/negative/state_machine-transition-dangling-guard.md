@@ -1,12 +1,12 @@
 ---
-id: negative-012
+id: negative_012
 title: "OrderLifecycleWithDanglingGuard"
 type: state_machine
 object: state_machine
 expect: semantic.dangling-clause-ref
 because: "a transition Guard names an invariant clause of the same artifact; NoSuchClause is not one"
 ---
-# [negative-012] OrderLifecycleWithDanglingGuard
+# [negative_012] OrderLifecycleWithDanglingGuard
 
 ## Properties
 

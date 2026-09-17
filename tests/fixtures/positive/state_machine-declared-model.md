@@ -1,5 +1,5 @@
 ---
-id: positive-001
+id: positive_001
 title: "ReturnLifecycle"
 type: state_machine
 object: state_machine
@@ -8,7 +8,7 @@ relationships:
     target: OrderLifecycle
 abstract: true
 ---
-# [positive-001] ReturnLifecycle
+# [positive_001] ReturnLifecycle
 
 A return reuses the order lifecycle's context and declares its own states,
 transitions, and operation frames. An exchange replaces the returned order
@@ -45,8 +45,8 @@ self.exchanged implies size(self.returned_items) >= 1
 
 Replace the returned lines with a new order.
 
-Requires: ReturnedItemsAreAtMostTheItems
-Ensures: ExchangedReturnHasReturnedItems
+Pre: ReturnedItemsAreAtMostTheItems
+Post: ExchangedReturnHasReturnedItems
 Modifies: self.current_state, self.returned_items, self.exchanged
 Creates: Order
 Deletes: OrderLine

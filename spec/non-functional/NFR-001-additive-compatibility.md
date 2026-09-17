@@ -14,6 +14,8 @@ relationships:
     type: "depends_on"
   - target: "ix://agent-ix/spec-objects-business/FR-007"
     type: "depends_on"
+  - target: "ix://agent-ix/spec-objects-business/FR-009"
+    type: "depends_on"
 ---
 # NFR-001: Compatibility of the semantic contract
 
@@ -34,7 +36,9 @@ unread prose in any form; from 0.5.0 a list, fence, or diagram there is
 refused with `semantic.feature-not-extractable`, a prose-only section yields
 the warning `semantic.relationships-no-block`, and a table, including a header-only
 table, on an object type that declares no `relationships` locator is refused
-with `semantic.record-invalid`. These refusals are breaking for an artifact that
+with `semantic.record-invalid`. An object id (FR-009) SHALL match
+`^[A-Za-z][A-Za-z0-9_]*$`: an artifact whose id carries a hyphen, as every
+0.2.0 skeleton's does, is refused with its required `id` missing. These refusals are breaking for an artifact that
 authors one of those sections in another form, so the manifest declares
 `compatibility_posture: strict` (FR-003).
 
@@ -51,7 +55,8 @@ authors one of those sections in another form, so the manifest declares
   FR-104 table (rows checked against `edge_types` and `allowed_links`) and is
   admitted only on `entity`, `aggregate_root`, `process`, and `repository`
   (the last two once `agent-ix/quire-rs#435` lowers their rows into `emits`
-  and `persists`).
+  and `persists`); and the object id, which admits no hyphen (FR-009), on
+  all eleven object types.
 - Operational context: existing corpus artifacts authored in legacy
   Properties forms (bullet lists, free-column tables) under `legacy_forms:
   warning`; no corpus repository is edited.
@@ -67,8 +72,8 @@ the engine extracts, so the sections that hold it admit only those tables.
 
 | Metric | Target | Threshold | Method |
 |--------|--------|-----------|--------|
-| 0.2.0 locators changed outside the declared model-table sections | 0 | 0 | Test |
-| 0.2.0 skeletons whose type's required model tables are all authored as those tables in 0.2.0, under the current manifest: error findings, per skeleton | 0 | 0 | Test |
+| 0.2.0 locators changed outside the declared model-table sections, the FR-009 `id` regex aside | 0 | 0 | Test |
+| 0.2.0 skeletons whose type's required model tables are all authored as those tables in 0.2.0, ids in FR-009 underscore form, under the current manifest: error findings, per skeleton | 0 | 0 | Test |
 | Each legacy-form `## Properties` skeleton under the current manifest: `semantic.legacy-properties-form` warnings | 1 | 1 | Test |
 | `properties` string for each legacy skeleton, 0.2.0 vs current | identical | identical | Test |
 
@@ -92,8 +97,9 @@ schema.
 
 A checked-in copy of the 0.2.0 `body_extraction` and of the 0.2.0 skeletons is
 compared against the current manifest and validated under it: the locator
-definitions outside the declared model-table sections are equal, each measured
-skeleton validates with no error, each legacy skeleton that carries a
+definitions outside the declared model-table sections are equal apart from the
+FR-009 `regex` on `id`, each measured skeleton, its id written with
+underscores, validates with no error, each legacy skeleton that carries a
 legacy-form `## Properties` yields exactly one legacy-form warning, and its
 extracted `properties` string is unchanged.
 
@@ -101,12 +107,12 @@ extracted `properties` string is unchanged.
 
 | ID | Criteria | Verification |
 |----|----------|--------------|
-| NFR-001-AC-1 | Every 0.2.0 `body_extraction` locator outside the declared model-table sections is present with identical facets (0 changed). | Test |
-| NFR-001-AC-2 | Each 0.2.0 skeleton validates under the current manifest with 0 error findings, excluding the skeletons whose type requires a model table that the 0.2.0 skeleton does not author as that table (`aggregate_root` Members list, `state_machine` diagram, `process` Workflow diagram). The `domain` skeleton's bulleted Ubiquitous Language passes only because the `vocabulary` table is optional. | Test |
+| NFR-001-AC-1 | Every 0.2.0 `body_extraction` locator outside the declared model-table sections is present with identical facets (0 changed), except that the `id` locator also carries the FR-009 `regex`. | Test |
+| NFR-001-AC-2 | Each 0.2.0 skeleton, its id written with underscores (FR-009), validates under the current manifest with 0 error findings, excluding the skeletons whose type requires a model table that the 0.2.0 skeleton does not author as that table (`aggregate_root` Members list, `state_machine` diagram, `process` Workflow diagram). The `domain` skeleton's bulleted Ubiquitous Language passes only because the `vocabulary` table is optional. | Test |
 | NFR-001-AC-3 | Each 0.2.0 skeleton carrying a legacy-form `## Properties` yields exactly 1 `semantic.legacy-properties-form` warning. | Test |
-| NFR-001-AC-4 | Each such skeleton's extracted `properties` string is byte-identical under 0.2.0 and the current manifest. | Test |
+| NFR-001-AC-4 | Each such skeleton's extracted `properties` string, its id written with underscores, is byte-identical under 0.2.0 and the current manifest. | Test |
 
 ## Dependencies
 
-- **Upstream**: [FR-003](../functional/FR-003-semantic-manifest-contract.md), [FR-005](../functional/FR-005-executable-skeletons.md), [FR-006](../functional/FR-006-model-table-locators.md), [FR-007](../functional/FR-007-relationships-table.md); quoin FR-074 (`ix://agent-ix/quoin/FR-074`)
+- **Upstream**: [FR-003](../functional/FR-003-semantic-manifest-contract.md), [FR-005](../functional/FR-005-executable-skeletons.md), [FR-006](../functional/FR-006-model-table-locators.md), [FR-007](../functional/FR-007-relationships-table.md), [FR-009](../functional/FR-009-object-ids.md); quoin FR-074 (`ix://agent-ix/quoin/FR-074`)
 - **Downstream**: corpus promotion (`agent-ix/quoin#291` sweep), outside this module
