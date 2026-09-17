@@ -309,6 +309,7 @@ object_types:
     members: {fields: required, occurrenceField: required}
     rules: [identity_field_forbidden, occurrence_field_required]
     meaning: quire.meaning.model.event-type/v1
+    immutable: true
   allowed_links:
     specializes: [event]
     carries: [value_object, entity]

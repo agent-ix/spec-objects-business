@@ -2,7 +2,7 @@
 
 Each of the ten construct kinds declares its semantic IR `construct:` once, as
 filament-core-data#172 reads it (FR-142, its `business` module table), in the
-shape the FR-035 module-manifest schema at filament-core-service `e33070e`
+shape the FR-035 module-manifest schema at filament-core-service `5b2af8b`
 admits. `population` declares none.
 """
 
@@ -96,6 +96,7 @@ DECLARATIONS = {
         "members": {"fields": "required", "occurrenceField": "required"},
         "rules": ["identity_field_forbidden", "occurrence_field_required"],
         "meaning": "quire.meaning.model.event-type/v1",
+        "immutable": True,
     },
     "state_machine": {
         "identity": "none",
@@ -255,6 +256,16 @@ def test_ten_kinds_declare_a_construct_and_the_manifest_validates(quire_engine):
     assert violations == [], violations
 
 
+@pytest.mark.trace("TC-108", "FR-008-AC-6")
+def test_only_event_declares_immutable():
+    for kind in CONSTRUCT_KINDS:
+        construct = object_type(kind)["construct"]
+        if kind == "event":
+            assert construct["immutable"] is True
+        else:
+            assert "immutable" not in construct, kind
+
+
 @pytest.mark.trace("TC-100", "FR-008-AC-2")
 @pytest.mark.parametrize("kind", CONSTRUCT_KINDS)
 def test_each_declaration_is_the_fr142_declaration(kind):
@@ -317,8 +328,19 @@ def test_references_name_carried_roles_on_admitted_reference_members(kind):
             "construct.members.members",
         ),
         ("event", lambda c: c.pop("meaning"), "construct.meaning"),
+        (
+            "event",
+            lambda c: c.__setitem__("immutable", "yes"),
+            "construct.immutable",
+        ),
     ],
-    ids=["wildcard-role", "unknown-identity", "unknown-presence", "missing-meaning"],
+    ids=[
+        "wildcard-role",
+        "unknown-identity",
+        "unknown-presence",
+        "missing-meaning",
+        "immutable-not-boolean",
+    ],
 )
 def test_a_malformed_declaration_is_refused(quire_engine, kind, mutate, path):
     manifest = copy.deepcopy(load_manifest())

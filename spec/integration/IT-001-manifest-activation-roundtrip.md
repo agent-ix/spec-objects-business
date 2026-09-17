@@ -27,9 +27,10 @@ reads of the registry endpoints (`/api/v1/archetypes`, `/api/v1/object-types`,
 
 ## Preconditions
 
-A `filament-core-service` instance at revision `e33070e` or later (the
-revision that admits `ObjectTypeEntry.construct`; no release tag contains it, so a
-main build is required) is running and reachable on a clean cluster
+A `filament-core-service` instance at revision `5b2af8b` or later (CR-004,
+which admits `ObjectTypeEntry.construct` and its optional `immutable`; no
+release tag contains it, so a main build is required) is running and
+reachable on a clean cluster
 (or the kind dev cluster) with an empty `modules` table, so that the absence of
 duplicate rows after re-activation is meaningful. This repo's
 `spec_objects_business/manifest.yaml` is available as the activation payload.
