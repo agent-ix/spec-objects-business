@@ -44,7 +44,7 @@ relationships:
 - [ ] **FR-002**: Emit one JSON Schema 2020-12 document per model from `typespec/main.tsp` with the official `@typespec/json-schema` emitter at a pinned toolchain; normalize `$id`/`$ref`; gate drift; package the schemas into the wheel and the npm tarball; version-embedded `$id` with an atomic bump procedure.
 - [ ] **FR-003**: `manifest.yaml` at version 0.5.0 carries the quoin FR-070 `semantic` block (semantic-core 0.2.0, eleven exports, `compatibility_posture: strict`) and a reference-form `data_schema` (path + digest) per exported object type, with every 0.2.0 locator outside the FR-006 model tables unchanged.
 - [ ] **FR-004**: One role-distinct model per business object type — required, forbidden and item rules — with every grammar item by `$ref` to semantic-core 0.2.0 and no redeclaration; eleven object-type models and eight support models.
-- [ ] **FR-005**: Every skeleton is an executable typed fixture in the quoin FR-071/FR-072 Markdown forms, with eleven skeletons, three `sysml` alternates and twenty-four negative fixtures; the semantic suite fails rather than skips when the engine is absent.
+- [ ] **FR-005**: Every skeleton is an executable typed fixture in the quoin FR-071/FR-072 Markdown forms, with eleven skeletons, three `sysml` alternates and twenty-six negative fixtures; the semantic suite fails rather than skips when the engine is absent.
 - [ ] **FR-006**: Every object-type model table is a manifest `table_row` locator (eight, including the `population` Members table); skeletons author those tables with valid Quire clauses and every undeclared form is refused.
 - [ ] **FR-007**: `entity` and `aggregate_root` declare the quoin FR-104 `## Relationships` table under the `relationships` mapping token; `edge_types` declares every `allowed_links` verb; rows with an unknown or inverse verb, a disallowed target or a malformed multiplicity are refused.
 
@@ -141,7 +141,7 @@ dependency" skip that FR-005 replaces with a hard failure.
 - [ ] **TC-051** (FR-005-AC-2, FR-005-CON-2): table and `sysml` skeletons extract to identical normalized fields with the recorded forms.
 - [ ] **TC-052** (FR-005-AC-3): under the skeleton bundle index every skeleton extracts with zero errors and zero unresolved tokens.
 - [ ] **TC-053** (FR-005-AC-4): availability states per skeleton match the type's declared set.
-- [ ] **TC-054** (FR-005-AC-5): every negative fixture fails with its `expect:` code and the twenty-four named cases exist.
+- [ ] **TC-054** (FR-005-AC-5): every negative fixture fails with its `expect:` code and the twenty-six named cases, including the FR-007 relationship negatives by name, exist.
 - [ ] **TC-057** (FR-005-CON-2): a Properties section holding both a table and a fence is refused at the second form.
 - [ ] **TC-071** (FR-002-AC-7): the packed npm tarball ships `manifest.yaml` beside `schemas/<Model>.json`.
 - [ ] **TC-072** (FR-002-AC-8, FR-002-CON-5): a coordinated version bump re-emits every `$id`/`$ref` with matching digests; half a bump fails the check.
@@ -162,7 +162,11 @@ dependency" skip that FR-005 replaces with a hard failure.
 - [ ] **TC-089** (FR-007-AC-1): `relationships` mapping, the locator on `entity` and `aggregate_root` only, and every `allowed_links` verb declared in `edge_types`.
 - [ ] **TC-090** (FR-007-AC-2): each skeleton `## Relationships` table lowers one relation per row, in row order.
 - [ ] **TC-091** (FR-007-AC-3): the entity fixture lowers every non-`specializes` entity verb.
-- [ ] **TC-092** (FR-007-AC-4): each relationships negative fails with `semantic.invalid-model-cell` and its own reason.
+- [ ] **TC-092** (FR-007-AC-4): each relationships negative fails with exactly one `semantic.invalid-model-cell` at its row line, its own reason, and `entry-errors` availability.
+- [ ] **TC-093** (FR-007-AC-5): a header-only table is `available` with empty relations.
+- [ ] **TC-094** (FR-007-AC-6): a table on a type without `relations` fails `semantic.record-invalid` (line null until `agent-ix/quire-rs#440`).
+- [ ] **TC-095** (FR-007-AC-7): a list-form section is refused; a prose-only section warns `semantic.relationships-no-block`.
+- [ ] **TC-096** (FR-007-AC-8): `validate_document` lowers a target in another artifact with the no-bundle-index advisory (`agent-ix/quoin#557`).
 
 ### Verification (NFRs)
 - [ ] **TC-061** (NFR-001-AC-2): every measured 0.2.0 skeleton validates under 0.5.0 with zero errors — an explicit expected failure while `agent-ix/quire-rs#391` is open.
@@ -228,7 +232,7 @@ Track D begins once C1 lands, because FR-006 changes what NFR-001 measures. D2 f
 | Task-009 | C     | FR-003, IT-002           | TC-027, TC-070                                           | blocked |
 | Task-010 | B     | FR-001, StR-001, IT-001  | TC-001…TC-006, TC-075                                    | done |
 | Task-012 | D     | FR-006, FR-003, FR-004, FR-005, NFR-001 | TC-080…TC-088                                 | done |
-| Task-013 | D     | FR-007, FR-003, NFR-001  | TC-089…TC-092                                            | in_progress |
+| Task-013 | D     | FR-007, FR-003, NFR-001  | TC-089…TC-096                                            | in_progress |
 
 ## Status
 

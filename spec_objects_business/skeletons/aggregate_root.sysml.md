@@ -68,3 +68,4 @@ self.status = OrderManagement::OrderStatus::Draft implies not present(self.place
 | lines | aggregates | nested-entity-001 | 0..* |
 | totals | contains | value-object-001 | 3..3 |
 | status | references | enumeration-001 | 1..1 |
+| placed | emits | event-001 | 0..1 |

@@ -29,7 +29,7 @@ not admit.
 
 ## Inputs
 
-- quoin FR-104 (`agent-ix/quoin` `2dad869`): the `relationships` mapping token
+- quoin FR-104 (`agent-ix/quoin` `99bd4f0`): the `relationships` mapping token
   and the `Name | Verb | Target | Multiplicity` table.
 - quire-rs FR-076 (`agent-ix/quire-rs` `44df254`): the row checks, their
   refusal reasons, and the Python `validate_document(..., bundle_package=...)`
@@ -44,30 +44,40 @@ not admit.
 - A `relationships` `table_row` locator on `entity` and `aggregate_root`.
 - One `edge_types` entry per verb any `allowed_links` names.
 - A `## Relationships` table in the `aggregate_root` skeletons.
-- A positive fixture and four negative fixtures.
+- Positive fixtures for a populated table, a header-only table, a prose-only
+  section, and a target in another artifact; negative fixtures for the four
+  row refusals, a list-form section, and a table on a type without `relations`.
 
 ## Behavior
 
 - The manifest `semantic.mappings` SHALL include `relationships`.
-- The `entity` and `aggregate_root` object types SHALL each declare the locator `relationships: { from: table_row, under_section: Relationships, required: false, assert: { columns: [Name, Verb, Target, Multiplicity], min_rows: 1 } }`.
-- No other object type SHALL declare a `relationships` locator, because its record schema forbids `relations` (FR-004). Repository `persists`, event `source`, nested-entity `owner`, and aggregate/process `emits` are extracted by `agent-ix/quire-rs#435`, not by this table.
+- The `entity` and `aggregate_root` object types SHALL each declare the locator `relationships: { from: table_row, under_section: Relationships, required: false, assert: { columns: [Name, Verb, Target, Multiplicity] } }`, with no `min_rows`, so a header-only table declares that the artifact has no domain relationships and extracts `available` with empty `relations`.
+- No other object type SHALL declare a `relationships` locator, because its record schema has no `relations` key (FR-004).
+- The `relationships` mapping token is module-wide, so on every one of the eleven object types a `## Relationships` section is read as the FR-104 table: a list, fence, or diagram there is refused with `semantic.feature-not-extractable`, and a section holding only prose yields the warning `semantic.relationships-no-block` and extracts nothing.
+- If an artifact whose object type has no `relations` key (`domain`, `value_object`, `nested_entity`, `repository`, `event`, `state_machine`, `process`, `enumeration`, `population`) authors a `## Relationships` table with rows, then Quire SHALL refuse the record with `semantic.record-invalid` naming `relations`. That finding carries no line today; `agent-ix/quire-rs#440` makes it name the table line.
+- The `## Relationships` table SHALL be the one authority for domain edges (quoin FR-104). `emits` SHALL stay a table verb on `aggregate_root`; the record `emits` key `agent-ix/quire-rs#435` extracts SHALL be derived from the artifact's `emits` rows, never from a second declaration site. Repository `persists`, event `source`, and nested-entity `owner` remain `agent-ix/quire-rs#435`.
 - The manifest `edge_types` SHALL declare every verb an `allowed_links` entry names, each with the description, category, and inverse `agent-ix/spec-artifacts-iso` declares, so a registry that loads both modules merges identical entries.
 - Each row's `Verb` SHALL be an `edge_types` verb the artifact's object type admits in `allowed_links`; its `Target` SHALL be an artifact id whose object type satisfies that verb's `allowed_links` targets; its `Multiplicity` SHALL be a multiplicity (`1..1`, `0..*`).
 - `specializes` SHALL stay a frontmatter relationship only; a `specializes` row is refused (quire-rs FR-076 `generalization`).
 - The `## Relationships` table SHALL be the one authority for an artifact's domain relationships; frontmatter `relationships` is the artifact-graph surface, and no skeleton declares a domain relationship there.
 - The `aggregate_root` skeletons SHALL author a `## Relationships` table whose targets are skeleton artifact ids.
-- If a row names a verb outside `edge_types`, an inverse label, a target whose object type the verb does not admit, or a malformed multiplicity, then Quire SHALL refuse it with `semantic.invalid-model-cell` and the reason `unknown-verb`, `inverse-verb`, `target-not-allowed`, or `multiplicity`.
+- `validate_document` passes a bundle package but no bundle index, so it checks a row's target against `allowed_links` only when the target is the artifact's own id; a target in another artifact lowers with the advisory `semantic.unresolved-target` (`no-bundle-index`) and is not checked. Checking such targets in `quoin validate` is `agent-ix/quoin#557`; `extract_semantic` with a bundle index checks them today.
+- If a row names a verb outside `edge_types`, an inverse label, a target whose object type the verb does not admit, or a malformed multiplicity, then Quire SHALL refuse it with `semantic.invalid-model-cell` at the row's line and the reason `unknown-verb`, `inverse-verb`, `target-not-allowed`, or `multiplicity`, and `availability.relations` SHALL be `unavailable` with reason `entry-errors: lines <n>`.
 
 ## Acceptance Criteria
 
 | ID | Criteria | Verification |
 |----|----------|--------------|
-| FR-007-AC-1 | `semantic.mappings` includes `relationships`; `entity` and `aggregate_root` declare the `relationships` locator above and no other object type declares one; `edge_types` is `specializes` plus the fifteen domain verbs with the spec-artifacts-iso category and inverse, and every `allowed_links` verb is declared. | Test |
+| FR-007-AC-1 | `semantic.mappings` includes `relationships`; `entity` and `aggregate_root` declare the `relationships` locator above, with no `min_rows`, and no other object type declares one; `edge_types` is `specializes` plus the fifteen domain verbs with the spec-artifacts-iso category and inverse, and every `allowed_links` verb is declared. | Test |
 | FR-007-AC-2 | Each skeleton with a `## Relationships` table validates under `bundle_package: agent-ix/spec-objects-business`, and extracts `availability.relations` `available` with one `relations` entry per row, in row order, carrying its verb, category, `composite`, `ix://` target, and multiplicity; no skeleton carries frontmatter `relationships` or a `specializes` row. | Test |
 | FR-007-AC-3 | The entity positive fixture validates and lowers one relation per row covering every non-`specializes` verb `entity` admits, with `composite` true exactly for `contains`. | Test |
-| FR-007-AC-4 | The unknown-verb, inverse-verb, target-not-allowed, and bad-multiplicity negative fixtures each fail `validate_document` with `semantic.invalid-model-cell`, extract exactly one diagnostic with their reason, and lower no relation. | Test |
+| FR-007-AC-4 | The unknown-verb, inverse-verb, target-not-allowed, and bad-multiplicity negative fixtures each fail `validate_document` with exactly one error, `semantic.invalid-model-cell` at the row line; extract exactly one diagnostic, at that line with their reason; carry `availability.relations` `unavailable` with `entry-errors: lines <n>`; and lower no relation. The inverse-verb message names the forward verb `aggregates` and the target `aggregate-root-001`. | Test |
+| FR-007-AC-5 | The header-only entity fixture validates and extracts `availability.relations` `available` with empty `relations` and no Relationships diagnostic. | Test |
+| FR-007-AC-6 | No record schema other than `Entity` and `AggregateRoot` declares `relations`, and the `value_object` Relationships-table fixture fails `validate_document` with exactly one `semantic.record-invalid` error naming `relations` (line null until `agent-ix/quire-rs#440`). | Test |
+| FR-007-AC-7 | The list-form entity fixture fails with `semantic.feature-not-extractable` at the list line, and the prose-only entity fixture validates with one `semantic.relationships-no-block` warning at the heading line. | Test |
+| FR-007-AC-8 | Through `validate_document`, the entity fixture whose row targets `aggregate-root-999` validates with one `semantic.unresolved-target` advisory at that row naming the missing bundle index. | Test |
 
 ## Dependencies
 
-- **Upstream**: [FR-003](./FR-003-semantic-manifest-contract.md), [FR-004](./FR-004-role-schemas.md); quoin FR-104; quire-rs FR-076 (`agent-ix/quire-rs#418`)
+- **Upstream**: [FR-003](./FR-003-semantic-manifest-contract.md), [FR-004](./FR-004-role-schemas.md); quoin FR-104; quire-rs FR-076 (`agent-ix/quire-rs#418`); `agent-ix/quire-rs#435` (derived `emits`), `agent-ix/quire-rs#440` (record-invalid line), `agent-ix/quoin#557` (bundle index in `quoin validate`)
 - **Downstream**: [FR-005](./FR-005-executable-skeletons.md), [NFR-001](../non-functional/NFR-001-additive-compatibility.md)

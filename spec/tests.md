@@ -35,7 +35,7 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 1. Every acceptance criterion and named constraint has at least one test case.
 2. Both Properties forms (typed table, `sysml` fence) and every object type are tested.
 3. Item-rule boundaries are tested at their allowed and refused edges (zero versus one identity field, empty versus one-item arrays).
-4. Every named refusal (digest mismatch, unknown key, both forms, dangling clause, non-Identifier token, undeclared model form, unknown state, trigger, or step kind, unknown or inverse relationship verb, disallowed relationship target, malformed relationship multiplicity) has a failing fixture.
+4. Every named refusal (digest mismatch, unknown key, both forms, dangling clause, non-Identifier token, undeclared model form, unknown state, trigger, or step kind, unknown or inverse relationship verb, disallowed relationship target, malformed relationship multiplicity, list-form Relationships section, Relationships table on a type without `relations`) has a failing fixture.
 5. Availability states (`available`, `not_applicable`, `missing`) are tested per declaration kind.
 6. Legacy artifacts, the empty record, and unresolved tokens are covered as edge cases.
 
@@ -63,7 +63,7 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | FR-004 | FR-004-AC-1..11, FR-004-CON-1..2 | TC-030..TC-041 | ✅ |
 | FR-005 | FR-005-AC-1..8, FR-005-CON-1..2 | TC-050..TC-059 | ✅ |
 | FR-006 | FR-006-AC-1..8, FR-006-CON-1 | TC-080..TC-088 | 🚧 CON-1 (TC-088) is an expected failure blocked on filament-core-service#31; AC-8 is an Inspection |
-| FR-007 | FR-007-AC-1..4 | TC-089..TC-092 | ✅ |
+| FR-007 | FR-007-AC-1..8 | TC-089..TC-096 | ✅ AC-6 asserts the null line `agent-ix/quire-rs#440` fixes |
 
 ### Non-Functional Requirement Coverage
 
@@ -122,7 +122,7 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | TC-051 | Table and `sysml` skeletons extract to identical normalized fields with the recorded forms | Integration | P0 | FR-005-AC-2, FR-005-CON-2 | ✅ |
 | TC-052 | Under the skeleton bundle index every skeleton extracts with zero errors and zero unresolved tokens | Integration | P0 | FR-005-AC-3 | ✅ |
 | TC-053 | Availability states per skeleton (fields, clauses, operations) match the type's declared set | Integration | P1 | FR-005-AC-4 | ✅ |
-| TC-054 | Every negative fixture fails with its `expect:` code under the module's bundle package and the twenty-four named cases exist | Integration | P0 | FR-005-AC-5 | ✅ |
+| TC-054 | Every negative fixture fails with its `expect:` code under the module's bundle package and the twenty-six named cases, including the six FR-007 relationship negatives by name, exist | Integration | P0 | FR-005-AC-5 | ✅ |
 | TC-055 | Every skeleton's H2 set is asserted by the manifest and includes every required heading | Unit | P1 | FR-005-AC-6 | ✅ |
 | TC-056 | Every skeleton is placeholder-free with non-empty asserted sections | Unit | P2 | FR-005-AC-7 | ✅ |
 | TC-057 | A Properties section holding both a table and a fence is refused at the second form | Integration | P1 | FR-005-CON-2 | ✅ |
@@ -149,7 +149,11 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | TC-089 | `semantic.mappings` includes `relationships`; only `entity` and `aggregate_root` declare the `relationships` locator; `edge_types` declares `specializes` and the fifteen domain verbs with their spec-artifacts-iso category and inverse, covering every `allowed_links` verb | Unit | P0 | FR-007-AC-1 | ✅ |
 | TC-090 | Each skeleton `## Relationships` table validates under the bundle package and lowers one relation per row, in row order, with verb, category, `composite`, `ix://` target and multiplicity; no frontmatter domain relationship and no `specializes` row | Integration | P0 | FR-007-AC-2 | ✅ |
 | TC-091 | The entity relationships fixture validates and lowers every non-`specializes` entity verb, `composite` only for `contains` | Integration | P0 | FR-007-AC-3 | ✅ |
-| TC-092 | The unknown-verb, inverse-verb, target-not-allowed and bad-multiplicity fixtures each fail with `semantic.invalid-model-cell`, exactly one diagnostic with their reason, and no relation | Integration | P0 | FR-007-AC-4 | ✅ |
+| TC-092 | The unknown-verb, inverse-verb, target-not-allowed and bad-multiplicity fixtures each fail with exactly one `semantic.invalid-model-cell` at line 21 on both surfaces, their reason, `availability.relations` `unavailable` with `entry-errors: lines 21`, and no relation; the inverse-verb message names `aggregates` and `aggregate-root-001` | Integration | P0 | FR-007-AC-4 | ✅ |
+| TC-093 | A header-only Relationships table validates and extracts `available` with empty `relations` | Integration | P0 | FR-007-AC-5 | ✅ |
+| TC-094 | Only `Entity` and `AggregateRoot` declare `relations`; a Relationships table on `value_object` fails with one `semantic.record-invalid` naming `relations` (line null until `agent-ix/quire-rs#440`) | Integration | P0 | FR-007-AC-6 | ✅ |
+| TC-095 | A list-form Relationships section fails with `semantic.feature-not-extractable` at the list line; a prose-only section warns `semantic.relationships-no-block` at the heading | Integration | P0 | FR-007-AC-7 | ✅ |
+| TC-096 | Through `validate_document`, a row targeting another artifact (`aggregate-root-999`) validates with one `semantic.unresolved-target` advisory at the row (`agent-ix/quoin#557`) | Integration | P1 | FR-007-AC-8 | ✅ |
 | TC-075 | Every object type ships a typed schema a fixture reader can consume; an entity and an enumeration record are distinguishable by schema alone | Demonstration | P2 | StR-001-VC-3 | ✅ |
 
 ## Test Environment
@@ -168,7 +172,7 @@ Rows over the declaration-record keys (`members`, `vocabulary`, `owner`,
 `relations`) are verified against hand-built records — TC-036, TC-037, TC-041
 in particular — and their tests say so; they are schema evidence. The
 extracted model tables are verified separately against the record's `model`
-(TC-081..TC-083, TC-085), and the extracted `relations` against the `## Relationships` rows (TC-090..TC-092).
+(TC-081..TC-083, TC-085), and the extracted `relations` against the `## Relationships` rows (TC-090..TC-096).
 
 ## Coverage Gaps
 

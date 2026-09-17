@@ -148,12 +148,25 @@ def test_availability_states_match_each_type(
         assert actual == expected, (path.name, actual)
 
 
+# The FR-007 relationship negatives TC-054 requires by name.
+RELATIONSHIP_FIXTURES = {
+    "entity-relationships-unknown-verb.md",
+    "entity-relationships-inverse-verb.md",
+    "entity-relationships-target-not-allowed.md",
+    "entity-relationships-bad-multiplicity.md",
+    "entity-relationships-as-list.md",
+    "value_object-relationships.md",
+}
+
+
 @pytest.mark.trace("TC-054", "FR-005-AC-5")
 def test_every_negative_fixture_fails_for_its_own_reason(quire_engine):
     fixtures = sorted(NEGATIVE_DIR.glob("*.md"))
     assert (
-        len(fixtures) >= 24
-    ), "the twenty-four named negative cases are not all present"
+        len(fixtures) >= 26
+    ), "the twenty-six named negative cases are not all present"
+    names = {path.name for path in fixtures}
+    assert RELATIONSHIP_FIXTURES <= names, RELATIONSHIP_FIXTURES - names
     expected_codes = {
         "semantic.record-invalid",
         "semantic.properties-both-forms",

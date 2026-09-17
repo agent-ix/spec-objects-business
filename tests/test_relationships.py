@@ -31,7 +31,7 @@ RELATIONSHIPS_LOCATOR = {
     "from": "table_row",
     "under_section": "Relationships",
     "required": False,
-    "assert": {"columns": ["Name", "Verb", "Target", "Multiplicity"], "min_rows": 1},
+    "assert": {"columns": ["Name", "Verb", "Target", "Multiplicity"]},
 }
 
 # The domain verbs of the manifest `edge_types`, as agent-ix/spec-artifacts-iso
@@ -216,6 +216,10 @@ def test_the_relationships_fixture_lowers_every_entity_verb(
     assert [r["composite"] for r in relations] == [True, False, False, False]
 
 
+# The line of the one row every relationships negative refuses.
+REFUSED_ROW_LINE = 21
+
+
 @pytest.mark.trace("TC-092", "FR-007-AC-4")
 def test_every_relationships_negative_fails_for_its_own_reason(
     quire_engine, semantic_module
@@ -230,15 +234,115 @@ def test_every_relationships_negative_fails_for_its_own_reason(
             front["type"], str(PACKAGE_ROOT), text, bundle_package=BUNDLE_PACKAGE
         )
         assert not result["is_valid"], name
-        assert any(front["expect"] in e["message"] for e in result["errors"]), (
-            name,
-            result["errors"],
-        )
+        assert [
+            (e["line"], e["message"].split(":", 1)[0]) for e in result["errors"]
+        ] == [(REFUSED_ROW_LINE, front["expect"])], (name, result["errors"])
         record = extract_relations(quire_engine, semantic_module, path, bundle)
-        reasons = [
-            d.get("reason")
-            for d in record.get("diagnostics", [])
-            if d.get("code") == front["expect"]
-        ]
-        assert reasons == [reason], (name, record.get("diagnostics"))
+        (diagnostic,) = record["diagnostics"]
+        assert diagnostic["code"] == front["expect"], name
+        assert diagnostic["reason"] == reason, name
+        assert diagnostic["line"] == REFUSED_ROW_LINE, name
+        assert record["availability"]["relations"] == {
+            "state": "unavailable",
+            "reason": f"entry-errors: lines {REFUSED_ROW_LINE}",
+            "lossy": False,
+        }, name
         assert not record.get("relations"), name
+        if reason == "inverse-verb":
+            assert "aggregates" in diagnostic["message"], diagnostic
+            assert "aggregate-root-001" in diagnostic["message"], diagnostic
+
+
+@pytest.mark.trace("TC-093", "FR-007-AC-5")
+def test_a_header_only_relationships_table_is_available_with_no_relations(
+    quire_engine, semantic_module
+):
+    path = POSITIVE_DIR / "entity-relationships-header-only.md"
+    text = path.read_text()
+    result = quire_engine.validate_document(
+        "entity", str(PACKAGE_ROOT), text, bundle_package=BUNDLE_PACKAGE
+    )
+    assert result["is_valid"], result["errors"]
+    assert "min_rows" not in locators(object_type("entity"))["relationships"]["assert"]
+    record = extract_relations(
+        quire_engine, semantic_module, path, relationship_bundle(semantic_module)
+    )
+    assert record["availability"]["relations"]["state"] == "available"
+    assert record.get("relations", []) == []
+    assert not [
+        d for d in record.get("diagnostics", []) if d.get("section") == "Relationships"
+    ]
+
+
+@pytest.mark.trace("TC-094", "FR-007-AC-6")
+def test_a_relationships_table_on_a_type_without_relations_fails_its_record_schema(
+    quire_engine,
+):
+    for ot in object_types():
+        if ot["name"] in RELATION_BEARING:
+            continue
+        schema = (PACKAGE_ROOT / ot["data_schema"]["schema"]).read_text()
+        assert '"relations"' not in schema, ot["name"]
+    path = NEGATIVE_DIR / "value_object-relationships.md"
+    text = path.read_text()
+    front = frontmatter(text)
+    assert front["expect"] == "semantic.record-invalid"
+    result = quire_engine.validate_document(
+        "value_object", str(PACKAGE_ROOT), text, bundle_package=BUNDLE_PACKAGE
+    )
+    assert not result["is_valid"]
+    (error,) = result["errors"]
+    assert error["message"].startswith("semantic.record-invalid:"), error
+    assert "relations" in error["message"], error
+    # agent-ix/quire-rs#440: the finding names no line today.
+    assert error["line"] is None, error
+
+
+@pytest.mark.trace("TC-095", "FR-007-AC-7")
+def test_a_relationships_section_in_another_form_is_refused_or_warned(quire_engine):
+    listed = NEGATIVE_DIR / "entity-relationships-as-list.md"
+    text = listed.read_text()
+    assert frontmatter(text)["expect"] == "semantic.feature-not-extractable"
+    result = quire_engine.validate_document(
+        "entity", str(PACKAGE_ROOT), text, bundle_package=BUNDLE_PACKAGE
+    )
+    heading = text.splitlines().index("## Relationships") + 1
+    assert [(e["line"], e["message"].split(":", 1)[0]) for e in result["errors"]] == [
+        (heading + 2, "semantic.feature-not-extractable")
+    ], result["errors"]
+    prose = (POSITIVE_DIR / "entity-relationships-prose.md").read_text()
+    result = quire_engine.validate_document(
+        "entity", str(PACKAGE_ROOT), prose, bundle_package=BUNDLE_PACKAGE
+    )
+    assert result["is_valid"], result["errors"]
+    heading = prose.splitlines().index("## Relationships") + 1
+    assert [
+        (w["line"], w["message"].split(":", 1)[0])
+        for w in result["warnings"]
+        if "relationships" in w["message"].split(":", 1)[0]
+    ] == [(heading, "semantic.relationships-no-block")], result["warnings"]
+
+
+@pytest.mark.trace("TC-096", "FR-007-AC-8")
+def test_validate_document_lowers_a_target_in_another_artifact_with_an_advisory(
+    quire_engine,
+):
+    text = (POSITIVE_DIR / "entity-relationships-cross-artifact.md").read_text()
+    result = quire_engine.validate_document(
+        "entity", str(PACKAGE_ROOT), text, bundle_package=BUNDLE_PACKAGE
+    )
+    assert result["is_valid"], result["errors"]
+    row = (
+        text.splitlines().index(
+            "| last_order | references | aggregate-root-999 | 0..1 |"
+        )
+        + 1
+    )
+    advisories = [
+        w
+        for w in result["warnings"]
+        if w["message"].startswith("semantic.unresolved-target:")
+    ]
+    assert [w["line"] for w in advisories] == [row], result["warnings"]
+    assert "aggregate-root-999" in advisories[0]["message"]
+    assert "no bundle index" in advisories[0]["message"]

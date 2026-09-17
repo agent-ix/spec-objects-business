@@ -22,6 +22,14 @@ relationships:
     type: verifies
   - target: ix://agent-ix/spec-objects-business/TC-092
     type: verifies
+  - target: ix://agent-ix/spec-objects-business/TC-093
+    type: verifies
+  - target: ix://agent-ix/spec-objects-business/TC-094
+    type: verifies
+  - target: ix://agent-ix/spec-objects-business/TC-095
+    type: verifies
+  - target: ix://agent-ix/spec-objects-business/TC-096
+    type: verifies
 ---
 # Task-013: FR-007 — the Relationships table and manifest 0.5.0
 
@@ -40,11 +48,12 @@ Issue `agent-ix/spec-objects-business#9`, relations half; the `persists`,
 - [ ] **Edges.** The fifteen domain verbs in `edge_types`, identical to `agent-ix/spec-artifacts-iso` (TC-089).
 - [ ] **Skeletons.** A `## Relationships` table in both `aggregate_root` skeletons (TC-090).
 - [ ] **Fixtures.** An entity positive fixture (TC-091) and unknown-verb, inverse-verb, target-not-allowed and bad-multiplicity negatives (TC-092).
+- [ ] **Breaking scope.** Header-only (TC-093), sealed-type table (TC-094), list-form and prose-only sections (TC-095), and the no-bundle-index target limit (TC-096); NFR-001 declares the module-wide break.
 
 ## Deliverables
 
-- `manifest.yaml` 0.5.0, 19 schemas, 14 skeletons, 24 negative fixtures, 4 positive fixtures
-- Tests for TC-089..TC-092, run against a Quire wheel at `agent-ix/quire-rs` `44df254` or later
+- `manifest.yaml` 0.5.0, 19 schemas, 14 skeletons, 26 negative fixtures, 7 positive fixtures
+- Tests for TC-089..TC-096, run against a Quire wheel at `agent-ix/quire-rs` `44df254` or later
 
 ## Notes
 

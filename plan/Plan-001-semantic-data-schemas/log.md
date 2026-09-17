@@ -12,3 +12,4 @@ description: "Chronological log of changes to the Plan-001 bundle."
 * **2026-09-16** — Added Task-012 (FR-006 model tables, `population`, manifest 0.4.0), `in_progress` on PR #8. Task-008 status corrected to `done`: its tests (TC-060..TC-063) landed with the 2026-09-03 execution.
 * **2026-09-16** — PR #8 re-review: Requirements Summary and Test Plan brought to manifest 0.4.0, semantic-core 0.2.0 and current counts; added FR-006 and TC-080..TC-088 rows, Track D in the execution diagram, and corrected the status wording.
 * **2026-09-17** — Task-012 `done` (PR #8 merged). Added Task-013 (FR-007 `## Relationships` table on `entity` and `aggregate_root`, the domain verbs in `edge_types`, manifest 0.5.0) for issue #9's relations half, `in_progress`; TC-089..TC-092 added to the Test Plan.
+* **2026-09-17** — PR #10 review: Task-013 gains the breaking-scope subtask and TC-093..TC-096 (header-only table, sealed-type table, list and prose sections, no-bundle-index targets).

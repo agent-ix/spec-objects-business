@@ -134,7 +134,6 @@ object_types:
           required: false
           assert:
             columns: [Name, Verb, Target, Multiplicity]
-            min_rows: 1
 - name: value_object
   roles: [domain-object]
   allowed_links:
@@ -200,7 +199,6 @@ object_types:
           required: false
           assert:
             columns: [Name, Verb, Target, Multiplicity]
-            min_rows: 1
 - name: nested_entity
   roles: [domain-object]
   allowed_links:

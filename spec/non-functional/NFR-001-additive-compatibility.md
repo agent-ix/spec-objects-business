@@ -26,9 +26,14 @@ no model-table section in an undeclared form validates with at most
 warning-level semantic findings, and the untyped `properties` string is
 byte-identical between 0.2.0 and the current manifest.
 
-The declared model-table sections (FR-006) and the `entity` and
-`aggregate_root` `## Relationships` table (FR-007) SHALL refuse every form the
-manifest does not declare. That refusal is breaking for an artifact that
+The declared model-table sections (FR-006) and the `## Relationships` section
+(FR-007) SHALL refuse every form the manifest does not declare. The FR-007
+`relationships` mapping token is module-wide, so the Relationships break
+applies to all eleven object types: at 0.4.0 a `## Relationships` section was
+unread prose in any form; from 0.5.0 a list, fence, or diagram there is
+refused with `semantic.feature-not-extractable`, a prose-only section yields
+the warning `semantic.relationships-no-block`, and a table on an object type
+whose record has no `relations` key is refused with `semantic.record-invalid`. These refusals are breaking for an artifact that
 authors one of those sections in another form, so the manifest declares
 `compatibility_posture: strict` (FR-003).
 
@@ -40,9 +45,10 @@ authors one of those sections in another form, so the manifest declares
 - Breaking: the declared model-table sections (`domain` `Ubiquitous Language`,
   `aggregate_root` `Members`, `state_machine` `States` and `Transitions`,
   `process` `Workflow` and `States`, `enumeration` `Values`, `population`
-  `Members`), which hold only their declared table and prose, and the
-  `entity` and `aggregate_root` `Relationships` table, whose rows are checked
-  against `edge_types` and `allowed_links`.
+  `Members`), which hold only their declared table and prose; and the
+  `## Relationships` section on all eleven object types, which holds only the
+  FR-104 table (rows checked against `edge_types` and `allowed_links`) and is
+  admitted with rows only on `entity` and `aggregate_root`.
 - Operational context: existing corpus artifacts authored in legacy
   Properties forms (bullet lists, free-column tables) under `legacy_forms:
   warning`; no corpus repository is edited.
