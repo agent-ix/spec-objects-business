@@ -28,10 +28,10 @@ keeps its meaning.
 - The emitted schemas and digests of [FR-002](./FR-002-emitted-json-schemas.md).
 - The module-manifest schema with the `semantic` block, at
   `agent-ix/filament-core-service` revision `e33070e` (CR-004) — the same
-  revision FR-001 names, and the revision Quoin and Quire each vendor
-  byte-identically (`sha256:6782f74f…`). All three consumers therefore judge
-  this manifest against one schema; a consumer vendoring an older copy is a
-  skew defect on that consumer, not a change here.
+  revision FR-001 names. Quire vendors it byte-identically
+  (`sha256:6782f74f…`); Quoin still vendors an older copy
+  (`sha256:69cf9738…` at quoin `99bd4f0`) and re-vendors it under
+  `agent-ix/quoin#559`. That skew is a defect on Quoin, not a change here.
 
 ## Outputs
 

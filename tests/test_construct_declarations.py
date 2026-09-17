@@ -17,7 +17,9 @@ from tests.test_activation_and_stakeholder import VENDORED_SCHEMA
 
 CONSTRUCT_KINDS = tuple(name for name in OBJECT_TYPES if name != "population")
 
-# The declarations filament-core-data#172 carries for this module (FR-142).
+# The declarations filament-core-data#172 carries for this module (FR-142),
+# hand-copied from its branch `fcd-172-modular-constructs` at `7b69d99`
+# (`crates/extraction-frontend/fixtures/modules/spec-objects-business/manifest.yaml`).
 DECLARATIONS = {
     "domain": {
         "identity": "none",
@@ -141,8 +143,9 @@ ADDED_ROLES = {
     "enumeration": {"aggregate-member"},
 }
 
-# The FR-142 core vocabulary (filament-core-data#172
-# `schema/semantic/v1/construct-vocabulary.json`).
+# The FR-142 core vocabulary, hand-copied from filament-core-data#172
+# `schema/semantic/v1/construct-vocabulary.json` at `7b69d99` (branch
+# `fcd-172-modular-constructs`, not yet on main).
 IDENTITIES = {"identified", "value", "none"}
 SHAPES = {
     "record",
@@ -208,7 +211,9 @@ RULES = {
     "members_not_namespace": ("members", "required"),
 }
 
-# QSpec FR-208 (agent-ix/quire-specification main).
+# QSpec FR-208 meaning ids, hand-copied from agent-ix/quire-specification
+# `spec/objects/foundation/FR-208-quire-meaning-vocabulary.md` at `5474874`
+# (unchanged on main at `ac06d5a`).
 FR208_MEANINGS = {
     "quire.meaning.model.object-type/v1",
     "quire.meaning.model.value-type/v1",
@@ -327,3 +332,75 @@ def test_a_malformed_declaration_is_refused(quire_engine, kind, mutate, path):
     violations = quire_engine.validate_manifest(manifest, str(VENDORED_SCHEMA))
     assert violations, kind
     assert any(v["path"].endswith(path) for v in violations), violations
+
+
+# The spec-artifacts-iso registry a consumer loads beside this module
+# (agent-ix/spec-artifacts-iso main `8a7d9ef`, `spec_artifacts_iso/manifest.yaml`
+# `roles:` and `artifact_types[].name`).
+SPEC_ARTIFACTS_ISO_ROLES = {
+    "domain-object",
+    "persistable",
+    "event-like",
+    "externally-exposed",
+    "deployable",
+    "measurable",
+    "configurable",
+    "business-intent",
+    "sensitive",
+}
+SPEC_ARTIFACTS_ISO_ARCHETYPES = {
+    "FR",
+    "NFR",
+    "StR",
+    "US",
+    "IT",
+    "TC",
+    "master-requirements",
+    "index",
+    "log",
+    "Glossary",
+}
+
+# `allowed_links` targets that name neither a role nor an archetype of either
+# module. They predate FR-008 and are outside its scope; pinned here so a new
+# unknown role cannot hide among them.
+PREEXISTING_UNKNOWN_ROLES = {("process", "action"), ("repository", "data_schema")}
+
+
+def _unknown_roles(manifest: dict) -> set[tuple[str, str]]:
+    """The quire-rs FR-040 load check (`src/loader/mod.rs`, quire-rs `724ad29`):
+    every role an object type carries, and every `allowed_links` target token
+    that is not `*` or an archetype name, must be declared in the roles
+    registry merged across the loaded modules. The Python binding exposes no
+    registry load diagnostics, so the rule is applied here to the same data."""
+    roles = SPEC_ARTIFACTS_ISO_ROLES | set(manifest.get("roles", {}))
+    archetypes = SPEC_ARTIFACTS_ISO_ARCHETYPES | {
+        ot["name"] for ot in manifest["object_types"]
+    }
+    unknown = set()
+    for ot in manifest["object_types"]:
+        for targets in ot.get("allowed_links", {}).values():
+            for token in targets:
+                if token != "*" and token not in archetypes | roles:
+                    unknown.add((ot["name"], token))
+        for role in ot.get("roles", []):
+            if role not in roles:
+                unknown.add((ot["name"], role))
+    return unknown
+
+
+@pytest.mark.trace("TC-106", "FR-008-AC-5")
+def test_construct_roles_are_declared_so_no_role_is_unknown_beside_iso():
+    manifest = load_manifest()
+    assert set(manifest["roles"]) == {"aggregate-member", "composite-owner"}
+    for role in manifest["roles"].values():
+        assert set(role) == {"description"} and role["description"]
+    assert _unknown_roles(manifest) == PREEXISTING_UNKNOWN_ROLES
+
+
+@pytest.mark.trace("TC-106", "FR-008-AC-5")
+def test_without_the_roles_block_the_construct_roles_are_unknown():
+    manifest = copy.deepcopy(load_manifest())
+    del manifest["roles"]
+    added = {(kind, role) for kind, roles in ADDED_ROLES.items() for role in roles}
+    assert _unknown_roles(manifest) == PREEXISTING_UNKNOWN_ROLES | added

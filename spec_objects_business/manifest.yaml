@@ -49,6 +49,12 @@ edge_types:
   owns: { description: "Entity owns a state machine.", category: dependency }
   operates_on: { description: "Process/endpoint manipulates a domain object.", category: realization }
   references: { description: "Loose, untyped linkage.", category: traceability }
+# FR-040 roles this module introduces for its FR-008 construct references.
+# The other roles its object types carry (domain-object, persistable,
+# event-like, measurable) are declared by spec-artifacts-iso.
+roles:
+  aggregate-member: { description: "A type an aggregate root may list as a member." }
+  composite-owner: { description: "A type that may own a nested entity." }
 archetypes: []
 grammars: []
 artifact_types: []

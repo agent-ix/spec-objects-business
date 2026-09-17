@@ -102,3 +102,27 @@ def test_a_hyphenated_020_artifact_is_refused_only_for_its_id(quire_engine):
     assert "-" in frontmatter(text)["id"]
     result = quire_engine.validate_document("entity", str(PACKAGE_ROOT), text)
     assert [e["message"] for e in result["errors"]] == [_missing_id("entity")]
+
+
+@pytest.mark.trace("TC-107", "FR-009-AC-4")
+@pytest.mark.xfail(
+    strict=True,
+    reason=(
+        "FR-009-AC-4: a present id that does not match the pattern is reported "
+        "as a pattern mismatch naming the value and the pattern. "
+        "agent-ix/quire-rs#451 builds that diagnostic; today the locator yields "
+        "no value and Quire reports `required 'id' (frontmatter_field(id)) is "
+        "missing` (TC-105 pins it). An expected failure, not a skip."
+    ),
+)
+def test_a_hyphenated_id_is_reported_as_a_pattern_mismatch(quire_engine):
+    path = SKELETONS_DIR / "entity.md"
+    text = path.read_text()
+    front = frontmatter(text)
+    value = front["id"].replace("_", "-")
+    hyphenated = text.replace(f"id: {front['id']}\n", f"id: {value}\n", 1)
+    result = quire_engine.validate_document("entity", str(PACKAGE_ROOT), hyphenated)
+    messages = [e["message"] for e in result["errors"]]
+    assert _missing_id("entity") not in messages, messages
+    assert len(messages) == 1, messages
+    assert value in messages[0] and OBJECT_ID_LOCATOR_REGEX in messages[0], messages
