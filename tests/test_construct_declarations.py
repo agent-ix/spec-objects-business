@@ -331,8 +331,19 @@ def test_references_name_carried_roles_on_admitted_reference_members(kind):
             "construct.members.members",
         ),
         ("event", lambda c: c.pop("meaning"), "construct.meaning"),
+        (
+            "event",
+            lambda c: c.__setitem__("immutable", "yes"),
+            "construct.immutable",
+        ),
     ],
-    ids=["wildcard-role", "unknown-identity", "unknown-presence", "missing-meaning"],
+    ids=[
+        "wildcard-role",
+        "unknown-identity",
+        "unknown-presence",
+        "missing-meaning",
+        "immutable-not-boolean",
+    ],
 )
 def test_a_malformed_declaration_is_refused(quire_engine, kind, mutate, path):
     manifest = copy.deepcopy(load_manifest())

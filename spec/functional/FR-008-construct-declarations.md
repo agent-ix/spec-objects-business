@@ -51,18 +51,18 @@ module data rather than a hard-coded kind list.
 
 - Each construct SHALL be the declaration in this table:
 
-| Object type | Identity | Shape | Members | References | Rules | Meaning |
-|---|---|---|---|---|---|---|
-| `domain` | `none` | `namespace` | `members`, `vocabulary` required; `fields`, `operations` forbidden | — | `no_fields`, `no_operations`, `exclusive_membership`, `members_not_namespace` | `quire.meaning.model.namespace/v1` |
-| `entity` | `identified` | `record` | `fields`, `identityFields` required | — | `identity_field_required` | `quire.meaning.model.object-type/v1` |
-| `value_object` | `value` | `record` | `fields` required | — | `identity_field_forbidden` | `quire.meaning.model.record-value-type/v1` |
-| `aggregate_root` | `identified` | `record` | `fields`, `identityFields`, `clauses`, `members` required | `members`: `aggregate-member` | `identity_field_required`, `min_clauses` | `quire.meaning.model.object-type/v1` |
-| `nested_entity` | `identified` | `record` | `fields`, `identityFields`, `owner` required | `owner`: `composite-owner` | `identity_field_required`, `single_owner` | `quire.meaning.model.object-type/v1` |
-| `repository` | `none` | `interface` | `operations`, `persists` required; `fields` forbidden | `persists`: `persistable` | `no_fields`, `min_operations` | `quire.meaning.model.persistence-interface/v1` |
-| `event` | `none` | `record` | `fields`, `occurrenceField` required | — | `identity_field_forbidden`, `occurrence_field_required` | `quire.meaning.model.event-type/v1` |
-| `state_machine` | `none` | `state_machine` | `operations`, `states`, `transitions` required | `transitions`: `event-like` | `min_operations` | `quire.meaning.model.state-machine/v1` |
-| `process` | `identified` | `sequence` | `fields`, `identityFields`, `steps` required | `steps`: `event-like` | `identity_field_required` | `quire.meaning.model.process/v1` |
-| `enumeration` | `none` | `enumeration` | `variants` required; `fields`, `relationships`, `operations` forbidden | — | none | `quire.meaning.model.variant-type/v1` |
+| Object type | Identity | Shape | Members | References | Rules | Meaning | Immutable |
+|---|---|---|---|---|---|---|---|
+| `domain` | `none` | `namespace` | `members`, `vocabulary` required; `fields`, `operations` forbidden | — | `no_fields`, `no_operations`, `exclusive_membership`, `members_not_namespace` | `quire.meaning.model.namespace/v1` | — |
+| `entity` | `identified` | `record` | `fields`, `identityFields` required | — | `identity_field_required` | `quire.meaning.model.object-type/v1` | — |
+| `value_object` | `value` | `record` | `fields` required | — | `identity_field_forbidden` | `quire.meaning.model.record-value-type/v1` | — |
+| `aggregate_root` | `identified` | `record` | `fields`, `identityFields`, `clauses`, `members` required | `members`: `aggregate-member` | `identity_field_required`, `min_clauses` | `quire.meaning.model.object-type/v1` | — |
+| `nested_entity` | `identified` | `record` | `fields`, `identityFields`, `owner` required | `owner`: `composite-owner` | `identity_field_required`, `single_owner` | `quire.meaning.model.object-type/v1` | — |
+| `repository` | `none` | `interface` | `operations`, `persists` required; `fields` forbidden | `persists`: `persistable` | `no_fields`, `min_operations` | `quire.meaning.model.persistence-interface/v1` | — |
+| `event` | `none` | `record` | `fields`, `occurrenceField` required | — | `identity_field_forbidden`, `occurrence_field_required` | `quire.meaning.model.event-type/v1` | `true` |
+| `state_machine` | `none` | `state_machine` | `operations`, `states`, `transitions` required | `transitions`: `event-like` | `min_operations` | `quire.meaning.model.state-machine/v1` | — |
+| `process` | `identified` | `sequence` | `fields`, `identityFields`, `steps` required | `steps`: `event-like` | `identity_field_required` | `quire.meaning.model.process/v1` | — |
+| `enumeration` | `none` | `enumeration` | `variants` required; `fields`, `relationships`, `operations` forbidden | — | none | `quire.meaning.model.variant-type/v1` | — |
 
 - `population` SHALL declare a construct whose meaning is `quire.meaning.model.population/v1` (QSpec FR-208). Known gap: the FR-142 core vocabulary has no population shape, so the manifest carries no `population` construct until `agent-ix/filament-core-data#174` adds one.
 - `event`'s `construct:` SHALL declare `immutable: true`; no other of the ten kinds' `construct:` SHALL declare `immutable`, because absence already means `false` and `event` is the only kind whose instances filament-core-data renders read-only, frozen, with no setters.
@@ -79,9 +79,9 @@ module data rather than a hard-coded kind list.
 | FR-008-AC-1 | Exactly the ten construct kinds declare a `construct:`, `population` declares none while `agent-ix/filament-core-data#174` is open, and the manifest has zero violations against the FR-035 schema at `5b2af8b`. | Test |
 | FR-008-AC-2 | Each declaration equals its row of the Behavior table, each type carries the roles the table's references admit, and every one of the ten declarations binds an FR-208 meaning id at `c8e3ca0`. | Test |
 | FR-008-AC-3 | Each declaration's identity, shape, member names and rules are FR-142 core vocabulary, no rule repeats, each rule's member presence holds, and each `references` entry names a non-forbidden reference member and only roles an object type of the manifest carries, never `*` or a type name. | Test |
-| FR-008-AC-4 | A wildcard reference role, an identity outside the enum, a member presence outside the enum, and a missing `meaning` are each refused by the FR-035 schema at the construct path. | Test |
+| FR-008-AC-4 | A wildcard reference role, an identity outside the enum, a member presence outside the enum, a missing `meaning`, and an `immutable: "yes"` are each refused by the FR-035 schema at the construct path. | Test |
 | FR-008-AC-5 | The manifest `roles:` registry declares exactly `aggregate-member` and `composite-owner`, each with a description; applying the quire-rs FR-040 load check to this manifest beside the spec-artifacts-iso roles and archetypes reports no unknown role other than the pre-existing `process` → `action` and `repository` → `data_schema` link targets, and removing the registry reports both roles unknown on every type that carries them. | Test |
-| FR-008-AC-6 | `event`'s `construct:` declares `immutable: true`; none of the other nine declarations declares `immutable`; the manifest has zero violations against the FR-035 schema at `5b2af8b`. | Test |
+| FR-008-AC-6 | `event`'s `construct:` declares `immutable: true`; none of the other nine declarations declares `immutable`. | Test |
 
 ## Dependencies
 

@@ -26,9 +26,9 @@ from tests.conftest import (
 )
 
 # The filament-core-service module-manifest schema at revision `5b2af8b`
-# (CR-004, the revision that adds `ObjectTypeEntry.construct` on top of the
-# CR-003 `semantic` block and reference-form `data_schema`). FR-001, FR-003,
-# FR-008 and IT-001 all judge this manifest against this one revision.
+# (CR-004, which admits `ObjectTypeEntry.construct` and its optional
+# `immutable`). FR-001, FR-003, FR-008 and IT-001 all judge this manifest
+# against this one revision.
 VENDORED_SCHEMA = REPO_ROOT / "tests" / "fixtures" / "module-manifest.schema.json"
 VENDORED_SCHEMA_DIGEST = (
     "d0cd01c92f123e77e8c8fd4b69a48cdeb7f91e154091716c1410168f410d6906"
