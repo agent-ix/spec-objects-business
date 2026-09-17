@@ -366,6 +366,29 @@ TYPED_KEY_ROWS = (
 )
 
 
+RELATIONSHIPS_HEADER = (
+    "\n## Relationships\n\n| Name | Verb | Target | Multiplicity |\n|---|---|---|---|\n"
+)
+
+
+def typed_key_document(name: str, row: str) -> str:
+    return (SKELETONS_DIR / f"{name}.md").read_text() + RELATIONSHIPS_HEADER + row
+
+
+def extract_document(quire_engine, semantic_module, name: str, text: str) -> dict:
+    return quire_engine.extract_semantic(
+        {
+            "markdown": text,
+            "module": semantic_module,
+            "path": f"{name}.md",
+            "sourceIdentity": f"ix://{BUNDLE_PACKAGE}/{frontmatter(text)['id']}",
+            "bodyExtraction": object_type(name)["body_extraction"],
+            "bundle": relationship_bundle(semantic_module),
+            "relationVocabulary": relation_vocabulary(name),
+        }
+    )
+
+
 @pytest.mark.trace("TC-097", "FR-007-AC-9")
 @pytest.mark.xfail(
     strict=True,
@@ -373,34 +396,64 @@ TYPED_KEY_ROWS = (
         "FR-007-AC-9: process `emits` and repository `persists` rows lower into "
         "the typed record keys, never `relations`. agent-ix/quire-rs#435 builds "
         "that lowering; today the rows lower into `relations` and the record "
-        "fails `semantic.record-invalid`. An expected failure, never a skip."
+        "fails `semantic.record-invalid` (TC-098 pins that). An expected "
+        "failure, never a skip."
     ),
 )
+@pytest.mark.parametrize(
+    ("name", "row", "key", "target"), TYPED_KEY_ROWS, ids=[r[0] for r in TYPED_KEY_ROWS]
+)
 def test_process_emits_and_repository_persists_rows_lower_into_typed_keys(
-    quire_engine, semantic_module
+    quire_engine, semantic_module, name, row, key, target
 ):
-    bundle = relationship_bundle(semantic_module)
-    table = (
-        "\n## Relationships\n\n"
-        "| Name | Verb | Target | Multiplicity |\n|---|---|---|---|\n"
+    assert locators(object_type(name))["relationships"] == RELATIONSHIPS_LOCATOR
+    text = typed_key_document(name, row + "\n")
+    result = quire_engine.validate_document(
+        name, str(PACKAGE_ROOT), text, bundle_package=BUNDLE_PACKAGE
     )
-    for name, row, key, target in TYPED_KEY_ROWS:
-        assert locators(object_type(name))["relationships"] == RELATIONSHIPS_LOCATOR
-        text = (SKELETONS_DIR / f"{name}.md").read_text() + table + row + "\n"
-        result = quire_engine.validate_document(
-            name, str(PACKAGE_ROOT), text, bundle_package=BUNDLE_PACKAGE
-        )
-        assert result["is_valid"], (name, result["errors"])
-        record = quire_engine.extract_semantic(
-            {
-                "markdown": text,
-                "module": semantic_module,
-                "path": f"{name}.md",
-                "sourceIdentity": f"ix://{BUNDLE_PACKAGE}/{frontmatter(text)['id']}",
-                "bodyExtraction": object_type(name)["body_extraction"],
-                "bundle": bundle,
-                "relationVocabulary": relation_vocabulary(name),
-            }
-        )
-        assert record[key] == [f"ix://{BUNDLE_PACKAGE}/{target}"], (name, record)
-        assert not record.get("relations"), (name, record)
+    assert result["is_valid"], result["errors"]
+    record = extract_document(quire_engine, semantic_module, name, text)
+    assert record[key] == [f"ix://{BUNDLE_PACKAGE}/{target}"], record
+    assert not record.get("relations"), record
+    row_name, verb, cell_target, multiplicity = table_rows(text, "Relationships")[0]
+    (source,) = record["relationSources"]
+    assert {k: source[k] for k in ("name", "verb", "target", "multiplicity")} == {
+        "name": row_name,
+        "verb": verb,
+        "target": cell_target,
+        "multiplicity": multiplicity,
+    }, source
+    assert source["sourceSpan"]["startLine"] == text.splitlines().index(row) + 1
+    availability = record["availability"]["relations"]
+    assert availability["state"] == "available", availability
+    assert not availability.get("lossy"), availability
+
+    header_only = typed_key_document(name, "")
+    result = quire_engine.validate_document(
+        name, str(PACKAGE_ROOT), header_only, bundle_package=BUNDLE_PACKAGE
+    )
+    assert result["is_valid"], result["errors"]
+    record = extract_document(quire_engine, semantic_module, name, header_only)
+    assert record["availability"]["relations"]["state"] == "available"
+    assert record[key] == [], record
+    assert record.get("relationSources", []) == []
+    assert not record.get("relations"), record
+
+
+@pytest.mark.trace("TC-098", "FR-007-AC-10")
+@pytest.mark.parametrize(
+    ("name", "row", "key", "target"), TYPED_KEY_ROWS, ids=[r[0] for r in TYPED_KEY_ROWS]
+)
+def test_process_and_repository_rows_are_refused_until_typed_key_lowering_lands(
+    quire_engine, name, row, key, target
+):
+    # agent-ix/quire-rs#435: this pins today's blocker and flips when it lands,
+    # at which point TC-097 passes and this test is removed.
+    text = typed_key_document(name, row + "\n")
+    result = quire_engine.validate_document(
+        name, str(PACKAGE_ROOT), text, bundle_package=BUNDLE_PACKAGE
+    )
+    assert not result["is_valid"]
+    (error,) = result["errors"]
+    assert error["message"].startswith("semantic.record-invalid:"), error
+    assert "at relations:" in error["message"], error

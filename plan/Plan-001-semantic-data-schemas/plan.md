@@ -167,7 +167,8 @@ dependency" skip that FR-005 replaces with a hard failure.
 - [ ] **TC-094** (FR-007-AC-6): a table on a type without `relations` fails `semantic.record-invalid` (line null until `agent-ix/quire-rs#440`).
 - [ ] **TC-095** (FR-007-AC-7): a list-form section is refused; a prose-only section warns `semantic.relationships-no-block`.
 - [ ] **TC-096** (FR-007-AC-8): `validate_document` lowers a target in another artifact with the no-bundle-index advisory (`agent-ix/quoin#557`).
-- [ ] **TC-097** (FR-007-AC-9): process `emits` and repository `persists` rows lower into typed keys — an explicit expected failure while `agent-ix/quire-rs#435` is open.
+- [ ] **TC-097** (FR-007-AC-9): process `emits` and repository `persists` rows lower into typed keys with every row in `relationSources` — a per-type explicit expected failure while `agent-ix/quire-rs#435` is open.
+- [ ] **TC-098** (FR-007-AC-10): those rows fail today with one `semantic.record-invalid` at `relations`; flips when `agent-ix/quire-rs#435` lands.
 
 ### Verification (NFRs)
 - [ ] **TC-061** (NFR-001-AC-2): every measured 0.2.0 skeleton validates under 0.5.0 with zero errors — an explicit expected failure while `agent-ix/quire-rs#391` is open.
@@ -233,7 +234,7 @@ Track D begins once C1 lands, because FR-006 changes what NFR-001 measures. D2 f
 | Task-009 | C     | FR-003, IT-002           | TC-027, TC-070                                           | blocked |
 | Task-010 | B     | FR-001, StR-001, IT-001  | TC-001…TC-006, TC-075                                    | done |
 | Task-012 | D     | FR-006, FR-003, FR-004, FR-005, NFR-001 | TC-080…TC-088                                 | done |
-| Task-013 | D     | FR-007, FR-003, NFR-001  | TC-089…TC-097                                            | in_progress |
+| Task-013 | D     | FR-007, FR-003, NFR-001  | TC-089…TC-098                                            | in_progress |
 
 ## Status
 

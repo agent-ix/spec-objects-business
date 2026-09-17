@@ -63,7 +63,7 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | FR-004 | FR-004-AC-1..11, FR-004-CON-1..2 | TC-030..TC-041 | ✅ |
 | FR-005 | FR-005-AC-1..8, FR-005-CON-1..2 | TC-050..TC-059 | ✅ |
 | FR-006 | FR-006-AC-1..8, FR-006-CON-1 | TC-080..TC-088 | 🚧 CON-1 (TC-088) is an expected failure blocked on filament-core-service#31; AC-8 is an Inspection |
-| FR-007 | FR-007-AC-1..9 | TC-089..TC-097 | 🚧 AC-9 (TC-097) is an expected failure blocked on quire-rs#435; AC-6 asserts the null line `agent-ix/quire-rs#440` fixes |
+| FR-007 | FR-007-AC-1..10 | TC-089..TC-098 | 🚧 AC-9 (TC-097, per type) is an expected failure blocked on quire-rs#435 and AC-10 (TC-098) pins that blocker; AC-6 asserts the null line `agent-ix/quire-rs#440` fixes |
 
 ### Non-Functional Requirement Coverage
 
@@ -154,7 +154,8 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | TC-094 | Only `Entity` and `AggregateRoot` declare `relations`; a Relationships table on `value_object`, populated or header-only, fails with one `semantic.record-invalid` at `relations` (line null until `agent-ix/quire-rs#440`) | Integration | P0 | FR-007-AC-6 | ✅ |
 | TC-095 | A list-form Relationships section fails with `semantic.feature-not-extractable` at the list line; a prose-only section warns `semantic.relationships-no-block` at the heading | Integration | P0 | FR-007-AC-7 | ✅ |
 | TC-096 | Through `validate_document`, a row targeting another artifact (`aggregate-root-999`) validates with one `semantic.unresolved-target` advisory at the row (`agent-ix/quoin#557`) | Integration | P1 | FR-007-AC-8 | ✅ |
-| TC-097 | A process `emits` row and a repository `persists` row validate and lower into `emits` and `persists`, not `relations` — an explicit expected failure while `agent-ix/quire-rs#435` is open | Integration | P1 | FR-007-AC-9 | 🚧 blocked on quire-rs#435 |
+| TC-097 | Per type, a process `emits` row and a repository `persists` row validate and lower into `emits` and `persists` with the qualified target, not `relations`, with every row in `relationSources` and non-lossy availability; header-only extracts the typed key empty — an explicit expected failure while `agent-ix/quire-rs#435` is open | Integration | P1 | FR-007-AC-9 | 🚧 blocked on quire-rs#435 |
+| TC-098 | Per type, the same process and repository rows fail today with exactly one `semantic.record-invalid` at `relations`; flips when `agent-ix/quire-rs#435` lands | Integration | P1 | FR-007-AC-10 | ✅ |
 | TC-075 | Every object type ships a typed schema a fixture reader can consume; an entity and an enumeration record are distinguishable by schema alone | Demonstration | P2 | StR-001-VC-3 | ✅ |
 
 ## Test Environment
@@ -164,9 +165,11 @@ Inputs pins, provisioned by `make dev-quire`. That wheel is not on any index
 this repository may commit a dependency against (`internal-pypi` serves 0.33.0
 at most); `agent-ix/quire-rs#392` is the blocking issue. The suite **fails**
 rather than skips when `extract_semantic` is absent, so no row here can be
-reported green without the engine under test. The one exception is TC-061, an
+reported green without the engine under test. The exceptions are TC-061, an
 explicit expected failure while `agent-ix/quire-rs#391` is open, TC-097, an explicit expected failure while `agent-ix/quire-rs#435` is open, and TC-088, an
 explicit expected failure while `agent-ix/filament-core-service#31` is open.
+A Relationships table whose columns do not match the locator assert reports that
+assert error twice (`agent-ix/quire-rs#441`); FR-007 tests pin no such error list.
 
 Rows over the declaration-record keys (`members`, `vocabulary`, `owner`,
 `emits`, `persists`, `source`, `states`, `transitions`, `steps`, `values`,
