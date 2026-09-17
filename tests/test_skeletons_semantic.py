@@ -159,6 +159,44 @@ RELATIONSHIP_FIXTURES = {
 }
 
 
+# The negative whose refusal waits on quire-rs reading `Pre:`/`Post:` lines.
+POST_CLAUSE_FIXTURE = "operation-dangling-post-clause.md"
+
+
+def _assert_fails_for_its_own_reason(quire_engine, path):
+    text = path.read_text()
+    front = frontmatter(text)
+    assert front["because"], f"{path.name} does not say why it must fail"
+    result = quire_engine.validate_document(
+        front["type"], str(PACKAGE_ROOT), text, bundle_package=BUNDLE_PACKAGE
+    )
+    assert not result["is_valid"], path.name
+    messages = [e["message"] for e in result["errors"]]
+    assert any(front["expect"] in m for m in messages), (path.name, messages)
+    # The fixture must fail for its own reason, not merely with its code:
+    # five of them surface as `semantic.record-invalid`.
+    hit = next(m for m in messages if front["expect"] in m)
+    assert len(hit) > len(front["expect"]), f"{path.name}: the error carries no detail"
+    return front["expect"]
+
+
+@pytest.mark.trace("TC-054", "FR-005-AC-5")
+@pytest.mark.xfail(
+    strict=True,
+    reason=(
+        "FR-005-AC-5: an operation whose `Post:` names an undeclared clause fails "
+        "`semantic.dangling-clause-ref`. quire-rs main still reads only "
+        "the renamed contract keywords; agent-ix/quire-rs#431 reverts it. An "
+        "expected failure, not a skip."
+    ),
+)
+def test_a_dangling_post_clause_is_refused(quire_engine):
+    path = NEGATIVE_DIR / POST_CLAUSE_FIXTURE
+    assert _assert_fails_for_its_own_reason(quire_engine, path) == (
+        "semantic.dangling-clause-ref"
+    )
+
+
 @pytest.mark.trace("TC-054", "FR-005-AC-5")
 def test_every_negative_fixture_fails_for_its_own_reason(quire_engine):
     fixtures = sorted(NEGATIVE_DIR.glob("*.md"))
@@ -167,6 +205,7 @@ def test_every_negative_fixture_fails_for_its_own_reason(quire_engine):
     ), "the twenty-six named negative cases are not all present"
     names = {path.name for path in fixtures}
     assert RELATIONSHIP_FIXTURES <= names, RELATIONSHIP_FIXTURES - names
+    assert POST_CLAUSE_FIXTURE in names
     expected_codes = {
         "semantic.record-invalid",
         "semantic.properties-both-forms",
@@ -180,23 +219,12 @@ def test_every_negative_fixture_fails_for_its_own_reason(quire_engine):
     }
     seen: set[str] = set()
     for path in fixtures:
-        text = path.read_text()
-        front = frontmatter(text)
+        front = frontmatter(path.read_text())
         assert front["expect"] in expected_codes, path.name
-        assert front["because"], f"{path.name} does not say why it must fail"
         seen.add(front["expect"])
-        result = quire_engine.validate_document(
-            front["type"], str(PACKAGE_ROOT), text, bundle_package=BUNDLE_PACKAGE
-        )
-        assert not result["is_valid"], path.name
-        messages = [e["message"] for e in result["errors"]]
-        assert any(front["expect"] in m for m in messages), (path.name, messages)
-        # The fixture must fail for its own reason, not merely with its code:
-        # five of them surface as `semantic.record-invalid`.
-        hit = next(m for m in messages if front["expect"] in m)
-        assert len(hit) > len(
-            front["expect"]
-        ), f"{path.name}: the error carries no detail"
+        if path.name == POST_CLAUSE_FIXTURE:
+            continue  # test_a_dangling_post_clause_is_refused (quire-rs#431)
+        _assert_fails_for_its_own_reason(quire_engine, path)
     assert seen == expected_codes
 
 

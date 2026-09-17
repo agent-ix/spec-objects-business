@@ -189,6 +189,15 @@ def test_every_skeleton_extracts_its_model_tables_row_for_row(
 
 
 @pytest.mark.trace("TC-082", "FR-006-AC-3")
+@pytest.mark.xfail(
+    strict=True,
+    reason=(
+        "FR-006-AC-3: the operation frame carries the `Pre:`/`Post:` lines as "
+        "`pre`/`post`. quire-rs main still reads the renamed contract keywords into "
+        "the renamed frame keys; agent-ix/quire-rs#431 reverts it. An expected "
+        "failure, not a skip."
+    ),
+)
 def test_the_declared_model_fixture_extracts_every_mapping_feature(
     quire_engine, semantic_module
 ):
@@ -217,8 +226,8 @@ def test_the_declared_model_fixture_extracts_every_mapping_feature(
     ]
     (frame,) = model["operationFrames"]
     assert frame["operation"] == "exchange"
-    assert frame["requires"] == ["ReturnedItemsAreAtMostTheItems"]
-    assert frame["ensures"] == ["ExchangedReturnHasReturnedItems"]
+    assert frame["pre"] == ["ReturnedItemsAreAtMostTheItems"]
+    assert frame["post"] == ["ExchangedReturnHasReturnedItems"]
     assert frame["modifies"] == [
         "self.current_state",
         "self.returned_items",
@@ -265,13 +274,13 @@ def test_every_model_table_and_undeclared_form_has_a_refusing_fixture(quire_engi
 
 
 @pytest.mark.trace("TC-087", "FR-006-AC-5")
-def test_skeleton_clauses_are_quire_and_contract_lines_are_requires_ensures(
+def test_skeleton_clauses_are_quire_and_contract_lines_are_pre_post(
     quire_engine, semantic_module, bundle_index
 ):
     for path in sorted(SKELETONS_DIR.glob("*.md")):
         text = path.read_text()
         assert not re.search(r"^```ocl", text, re.M), path.name
-        assert not re.search(r"^(Pre|Post):", text, re.M), path.name
+        assert not re.search(r"^(Requires|Ensures):", text, re.M), path.name
         assert (
             not re.search(r"^```mermaid", text, re.M) or path.name == "domain.md"
         ), path.name

@@ -65,8 +65,8 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | FR-002 | FR-002-AC-1..9, FR-002-CON-1..5 | TC-010..TC-019, TC-071..TC-074 | ✅ |
 | FR-003 | FR-003-AC-1..6, FR-003-CON-1..2 | TC-020..TC-027 | ✅ AC-5 is a Demonstration; AC-6's naming half is an expected failure |
 | FR-004 | FR-004-AC-1..11, FR-004-CON-1..2 | TC-030..TC-041 | ✅ |
-| FR-005 | FR-005-AC-1..8, FR-005-CON-1..2 | TC-050..TC-059 | ✅ |
-| FR-006 | FR-006-AC-1..8, FR-006-CON-1 | TC-080..TC-088 | 🚧 CON-1 (TC-088) is an expected failure blocked on filament-core-service#31; AC-8 is an Inspection |
+| FR-005 | FR-005-AC-1..8, FR-005-CON-1..2 | TC-050..TC-059 | 🚧 AC-5's dangling `Post:` case (TC-054) is an expected failure blocked on quire-rs#431 |
+| FR-006 | FR-006-AC-1..8, FR-006-CON-1 | TC-080..TC-088 | 🚧 AC-3 (TC-082) is an expected failure blocked on quire-rs#431; CON-1 (TC-088) is an expected failure blocked on filament-core-service#31; AC-8 is an Inspection |
 | FR-007 | FR-007-AC-1..10 | TC-089..TC-098 | 🚧 AC-9 (TC-097, per type) is an expected failure blocked on quire-rs#435 and AC-10 (TC-098) pins that blocker; AC-6 asserts the null line `agent-ix/quire-rs#440` fixes |
 | FR-008 | FR-008-AC-1..5 | TC-099..TC-102, TC-106 | ✅ AC-1 holds `population` without a construct while filament-core-data#174 is open |
 | FR-009 | FR-009-AC-1..4 | TC-103..TC-105, TC-107 | 🚧 AC-4 (TC-107) is an expected failure blocked on quire-rs#451 |
@@ -128,7 +128,7 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | TC-051 | Table and `sysml` skeletons extract to identical normalized fields with the recorded forms | Integration | P0 | FR-005-AC-2, FR-005-CON-2 | ✅ |
 | TC-052 | Under the skeleton bundle index every skeleton extracts with zero errors and zero unresolved tokens | Integration | P0 | FR-005-AC-3 | ✅ |
 | TC-053 | Availability states per skeleton (fields, clauses, operations) match the type's declared set | Integration | P1 | FR-005-AC-4 | ✅ |
-| TC-054 | Every negative fixture fails with its `expect:` code under the module's bundle package and the twenty-six named cases, including the six FR-007 relationship negatives by name, exist | Integration | P0 | FR-005-AC-5 | ✅ |
+| TC-054 | Every negative fixture fails with its `expect:` code under the module's bundle package and the twenty-six named cases, including the six FR-007 relationship negatives by name, exist; the dangling `Post:` clause case is an expected failure while `agent-ix/quire-rs#431` is open | Integration | P0 | FR-005-AC-5 | 🚧 dangling `Post:` case blocked on quire-rs#431 |
 | TC-055 | Every skeleton's H2 set is asserted by the manifest and includes every required heading | Unit | P1 | FR-005-AC-6 | ✅ |
 | TC-056 | Every skeleton is placeholder-free with non-empty asserted sections | Unit | P2 | FR-005-AC-7 | ✅ |
 | TC-057 | A Properties section holding both a table and a fence is refused at the second form | Integration | P1 | FR-005-CON-2 | ✅ |
@@ -146,12 +146,12 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | TC-080 | The `table_row` locators whose first column is a model-table key are exactly the eight FR-006 declares, with their sections, columns within the table's set, `required` flags, and `min_rows: 1` | Unit | P0 | FR-006-AC-1 | ✅ |
 | TC-088 | Every model-table locator declares `assert.optional_columns` — an explicit expected failure while `agent-ix/filament-core-service#31` is open | Unit | P1 | FR-006-CON-1 | 🚧 blocked on filament-core-service#31 |
 | TC-081 | Each model-table skeleton extracts one model entry per table row, in row order, with no error or refusal | Integration | P0 | FR-006-AC-2 | ✅ |
-| TC-082 | The declared-model fixture extracts supertypes, `abstract`, field presence, subsets, redefines, one operation frame, and the transition guard and emits | Integration | P0 | FR-006-AC-3 | ✅ |
+| TC-082 | The declared-model fixture extracts supertypes, `abstract`, field presence, subsets, redefines, one operation frame (`pre`/`post`), and the transition guard and emits — an explicit expected failure while `agent-ix/quire-rs#431` is open | Integration | P0 | FR-006-AC-3 | 🚧 blocked on quire-rs#431 |
 | TC-083 | Each model-table negative fixture fails with its `expect:` code and every declared model-table locator has one | Integration | P0 | FR-006-AC-4 | ✅ |
 | TC-084 | Every skeleton and fixture `quire` fence is valid Quire (qualified enum values, `present()` on `0..1` fields only, declared fields, names that state the check, invariants that hold in every state) and every `Emits`/`Consumes`/`Creates:`/`Deletes:` name resolves; mechanical check is `agent-ix/quire-spec-language#133` | Inspection | P1 | FR-006-AC-8 | ✅ |
 | TC-085 | The population fixture validates and extracts one member per `## Members` row with its type and extent | Integration | P0 | FR-006-AC-6 | ✅ |
 | TC-086 | The manifest declares `specializes` as a structural edge with inverse `generalizes`, admitted by every field-bearing type | Unit | P1 | FR-006-AC-7 | ✅ |
-| TC-087 | Skeleton clauses are `quire` with no advisory; no skeleton carries `ocl`, `Pre:`/`Post:`, or a model-section diagram | Integration | P1 | FR-006-AC-5 | ✅ |
+| TC-087 | Skeleton clauses are `quire` with no advisory; no skeleton carries `ocl` or a model-section diagram, and its operation contract lines are `Pre:`/`Post:` | Integration | P1 | FR-006-AC-5 | ✅ |
 | TC-089 | `semantic.mappings` includes `relationships`; only `entity`, `aggregate_root`, `process` and `repository` declare the `relationships` locator, with no `min_rows`; `edge_types` declares `specializes` and the fifteen domain verbs with their spec-artifacts-iso category and inverse, covering every `allowed_links` verb | Unit | P0 | FR-007-AC-1 | ✅ |
 | TC-090 | Each skeleton `## Relationships` table validates under the bundle package and lowers one relation per row, in row order, with verb, category, `composite`, `ix://` target and multiplicity; no frontmatter domain relationship and no `specializes` row | Integration | P0 | FR-007-AC-2 | ✅ |
 | TC-091 | The entity relationships fixture validates and lowers every non-`specializes` entity verb, `composite` only for `contains` | Integration | P0 | FR-007-AC-3 | ✅ |
@@ -181,7 +181,7 @@ this repository may commit a dependency against (`internal-pypi` serves 0.33.0
 at most); `agent-ix/quire-rs#392` is the blocking issue. The suite **fails**
 rather than skips when `extract_semantic` is absent, so no row here can be
 reported green without the engine under test. The exceptions are TC-061, an
-explicit expected failure while `agent-ix/quire-rs#391` is open, TC-097, an explicit expected failure while `agent-ix/quire-rs#435` is open, TC-107, an explicit expected failure while `agent-ix/quire-rs#451` is open, and TC-088, an
+explicit expected failure while `agent-ix/quire-rs#391` is open, TC-097, an explicit expected failure while `agent-ix/quire-rs#435` is open, TC-107, an explicit expected failure while `agent-ix/quire-rs#451` is open, TC-082 and the dangling `Post:` case of TC-054, explicit expected failures while `agent-ix/quire-rs#431` is open, and TC-088, an
 explicit expected failure while `agent-ix/filament-core-service#31` is open.
 A Relationships table whose columns do not match the locator assert reports that
 assert error twice (`agent-ix/quire-rs#441`); FR-007 tests pin no such error list.

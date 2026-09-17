@@ -11,7 +11,7 @@ object: state_machine
      - "## Invariants" (H2): one `### <clauseId>` per clause, each owning one
        `quire` fence that holds a Quire expression.
      - "## Operations" (H2, required by StateMachine.json): one `### <name>`
-       per transition command, with `Requires:`/`Ensures:` lines naming
+       per transition command, with `Pre:`/`Post:` lines naming
        clause ids declared in this artifact.
      - "## States" (H2, required): a `| State | Description |` table.
      - "## Transitions" (H2, required): a
@@ -56,14 +56,14 @@ self.current_state = OrderManagement::OrderStatus::Draft implies not present(sel
 
 The operations the OrderLifecycle declaration exposes. Each operation owns one
 `### <name>` heading with an optional parameter table, a `Returns:` line
-where it returns a value, and `Requires:`/`Ensures:` lines where it names
+where it returns a value, and `Pre:`/`Post:` lines where it names
 clauses declared in this artifact.
 
 ### place
 
 Convert a draft order into a binding purchase request.
 
-Ensures: OrderPastPlacementRecordsItsPlacementTime
+Post: OrderPastPlacementRecordsItsPlacementTime
 
 ### discard
 

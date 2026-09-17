@@ -9,9 +9,9 @@ object: repository
      - "## Operations" (H2, required): one `### <name>` per operation, an
        optional `| Param | Type | Multiplicity | Constraints |` table, a
        `Returns:` line where the operation returns a value, and optional
-       `Requires:`/`Ensures:` lines naming clause ids declared in the same
+       `Pre:`/`Post:` lines naming clause ids declared in the same
        artifact. This skeleton declares no clauses, so it writes no
-       Requires:/Ensures: lines.
+       Pre:/Post: lines.
      A repository declares no data of its own: Repository.json forbids
      `fields`, so there is no "## Properties" section. -->
 # [repository_001] OrderRepository
@@ -20,7 +20,7 @@ object: repository
 
 The operations the OrderRepository declaration exposes. Each operation owns one
 `### <name>` heading with an optional parameter table, a `Returns:` line
-where it returns a value, and `Requires:`/`Ensures:` lines where it names clauses
+where it returns a value, and `Pre:`/`Post:` lines where it names clauses
 declared in this artifact.
 
 ### get

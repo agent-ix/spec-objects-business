@@ -45,8 +45,8 @@ self.exchanged implies size(self.returned_items) >= 1
 
 Replace the returned lines with a new order.
 
-Requires: ReturnedItemsAreAtMostTheItems
-Ensures: ExchangedReturnHasReturnedItems
+Pre: ReturnedItemsAreAtMostTheItems
+Post: ExchangedReturnHasReturnedItems
 Modifies: self.current_state, self.returned_items, self.exchanged
 Creates: Order
 Deletes: OrderLine
