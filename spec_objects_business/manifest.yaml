@@ -1,6 +1,6 @@
 manifest_version: 1.0.0
 name: spec-objects-business
-version: 0.4.0
+version: 0.5.0
 description: 'Filament Module: tier-2 business ObjectTypes (DDD: domain, entity, value_object, aggregate_root, nested_entity, repository, event, state_machine, process, enumeration, population)'
 semantic:
   contract_version: 1.0.0
@@ -20,7 +20,7 @@ semantic:
   - population
   imports: {}
   targets: [json-schema, markdown]
-  mappings: [typed-table, sysml-fence, generalization, abstract-types, presence, subsetting, redefinition, effect-frames]
+  mappings: [typed-table, sysml-fence, generalization, abstract-types, presence, subsetting, redefinition, effect-frames, relationships]
   compatibility_posture: strict
   legacy_forms: warning
 nav:
@@ -31,6 +31,24 @@ nav:
     order: 51
 edge_types:
   specializes: { description: "Generalization: the source type specializes the target type and inherits its declarations.", category: structural, inverse: generalizes }
+  # The domain verbs the allowed_links below and the `## Relationships`
+  # tables use, declared byte-identical to spec-artifacts-iso so a registry
+  # that loads both modules merges them without a duplicate-edge-type finding.
+  contains: { description: "Composition; the source owns the target's lifecycle.", category: structural, inverse: part_of }
+  aggregates: { description: "Aggregate root owns member entities.", category: structural, inverse: part_of }
+  composes: { description: "Value object composed of other value objects/enums.", category: structural, inverse: composed_by }
+  triggers: { description: "Initiates a process or action.", category: behavioral, inverse: triggered_by }
+  transitions_to: { description: "State-machine flow to another state.", category: behavioral }
+  raises: { description: "State machine raises a domain event.", category: behavioral }
+  reads: { description: "Non-mutating data access.", category: dataflow }
+  writes: { description: "Mutating data access.", category: dataflow }
+  consumes: { description: "Asynchronous reception from a channel.", category: dataflow }
+  emits: { description: "Source produces the target domain event.", category: dataflow, inverse: emitted_by }
+  carries: { description: "Channel/event carries a payload type.", category: dataflow }
+  persists: { description: "Repository persists an aggregate/entity.", category: dependency }
+  owns: { description: "Entity owns a state machine.", category: dependency }
+  operates_on: { description: "Process/endpoint manipulates a domain object.", category: realization }
+  references: { description: "Loose, untyped linkage.", category: traceability }
 archetypes: []
 grammars: []
 artifact_types: []
@@ -41,7 +59,7 @@ object_types:
     contains: [entity, aggregate_root, value_object, repository, event, state_machine, process, enumeration]
   data_schema:
     schema: schemas/Domain.json
-    digest: sha256:1d5e88dcec53da2eaa4befdf106d9dc0a49ba81573f2e81bc411bbf84d4b1c15
+    digest: sha256:471688167079b312b814624e8ad65e7e87693f211ff7bb56b83a7a01e2d2a54f
   body_extraction:
     yield_pattern:
       match:
@@ -95,7 +113,7 @@ object_types:
     references: [entity, aggregate_root, enumeration]
   data_schema:
     schema: schemas/Entity.json
-    digest: sha256:f3f7fcd604abab7e09427066287df94fac3d7a470e146b289e2ded74ef2f7d43
+    digest: sha256:04d2c8fa7424060c4209a3008819848f7735b0c00aff3976bfa15869037271c0
   body_extraction:
     yield_pattern:
       match:
@@ -110,6 +128,12 @@ object_types:
           from: section_body
           after_heading: Properties
           required: true
+        relationships:
+          from: table_row
+          under_section: Relationships
+          required: false
+          assert:
+            columns: [Name, Verb, Target, Multiplicity]
 - name: value_object
   roles: [domain-object]
   allowed_links:
@@ -118,7 +142,7 @@ object_types:
     references: [enumeration]
   data_schema:
     schema: schemas/ValueObject.json
-    digest: sha256:419712a352eddae8807ffc06cd243d3207f31d4a650ded4247f6a94815ea75d9
+    digest: sha256:08f7addd58cb0a133428fd2cae15bfa90e8f08165907788d16983206161dc48b
   body_extraction:
     yield_pattern:
       match:
@@ -147,7 +171,7 @@ object_types:
     references: [aggregate_root, enumeration]
   data_schema:
     schema: schemas/AggregateRoot.json
-    digest: sha256:df782483aae8f92a0b7897c751695c578f2e1608c5f3f37256e032c16bd79df3
+    digest: sha256:421c33c6de9a64acfcf8ceb20b0c20b57b3ad729d461abeb0f9ee497fd7795b3
   body_extraction:
     yield_pattern:
       match:
@@ -169,6 +193,12 @@ object_types:
           assert:
             columns: [Member, Multiplicity]
             min_rows: 1
+        relationships:
+          from: table_row
+          under_section: Relationships
+          required: false
+          assert:
+            columns: [Name, Verb, Target, Multiplicity]
 - name: nested_entity
   roles: [domain-object]
   allowed_links:
@@ -177,7 +207,7 @@ object_types:
     references: [enumeration]
   data_schema:
     schema: schemas/NestedEntity.json
-    digest: sha256:7964f7cb457630e03900c7dfbbc0b1b3b7bb06ec41269e2924fc335f623342a0
+    digest: sha256:b9fd283abfde768988c6680a5afcf36762c18236be10fd3276c1c92ee4c36746
   body_extraction:
     yield_pattern:
       match:
@@ -202,7 +232,7 @@ object_types:
     references: [data_schema]
   data_schema:
     schema: schemas/Repository.json
-    digest: sha256:4502e35468907484bfd7585f4130360ed18a567260179c93030f731011f7cd22
+    digest: sha256:43d18942590dc0f7f74da97190c580448708ee817eaf3007be8e919fac9cfd4f
   body_extraction:
     yield_pattern:
       match:
@@ -213,6 +243,12 @@ object_types:
           from: section_body
           after_heading: Operations
           required: true
+        relationships:
+          from: table_row
+          under_section: Relationships
+          required: false
+          assert:
+            columns: [Name, Verb, Target, Multiplicity]
 - name: event
   roles: [event-like]
   allowed_links:
@@ -221,7 +257,7 @@ object_types:
     references: [aggregate_root, enumeration]
   data_schema:
     schema: schemas/Event.json
-    digest: sha256:18d36655ed18469e7d543a8fde5ed75affa3f0c4370b010d860100ccea5554cd
+    digest: sha256:add67e50c4171f789fd908249dcf19fd744a2c32c45da62ad1864a24743f05d5
   body_extraction:
     yield_pattern:
       match:
@@ -249,7 +285,7 @@ object_types:
     references: [enumeration]
   data_schema:
     schema: schemas/StateMachine.json
-    digest: sha256:5a0cfb1ccafd9c40823b755a7db4fc216cd68fceb665dc12c008936c8e50d406
+    digest: sha256:06e0f85ae26ced2fdbb2ebd3504302bd53c1e97afb0078b9837ead3f11fcc02e
   body_extraction:
     yield_pattern:
       match:
@@ -294,7 +330,7 @@ object_types:
     operates_on: [domain-object]
   data_schema:
     schema: schemas/Process.json
-    digest: sha256:81b1b42e0c1b51444fffa28d88cb571a3c027deac1847ca404cd4c2c15356ef8
+    digest: sha256:5d7a4104b0c676906e3d2741978df8409155cbc5f8243d96aad85357db9d1d7a
   body_extraction:
     yield_pattern:
       match:
@@ -331,12 +367,18 @@ object_types:
           from: section_body
           after_heading: Algorithm
           required: false
+        relationships:
+          from: table_row
+          under_section: Relationships
+          required: false
+          assert:
+            columns: [Name, Verb, Target, Multiplicity]
 - name: enumeration
   allowed_links:
     references: [enumeration]
   data_schema:
     schema: schemas/Enumeration.json
-    digest: sha256:c06fe053b77d48b37477a03968c3c0c729da5f6faf8b7287aaae18017ae28afc
+    digest: sha256:0b23bccc41d986fce6133ec9a015a70295fe3b704f75644f2cc1e552a2ffe0da
   body_extraction:
     yield_pattern:
       match:
@@ -361,7 +403,7 @@ object_types:
     references: [entity, aggregate_root, nested_entity, value_object, event, process]
   data_schema:
     schema: schemas/Population.json
-    digest: sha256:c607d524911fb6bdbf8a23b7b169b7f721653aa649b5ca65a61e852855390bec
+    digest: sha256:db36d71836abaa5af3c2b0613002e221f341c65f1d7e3d9bca4be438fa24835b
   body_extraction:
     yield_pattern:
       match:

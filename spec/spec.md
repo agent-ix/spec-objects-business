@@ -71,10 +71,10 @@ module activates against `filament-core`.
 - Extraction of the record keys no model table declares from Markdown; the
   schemas declare them as optional so the engine can fill them without a
   schema change. Repository `persists`, event `source`, nested-entity
-  `owner`, and aggregate/process `emits` are `agent-ix/quire-rs#435`;
-  `relations` with multiplicity are `agent-ix/quire-rs#418`; the module's
-  locators and skeleton sections for all of them are
-  `agent-ix/spec-objects-business#9`.
+  `owner`, and aggregate/process `emits` are `agent-ix/quire-rs#435`, and the
+  module's locators and skeleton sections for them are
+  `agent-ix/spec-objects-business#9`. `relations` are extracted from the
+  FR-007 `## Relationships` table.
 - Inline Quire expressions in a transition `Guard` or an operation's
   `Requires:`/`Ensures:` lines (`agent-ix/quire-rs#433`); today those name
   clause ids only.
@@ -129,7 +129,8 @@ the maintainer's story of declaring those types against semantic-core
 the manifest against `filament-core`; FR-002 emits the schemas; FR-003
 declares the semantic contract in the manifest; FR-004 fixes each type's
 role-distinct schema; FR-005 makes the skeletons executable fixtures; FR-006
-declares the object-type model tables the engine extracts. NFR-001 states
+declares the object-type model tables the engine extracts; FR-007 declares the
+`## Relationships` table and the edge verbs its rows use. NFR-001 states
 where the contract is additive and why the model-table sections are strict. Integration tests in
 `integration/` verify the activation and Quoin-install boundaries; the third
 external boundary, the Quire engine (loader, extraction, record surface), has

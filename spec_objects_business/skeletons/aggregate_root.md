@@ -13,7 +13,11 @@ object: aggregate_root
      - Each invariant owns one `quire` fence holding a Quire expression.
      - "## Members" (H2, required): a `| Member | Multiplicity |` table naming
        every declaration inside the consistency boundary. Prose may follow
-       the table; a list or diagram there is refused. -->
+       the table; a list or diagram there is refused.
+     - "## Relationships" (H2, optional): a `| Name | Verb | Target | Multiplicity |`
+       table, one row per domain relationship. Verb is an `edge_types` verb
+       this type's allowed_links admit, never an inverse label or
+       `specializes`; Target is an artifact id; Multiplicity is required. -->
 # [aggregate-root-001] Order
 
 ## Properties
@@ -69,3 +73,12 @@ All members share one transaction, so the aggregate is loaded and persisted
 as a whole. Order is the only member addressable from outside the aggregate;
 OrderLine instances are created, amended, and removed only through Order
 operations, and the three Money values are recomputed whenever a line changes.
+
+## Relationships
+
+| Name | Verb | Target | Multiplicity |
+|---|---|---|---|
+| lines | aggregates | nested-entity-001 | 0..* |
+| totals | contains | value-object-001 | 3..3 |
+| status | references | enumeration-001 | 1..1 |
+| placed | emits | event-001 | 0..1 |

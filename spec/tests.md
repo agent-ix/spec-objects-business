@@ -15,6 +15,8 @@ relationships:
     type: covers
   - target: "ix://agent-ix/spec-objects-business/FR-006"
     type: covers
+  - target: "ix://agent-ix/spec-objects-business/FR-007"
+    type: covers
   - target: "ix://agent-ix/spec-objects-business/NFR-001"
     type: covers
 ---
@@ -24,7 +26,7 @@ relationships:
 
 This matrix is the verification contract for the module: the manifest
 activation requirement (FR-001, issue #1 era) and the issue #4 semantic data
-schemas and model tables (US-001, FR-002..FR-006, NFR-001, IT-002). Coverage is complete when
+schemas, model tables and relationships (US-001, FR-002..FR-007, NFR-001, IT-002). Coverage is complete when
 every acceptance criterion, named constraint, and NFR metric maps to at least
 one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate --strict` reports no findings on this branch, and the rows still `🚧` are the ones whose evidence needs an environment this repository cannot provision (a running `filament-core-service`, a Quoin built from main).
 
@@ -33,7 +35,7 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 1. Every acceptance criterion and named constraint has at least one test case.
 2. Both Properties forms (typed table, `sysml` fence) and every object type are tested.
 3. Item-rule boundaries are tested at their allowed and refused edges (zero versus one identity field, empty versus one-item arrays).
-4. Every named refusal (digest mismatch, unknown key, both forms, dangling clause, non-Identifier token, undeclared model form, unknown state, trigger, or step kind) has a failing fixture.
+4. Every named refusal (digest mismatch, unknown key, both forms, dangling clause, non-Identifier token, undeclared model form, unknown state, trigger, or step kind, unknown or inverse relationship verb, disallowed relationship target, malformed relationship multiplicity, list-form Relationships section, Relationships table on a type without `relations`) has a failing fixture.
 5. Availability states (`available`, `not_applicable`, `missing`) are tested per declaration kind.
 6. Legacy artifacts, the empty record, and unresolved tokens are covered as edge cases.
 
@@ -61,6 +63,7 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | FR-004 | FR-004-AC-1..11, FR-004-CON-1..2 | TC-030..TC-041 | ✅ |
 | FR-005 | FR-005-AC-1..8, FR-005-CON-1..2 | TC-050..TC-059 | ✅ |
 | FR-006 | FR-006-AC-1..8, FR-006-CON-1 | TC-080..TC-088 | 🚧 CON-1 (TC-088) is an expected failure blocked on filament-core-service#31; AC-8 is an Inspection |
+| FR-007 | FR-007-AC-1..10 | TC-089..TC-098 | 🚧 AC-9 (TC-097, per type) is an expected failure blocked on quire-rs#435 and AC-10 (TC-098) pins that blocker; AC-6 asserts the null line `agent-ix/quire-rs#440` fixes |
 
 ### Non-Functional Requirement Coverage
 
@@ -110,7 +113,7 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | TC-034 | Event: `Timestamp` field and no identity validates; no `Timestamp` fails; identity fails; `operations` fails | Integration | P0 | FR-004-AC-5 | ✅ |
 | TC-035 | Repository: one operation validates; `fields` fails; empty `operations` fails | Integration | P0 | FR-004-AC-6 | ✅ |
 | TC-036 | State machine: one operation validates with `states` and `transitions`; a transition without `trigger` fails | Integration | P1 | FR-004-AC-7 | ✅ |
-| TC-037 | Process: identity record validates with `steps`; a step outside `StepKind` fails | Integration | P1 | FR-004-AC-8 | ✅ |
+| TC-037 | Process: identity record validates with `steps` and `emits`; a step outside `StepKind` fails | Integration | P1 | FR-004-AC-8 | ✅ |
 | TC-038 | Empty record validates for Domain, Enumeration, and Population only; `fields` on any of them fails; population `members` validate only against Population | Integration | P0 | FR-004-AC-9, FR-004-CON-2 | ✅ |
 | TC-039 | Placeholder `unresolved` target is accepted by the schema and reported by the extractor; a bare token is refused | Integration | P1 | FR-004-AC-10 | ✅ |
 | TC-040 | No module schema redeclares a semantic-core model; every grammar item is a `$ref` to semantic-core | Unit | P1 | FR-004-CON-1 | ✅ |
@@ -119,7 +122,7 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | TC-051 | Table and `sysml` skeletons extract to identical normalized fields with the recorded forms | Integration | P0 | FR-005-AC-2, FR-005-CON-2 | ✅ |
 | TC-052 | Under the skeleton bundle index every skeleton extracts with zero errors and zero unresolved tokens | Integration | P0 | FR-005-AC-3 | ✅ |
 | TC-053 | Availability states per skeleton (fields, clauses, operations) match the type's declared set | Integration | P1 | FR-005-AC-4 | ✅ |
-| TC-054 | Every negative fixture fails with its `expect:` code and the twenty named cases exist | Integration | P0 | FR-005-AC-5 | ✅ |
+| TC-054 | Every negative fixture fails with its `expect:` code under the module's bundle package and the twenty-six named cases, including the six FR-007 relationship negatives by name, exist | Integration | P0 | FR-005-AC-5 | ✅ |
 | TC-055 | Every skeleton's H2 set is asserted by the manifest and includes every required heading | Unit | P1 | FR-005-AC-6 | ✅ |
 | TC-056 | Every skeleton is placeholder-free with non-empty asserted sections | Unit | P2 | FR-005-AC-7 | ✅ |
 | TC-057 | A Properties section holding both a table and a fence is refused at the second form | Integration | P1 | FR-005-CON-2 | ✅ |
@@ -143,6 +146,16 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | TC-085 | The population fixture validates and extracts one member per `## Members` row with its type and extent | Integration | P0 | FR-006-AC-6 | ✅ |
 | TC-086 | The manifest declares `specializes` as a structural edge with inverse `generalizes`, admitted by every field-bearing type | Unit | P1 | FR-006-AC-7 | ✅ |
 | TC-087 | Skeleton clauses are `quire` with no advisory; no skeleton carries `ocl`, `Pre:`/`Post:`, or a model-section diagram | Integration | P1 | FR-006-AC-5 | ✅ |
+| TC-089 | `semantic.mappings` includes `relationships`; only `entity`, `aggregate_root`, `process` and `repository` declare the `relationships` locator, with no `min_rows`; `edge_types` declares `specializes` and the fifteen domain verbs with their spec-artifacts-iso category and inverse, covering every `allowed_links` verb | Unit | P0 | FR-007-AC-1 | ✅ |
+| TC-090 | Each skeleton `## Relationships` table validates under the bundle package and lowers one relation per row, in row order, with verb, category, `composite`, `ix://` target and multiplicity; no frontmatter domain relationship and no `specializes` row | Integration | P0 | FR-007-AC-2 | ✅ |
+| TC-091 | The entity relationships fixture validates and lowers every non-`specializes` entity verb, `composite` only for `contains` | Integration | P0 | FR-007-AC-3 | ✅ |
+| TC-092 | The unknown-verb, inverse-verb, target-not-allowed and bad-multiplicity fixtures each fail with exactly one `semantic.invalid-model-cell` at line 21 on both surfaces, their reason, `availability.relations` `unavailable` with `entry-errors: lines 21`, and no relation; the inverse-verb message names `aggregates` and `aggregate-root-001` | Integration | P0 | FR-007-AC-4 | ✅ |
+| TC-093 | A header-only Relationships table validates and extracts `available` with empty `relations` | Integration | P0 | FR-007-AC-5 | ✅ |
+| TC-094 | Only `Entity` and `AggregateRoot` declare `relations`; a Relationships table on `value_object`, populated or header-only, fails with one `semantic.record-invalid` at `relations` (line null until `agent-ix/quire-rs#440`) | Integration | P0 | FR-007-AC-6 | ✅ |
+| TC-095 | A list-form Relationships section fails with `semantic.feature-not-extractable` at the list line; a prose-only section warns `semantic.relationships-no-block` at the heading | Integration | P0 | FR-007-AC-7 | ✅ |
+| TC-096 | Through `validate_document`, a row targeting another artifact (`aggregate-root-999`) validates with one `semantic.unresolved-target` advisory at the row (`agent-ix/quoin#557`) | Integration | P1 | FR-007-AC-8 | ✅ |
+| TC-097 | Per type, a process `emits` row and a repository `persists` row validate and lower into `emits` and `persists` with the qualified target, not `relations`, with every row in `relationSources` and non-lossy availability; header-only extracts the typed key empty — an explicit expected failure while `agent-ix/quire-rs#435` is open | Integration | P1 | FR-007-AC-9 | 🚧 blocked on quire-rs#435 |
+| TC-098 | Per type, the same process and repository rows fail today with exactly one `semantic.record-invalid` at `relations`; flips when `agent-ix/quire-rs#435` lands | Integration | P1 | FR-007-AC-10 | ✅ |
 | TC-075 | Every object type ships a typed schema a fixture reader can consume; an entity and an enumeration record are distinguishable by schema alone | Demonstration | P2 | StR-001-VC-3 | ✅ |
 
 ## Test Environment
@@ -152,16 +165,18 @@ Inputs pins, provisioned by `make dev-quire`. That wheel is not on any index
 this repository may commit a dependency against (`internal-pypi` serves 0.33.0
 at most); `agent-ix/quire-rs#392` is the blocking issue. The suite **fails**
 rather than skips when `extract_semantic` is absent, so no row here can be
-reported green without the engine under test. The one exception is TC-061, an
-explicit expected failure while `agent-ix/quire-rs#391` is open, and TC-088, an
+reported green without the engine under test. The exceptions are TC-061, an
+explicit expected failure while `agent-ix/quire-rs#391` is open, TC-097, an explicit expected failure while `agent-ix/quire-rs#435` is open, and TC-088, an
 explicit expected failure while `agent-ix/filament-core-service#31` is open.
+A Relationships table whose columns do not match the locator assert reports that
+assert error twice (`agent-ix/quire-rs#441`); FR-007 tests pin no such error list.
 
 Rows over the declaration-record keys (`members`, `vocabulary`, `owner`,
 `emits`, `persists`, `source`, `states`, `transitions`, `steps`, `values`,
 `relations`) are verified against hand-built records — TC-036, TC-037, TC-041
 in particular — and their tests say so; they are schema evidence. The
 extracted model tables are verified separately against the record's `model`
-(TC-081..TC-083, TC-085).
+(TC-081..TC-083, TC-085), and the extracted `relations` against the `## Relationships` rows (TC-090..TC-096).
 
 ## Coverage Gaps
 

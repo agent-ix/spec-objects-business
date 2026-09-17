@@ -2,7 +2,7 @@
 id: Task-012
 title: "FR-006 — model tables, the population type and manifest 0.4.0"
 type: Task
-status: in_progress
+status: done
 track: D
 priority: P0
 relationships:

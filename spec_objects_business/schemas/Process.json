@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.4.0/Process.json",
+  "$id": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.5.0/Process.json",
   "type": "object",
   "properties": {
     "fields": {
@@ -10,13 +10,13 @@
       },
       "minItems": 1,
       "contains": {
-        "$ref": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.4.0/IdentityField.json"
+        "$ref": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.5.0/IdentityField.json"
       }
     },
     "steps": {
       "type": "array",
       "items": {
-        "$ref": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.4.0/ProcessStep.json"
+        "$ref": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.5.0/ProcessStep.json"
       }
     },
     "clauses": {
@@ -29,6 +29,12 @@
       "type": "array",
       "items": {
         "$ref": "https://schemas.agent-ix.org/semantic-core/0.2.0/OperationDecl.json"
+      }
+    },
+    "emits": {
+      "type": "array",
+      "items": {
+        "$ref": "https://schemas.agent-ix.org/semantic-core/0.2.0/SemanticId.json"
       }
     }
   },
