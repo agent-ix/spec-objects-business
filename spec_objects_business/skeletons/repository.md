@@ -7,11 +7,10 @@ object: repository
 <!-- repository authoring skeleton (spec-objects-business). Contract:
      - Frontmatter MUST carry id, title, type: repository, object: repository.
      - "## Operations" (H2, required): one `### <name>` per operation, an
-       optional `| Param | Type | Multiplicity | Constraints |` table, a
-       `Returns:` line where the operation returns a value, and optional
-       `Pre:`/`Post:` lines naming clause ids declared in the same
-       artifact. This skeleton declares no clauses, so it writes no
-       Pre:/Post: lines.
+       optional `| Param | Type | Multiplicity | Constraints |` table, and a
+       `Returns:` line where the operation returns a value. A `Pre:`/`Post:`
+       line is refused (QSpec FR-208: a persistence interface carries no
+       operation contract).
      A repository declares no data of its own: Repository.json forbids
      `fields`, so there is no "## Properties" section. -->
 # [repository_001] OrderRepository
@@ -19,9 +18,9 @@ object: repository
 ## Operations
 
 The operations the OrderRepository declaration exposes. Each operation owns one
-`### <name>` heading with an optional parameter table, a `Returns:` line
-where it returns a value, and `Pre:`/`Post:` lines where it names clauses
-declared in this artifact.
+`### <name>` heading with an optional parameter table and a `Returns:` line
+where it returns a value. No operation carries a `Pre:`/`Post:` line: a
+persistence interface's operations declare no contract.
 
 ### get
 
