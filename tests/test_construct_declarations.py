@@ -19,7 +19,8 @@ CONSTRUCT_KINDS = tuple(name for name in OBJECT_TYPES if name != "population")
 
 # The declarations filament-core-data#172 carries for this module (FR-142),
 # hand-copied from its branch `fcd-172-modular-constructs` at `7b69d99`
-# (`crates/extraction-frontend/fixtures/modules/spec-objects-business/manifest.yaml`).
+# (`crates/extraction-frontend/fixtures/modules/spec-objects-business/manifest.yaml`),
+# with each `meaning` replaced by its QSpec FR-208 id at `c8e3ca0`.
 DECLARATIONS = {
     "domain": {
         "identity": "none",
@@ -36,7 +37,7 @@ DECLARATIONS = {
             "exclusive_membership",
             "members_not_namespace",
         ],
-        "meaning": "quire.meaning.namespace",
+        "meaning": "quire.meaning.model.namespace/v1",
     },
     "entity": {
         "identity": "identified",
@@ -50,7 +51,7 @@ DECLARATIONS = {
         "shape": "record",
         "members": {"fields": "required"},
         "rules": ["identity_field_forbidden"],
-        "meaning": "quire.meaning.model.value-type/v1",
+        "meaning": "quire.meaning.model.record-value-type/v1",
     },
     "aggregate_root": {
         "identity": "identified",
@@ -87,14 +88,14 @@ DECLARATIONS = {
         },
         "references": {"persists": ["persistable"]},
         "rules": ["no_fields", "min_operations"],
-        "meaning": "quire.meaning.persistence-interface",
+        "meaning": "quire.meaning.model.persistence-interface/v1",
     },
     "event": {
         "identity": "none",
         "shape": "record",
         "members": {"fields": "required", "occurrenceField": "required"},
         "rules": ["identity_field_forbidden", "occurrence_field_required"],
-        "meaning": "quire.meaning.model.value-type/v1",
+        "meaning": "quire.meaning.model.event-type/v1",
     },
     "state_machine": {
         "identity": "none",
@@ -106,7 +107,7 @@ DECLARATIONS = {
         },
         "references": {"transitions": ["event-like"]},
         "rules": ["min_operations"],
-        "meaning": "quire.meaning.state-machine",
+        "meaning": "quire.meaning.model.state-machine/v1",
     },
     "process": {
         "identity": "identified",
@@ -118,7 +119,7 @@ DECLARATIONS = {
         },
         "references": {"steps": ["event-like"]},
         "rules": ["identity_field_required"],
-        "meaning": "quire.meaning.process",
+        "meaning": "quire.meaning.model.process/v1",
     },
     "enumeration": {
         "identity": "none",
@@ -212,26 +213,23 @@ RULES = {
 }
 
 # QSpec FR-208 meaning ids, hand-copied from agent-ix/quire-specification
-# `spec/objects/foundation/FR-208-quire-meaning-vocabulary.md` at `5474874`
-# (unchanged on main at `ac06d5a`).
+# `spec/objects/foundation/FR-208-quire-meaning-vocabulary.md` at `c8e3ca0`.
 FR208_MEANINGS = {
     "quire.meaning.model.object-type/v1",
     "quire.meaning.model.value-type/v1",
     "quire.meaning.model.variant-type/v1",
+    "quire.meaning.model.record-value-type/v1",
+    "quire.meaning.model.event-type/v1",
+    "quire.meaning.model.state-machine/v1",
+    "quire.meaning.model.process/v1",
+    "quire.meaning.model.persistence-interface/v1",
+    "quire.meaning.model.namespace/v1",
     "quire.meaning.model.population/v1",
     "quire.meaning.systems.interface/v1",
     "quire.meaning.systems.part/v1",
     "quire.meaning.systems.port/v1",
     "quire.meaning.systems.connection/v1",
     "quire.meaning.systems.allocation/v1",
-}
-FR208_BOUND_KINDS = {
-    "entity",
-    "value_object",
-    "aggregate_root",
-    "nested_entity",
-    "event",
-    "enumeration",
 }
 
 
@@ -266,13 +264,9 @@ def test_each_declaration_is_the_fr142_declaration(kind):
 
 
 @pytest.mark.trace("TC-100", "FR-008-AC-2")
-def test_six_kinds_bind_an_fr208_meaning_and_four_name_ids_fr208_does_not_list():
-    bound = {
-        kind
-        for kind in CONSTRUCT_KINDS
-        if object_type(kind)["construct"]["meaning"] in FR208_MEANINGS
-    }
-    assert bound == FR208_BOUND_KINDS
+@pytest.mark.parametrize("kind", CONSTRUCT_KINDS)
+def test_each_kind_binds_an_fr208_meaning(kind):
+    assert object_type(kind)["construct"]["meaning"] in FR208_MEANINGS, kind
 
 
 @pytest.mark.trace("TC-101", "FR-008-AC-3")

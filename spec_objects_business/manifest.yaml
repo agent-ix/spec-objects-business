@@ -66,7 +66,7 @@ object_types:
     shape: namespace
     members: {members: required, vocabulary: required, fields: forbidden, operations: forbidden}
     rules: [no_fields, no_operations, exclusive_membership, members_not_namespace]
-    meaning: quire.meaning.namespace
+    meaning: quire.meaning.model.namespace/v1
   allowed_links:
     contains: [entity, aggregate_root, value_object, repository, event, state_machine, process, enumeration]
   data_schema:
@@ -163,7 +163,7 @@ object_types:
     shape: record
     members: {fields: required}
     rules: [identity_field_forbidden]
-    meaning: quire.meaning.model.value-type/v1
+    meaning: quire.meaning.model.record-value-type/v1
   allowed_links:
     specializes: [value_object]
     composes: [value_object, enumeration]
@@ -278,7 +278,7 @@ object_types:
     references:
       persists: [persistable]
     rules: [no_fields, min_operations]
-    meaning: quire.meaning.persistence-interface
+    meaning: quire.meaning.model.persistence-interface/v1
   allowed_links:
     persists: [aggregate_root, entity]
     references: [data_schema]
@@ -308,7 +308,7 @@ object_types:
     shape: record
     members: {fields: required, occurrenceField: required}
     rules: [identity_field_forbidden, occurrence_field_required]
-    meaning: quire.meaning.model.value-type/v1
+    meaning: quire.meaning.model.event-type/v1
   allowed_links:
     specializes: [event]
     carries: [value_object, entity]
@@ -343,7 +343,7 @@ object_types:
     references:
       transitions: [event-like]
     rules: [min_operations]
-    meaning: quire.meaning.state-machine
+    meaning: quire.meaning.model.state-machine/v1
   allowed_links:
     specializes: [state_machine]
     transitions_to: [state_machine]
@@ -393,7 +393,7 @@ object_types:
     references:
       steps: [event-like]
     rules: [identity_field_required]
-    meaning: quire.meaning.process
+    meaning: quire.meaning.model.process/v1
   allowed_links:
     specializes: [process]
     triggers: [process, action]
