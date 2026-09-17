@@ -71,7 +71,7 @@ object_types:
     contains: [entity, aggregate_root, value_object, repository, event, state_machine, process, enumeration]
   data_schema:
     schema: schemas/Domain.json
-    digest: sha256:e00de1343b8ef67747a657f442176f66c41405e7fd806270ea13e99aca669185
+    digest: sha256:6f6add580ca89a751f9efd0de4795f967a268bb184a62fb8f29ec2d972971647
   body_extraction:
     yield_pattern:
       match:
@@ -170,7 +170,7 @@ object_types:
     references: [enumeration]
   data_schema:
     schema: schemas/ValueObject.json
-    digest: sha256:b0020f0afd9efd8760fd62dff8fd108a79b5becfb5bc5ec256568a18a8d1d641
+    digest: sha256:6a19688ada660ffadaf7368f8455472fe3c258f888f0e81a9b404f7f89006024
   body_extraction:
     yield_pattern:
       match:
@@ -284,7 +284,7 @@ object_types:
     references: [data_schema]
   data_schema:
     schema: schemas/Repository.json
-    digest: sha256:8706d0c2cf8684594da03171018f0e5b688ec110bf5183b9e77bcb18a09490c1
+    digest: sha256:27bf26453179d5b6b1d618d0c87a6f8e3790b10c816288ecf7c174c0286b8247
   body_extraction:
     yield_pattern:
       match:

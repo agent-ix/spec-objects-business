@@ -10,12 +10,6 @@
       },
       "minItems": 1
     },
-    "clauses": {
-      "type": "array",
-      "items": {
-        "$ref": "https://schemas.agent-ix.org/semantic-core/0.2.0/ClauseRef.json"
-      }
-    },
     "persists": {
       "type": "array",
       "items": {
@@ -29,5 +23,39 @@
   "unevaluatedProperties": {
     "not": {}
   },
-  "description": "A repository: persistence operations over an aggregate. `fields` is forbidden by the seal."
+  "description": "A repository: persistence operations over an aggregate. `fields` and\n`clauses` are forbidden by the seal, and each operation's `pre`/`post` (a\n`Pre:`/`Post:` contract) must be empty or absent (QSpec FR-208: an\noperation contract or a `quire` clause on a persistence interface is\n`unsupported_construct`/`declaration-form`).",
+  "allOf": [
+    {
+      "properties": {
+        "operations": {
+          "not": {
+            "contains": {
+              "anyOf": [
+                {
+                  "required": [
+                    "pre"
+                  ],
+                  "properties": {
+                    "pre": {
+                      "minItems": 1
+                    }
+                  }
+                },
+                {
+                  "required": [
+                    "post"
+                  ],
+                  "properties": {
+                    "post": {
+                      "minItems": 1
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  ]
 }

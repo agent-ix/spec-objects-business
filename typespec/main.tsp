@@ -134,13 +134,14 @@ model ProcessStep {
 // ---------------------------------------------------------------------------
 
 /**
- * A bounded context. A domain declares a boundary, not data: `fields` and
- * `operations` are forbidden by the seal.
+ * A bounded context. A domain declares a boundary, not data: `fields`,
+ * `operations` and `clauses` are forbidden by the seal (QSpec FR-208: a
+ * namespace declares no fields and no operations, and a `quire` clause on it
+ * is `unsupported_construct`/`declaration-form`).
  */
 model Domain {
   members?: RelationDecl[];
   vocabulary?: Term[];
-  clauses?: ClauseRef[];
   ...Record<never>;
 }
 
@@ -174,7 +175,9 @@ model NestedEntity {
 
 /**
  * A value object: equality by value, so it carries no identity field of its
- * own. `relations` is forbidden by the seal.
+ * own. `relations` and `operations` are forbidden by the seal (QSpec FR-208:
+ * an operation of a record value type is `unsupported_construct`/
+ * `declaration-form`).
  */
 model ValueObject {
   @minItems(1)
@@ -184,7 +187,6 @@ model ValueObject {
   fields: FieldDecl[];
 
   clauses?: ClauseRef[];
-  operations?: OperationDecl[];
   ...Record<never>;
 }
 
@@ -203,12 +205,36 @@ model AggregateRoot {
   ...Record<never>;
 }
 
-/** A repository: persistence operations over an aggregate. `fields` is forbidden by the seal. */
+/**
+ * A repository: persistence operations over an aggregate. `fields` and
+ * `clauses` are forbidden by the seal, and each operation's `pre`/`post` (a
+ * `Pre:`/`Post:` contract) must be empty or absent (QSpec FR-208: an
+ * operation contract or a `quire` clause on a persistence interface is
+ * `unsupported_construct`/`declaration-form`).
+ */
+@extension(
+  "allOf",
+  #[
+    #{
+      properties: #{
+        operations: #{
+          not: #{
+            contains: #{
+              anyOf: #[
+                #{ required: #["pre"], properties: #{ pre: #{ minItems: 1 } } },
+                #{ required: #["post"], properties: #{ post: #{ minItems: 1 } } }
+              ]
+            }
+          }
+        }
+      }
+    }
+  ]
+)
 model Repository {
   @minItems(1)
   operations: OperationDecl[];
 
-  clauses?: ClauseRef[];
   persists?: SemanticId[];
   ...Record<never>;
 }

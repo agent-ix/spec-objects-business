@@ -172,6 +172,7 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | TC-106 | The manifest `roles:` registry declares `aggregate-member` and `composite-owner`; the quire-rs FR-040 load check over this manifest beside the spec-artifacts-iso roles and archetypes finds only the pre-existing `action` and `data_schema` targets unknown, and without the registry both roles are unknown | Unit | P0 | FR-008-AC-5 | ✅ |
 | TC-107 | A hyphenated skeleton id fails with one pattern-mismatch error naming the id and the pattern — an explicit expected failure while `agent-ix/quire-rs#451` is open | Integration | P1 | FR-009-AC-4 | 🚧 blocked on quire-rs#451 |
 | TC-108 | `event`'s `construct:` declares `immutable: true`; every other of the ten kinds' `construct:` lacks the key | Unit | P0 | FR-008-AC-6 | ✅ |
+| TC-109 | Each QSpec FR-208 refusal this module's record schema can express fails validation, and the same record without the refused form passes: an operation on `ValueObject`/`Event`; a `clauses` key or a non-empty operation `pre`/`post` on `Repository`; a `fields`, `operations` or `clauses` key on `Domain`; and no `repository` or `domain` `allowed_links` admits `specializes` | Unit | P0 | FR-008-AC-7 | ✅ |
 | TC-075 | Every object type ships a typed schema a fixture reader can consume; an entity and an enumeration record are distinguishable by schema alone | Demonstration | P2 | StR-001-VC-3 | ✅ |
 
 ## Test Environment
