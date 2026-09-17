@@ -53,7 +53,7 @@ def module_copy(tmp_path, mutate=None):
 
 
 @pytest.mark.trace("TC-020", "FR-003-AC-1", "FR-003-CON-1")
-def test_the_semantic_block_carries_the_nine_admitted_keys_and_ten_exports(
+def test_the_semantic_block_carries_the_nine_admitted_keys_and_eleven_exports(
     semantic_block,
 ):
     assert set(semantic_block) == ADMITTED_KEYS
@@ -66,7 +66,6 @@ def test_the_semantic_block_carries_the_nine_admitted_keys_and_ten_exports(
     assert semantic_block["mappings"] == [
         "typed-table",
         "sysml-fence",
-        "quire-clause",
         "generalization",
         "abstract-types",
         "presence",
@@ -74,7 +73,7 @@ def test_the_semantic_block_carries_the_nine_admitted_keys_and_ten_exports(
         "redefinition",
         "effect-frames",
     ]
-    assert semantic_block["compatibility_posture"] == "additive"
+    assert semantic_block["compatibility_posture"] == "strict"
     assert semantic_block["legacy_forms"] == "warning"
 
 
@@ -128,7 +127,7 @@ def test_every_locator_added_after_020_is_optional():
 
 
 @pytest.mark.trace("TC-024", "FR-003-AC-4")
-def test_the_registry_loads_all_ten_archetypes(quire_engine):
+def test_the_registry_loads_all_eleven_archetypes(quire_engine):
     registry = quire_engine.Registry.load_from([str(REPO_ROOT)])
     names = set(registry.archetype_names())
     for name in OBJECT_TYPES:

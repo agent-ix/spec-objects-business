@@ -20,24 +20,26 @@ object: entity
 |---|---|---|---|
 | customer_id | UUID | 1..1 | identity |
 | email | String | 1..1 | minLength: 3, maxLength: 254 |
+| email_verified | Boolean | 1..1 | |
 | display_name | String | 1..1 | minLength: 1 |
-| default_shipping_address | Money | 0..1 | |
-| status | OrderStatus | 1..1 | |
 | registered_at | Timestamp | 1..1 | |
+| first_order_placed_at | Timestamp | 0..1 | |
+| suspended | Boolean | 1..1 | |
+| suspended_at | Timestamp | 0..1 | |
 
 ## Invariants
 
 The clauses the Customer declaration enforces. Each clause owns one
 `quire` fence under its own `### <clauseId>` heading.
 
-### EmailIsVerifiedBeforeFirstOrder
+### CustomerWithAPlacedOrderHasAVerifiedEmail
 
 ```quire
-self.status = "Draft" or size(self.email) >= 3
+present(self.first_order_placed_at) implies self.email_verified
 ```
 
-### SuspendedCustomerPlacesNoOrder
+### SuspensionTimeIsRecordedExactlyWhenSuspended
 
 ```quire
-self.status = "Cancelled" implies present(self.registered_at)
+self.suspended = present(self.suspended_at)
 ```

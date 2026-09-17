@@ -13,16 +13,18 @@ because: "the Members section holds only the declared Member table; a bullet lis
 | Field | Type | Multiplicity | Constraints |
 |---|---|---|---|
 | order_id | UUID | 1..1 | identity |
+| status | OrderStatus | 1..1 | |
+| lines | OrderLine | 0..* | |
 
 ## Invariants
 
-### PlacedOrderCarriesAtLeastOneLine
+### OrderPastDraftCarriesAtLeastOneLine
 
 ```quire
-self.status != "Draft" implies size(self.lines) >= 1
+(self.status = OrderManagement::OrderStatus::Placed or self.status = OrderManagement::OrderStatus::Paid or self.status = OrderManagement::OrderStatus::Shipped or self.status = OrderManagement::OrderStatus::Delivered) implies size(self.lines) >= 1
 ```
 
 ## Members
 
-- OrderLine 1..*
+- OrderLine 0..*
 - Money 3..3

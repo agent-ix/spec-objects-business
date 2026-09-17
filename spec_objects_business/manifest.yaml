@@ -1,7 +1,7 @@
 manifest_version: 1.0.0
 name: spec-objects-business
 version: 0.4.0
-description: 'Filament Module: tier-2 business ObjectTypes (DDD: domain, entity, value_object, aggregate_root, nested_entity, repository, event, state_machine, process, enumeration)'
+description: 'Filament Module: tier-2 business ObjectTypes (DDD: domain, entity, value_object, aggregate_root, nested_entity, repository, event, state_machine, process, enumeration, population)'
 semantic:
   contract_version: 1.0.0
   semantic_core: 0.2.0
@@ -17,10 +17,11 @@ semantic:
   - state_machine
   - process
   - enumeration
+  - population
   imports: {}
   targets: [json-schema, markdown]
-  mappings: [typed-table, sysml-fence, quire-clause, generalization, abstract-types, presence, subsetting, redefinition, effect-frames]
-  compatibility_posture: additive
+  mappings: [typed-table, sysml-fence, generalization, abstract-types, presence, subsetting, redefinition, effect-frames]
+  compatibility_posture: strict
   legacy_forms: warning
 nav:
   category:
@@ -28,6 +29,8 @@ nav:
     label: Business
     icon: Boxes
     order: 51
+edge_types:
+  specializes: { description: "Generalization: the source type specializes the target type and inherits its declarations.", category: structural, inverse: generalizes }
 archetypes: []
 grammars: []
 artifact_types: []
@@ -352,4 +355,27 @@ object_types:
             columns:
             - Value
             - Description
+            min_rows: 1
+- name: population
+  allowed_links:
+    references: [entity, aggregate_root, nested_entity, value_object, event, process]
+  data_schema:
+    schema: schemas/Population.json
+    digest: sha256:c607d524911fb6bdbf8a23b7b169b7f721653aa649b5ca65a61e852855390bec
+  body_extraction:
+    yield_pattern:
+      match:
+        id: *id001
+        title: *id002
+        type: *id003
+        invariants:
+          from: section_body
+          after_heading: Invariants
+          required: false
+        members:
+          from: table_row
+          under_section: Members
+          required: true
+          assert:
+            columns: [Type, Extent]
             min_rows: 1

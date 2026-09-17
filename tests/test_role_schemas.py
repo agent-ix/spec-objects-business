@@ -178,8 +178,10 @@ def test_process_requires_a_correlation_identity_and_admits_typed_steps(
 
 
 @pytest.mark.trace("TC-038", "FR-004-AC-9", "FR-004-CON-2")
-def test_the_empty_record_passes_only_domain_and_enumeration(schema_registry):
-    open_required = {"domain", "enumeration"}
+def test_the_empty_record_passes_only_domain_enumeration_and_population(
+    schema_registry,
+):
+    open_required = {"domain", "enumeration", "population"}
     for name in OBJECT_TYPES:
         validator = schema_registry(MODEL_OF[name])
         assert ok(validator, {}) is (name in open_required), name
@@ -187,7 +189,7 @@ def test_the_empty_record_passes_only_domain_and_enumeration(schema_registry):
         validator = schema_registry(MODEL_OF[name])
         assert not ok(validator, {"fields": [field("anything")]}), name
         assert not ok(validator, {"operations": [OPERATION]}), name
-    # The two open-required types are told apart by their optional keys alone.
+    # The open-required types are told apart by their optional keys alone.
     assert ok(
         schema_registry("Domain"), {"vocabulary": [{"term": "Place", "doc": "…"}]}
     )
@@ -196,6 +198,13 @@ def test_the_empty_record_passes_only_domain_and_enumeration(schema_registry):
     )
     assert ok(schema_registry("Enumeration"), {"values": [{"value": "Draft"}]})
     assert not ok(schema_registry("Domain"), {"values": [{"value": "Draft"}]})
+    member = {
+        "type": {"target": "ix://agent-ix/spec-objects-business/type/Order"},
+        "extent": {"lower": 0},
+    }
+    assert ok(schema_registry("Population"), {"members": [member]})
+    assert not ok(schema_registry("Domain"), {"members": [member]})
+    assert not ok(schema_registry("Enumeration"), {"members": [member]})
 
 
 @pytest.mark.trace("TC-039", "FR-004-AC-10")

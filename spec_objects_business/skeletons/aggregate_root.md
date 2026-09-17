@@ -23,6 +23,7 @@ object: aggregate_root
 | order_id | UUID | 1..1 | identity |
 | customer_id | UUID | 1..1 | |
 | status | OrderStatus | 1..1 | |
+| lines | OrderLine | 0..* | |
 | subtotal | Money | 1..1 | |
 | shipping_fee | Money | 1..1 | |
 | grand_total | Money | 1..1 | |
@@ -33,29 +34,29 @@ object: aggregate_root
 The clauses the Order declaration enforces. Each clause owns one
 `quire` fence under its own `### <clauseId>` heading.
 
-### GrandTotalIsSubtotalPlusShipping
+### GrandTotalIsSubtotalPlusShippingFee
 
 ```quire
-self.grand_total.amount = self.subtotal.amount + self.shipping_fee.amount
+self.grand_total.amount_minor = self.subtotal.amount_minor + self.shipping_fee.amount_minor
 ```
 
-### PlacedOrderCarriesAtLeastOneLine
+### OrderPastDraftCarriesAtLeastOneLine
 
 ```quire
-self.status != "Draft" implies size(self.lines) >= 1
+(self.status = OrderManagement::OrderStatus::Placed or self.status = OrderManagement::OrderStatus::Paid or self.status = OrderManagement::OrderStatus::Shipped or self.status = OrderManagement::OrderStatus::Delivered) implies size(self.lines) >= 1
 ```
 
-### LinesAreAmendedOnlyWhileDraft
+### DraftOrderHasNoPlacementTime
 
 ```quire
-exists(l in self.lines: l.amended) implies self.status = "Draft"
+self.status = OrderManagement::OrderStatus::Draft implies not present(self.placed_at)
 ```
 
 ## Members
 
 | Member | Multiplicity |
 |---|---|
-| OrderLine | 1..* |
+| OrderLine | 0..* |
 | Money | 3..3 |
 
 All members share one transaction, so the aggregate is loaded and persisted

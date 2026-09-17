@@ -31,6 +31,8 @@ and the warehouse.
 | order_id | UUID | 1..1 | |
 | started_at | Timestamp | 1..1 | |
 | reservation_deadline | Duration | 1..1 | |
+| stock_refused | Boolean | 1..1 | |
+| capture_failed | Boolean | 1..1 | |
 | compensated | Boolean | 1..1 | |
 
 ## Invariants
@@ -38,16 +40,16 @@ and the warehouse.
 The clauses the OrderFulfilment declaration enforces. Each clause owns one
 `quire` fence under its own `### <clauseId>` heading.
 
-### OneRunPerOrder
+### CompensationFollowsARefusedReservationOrAFailedCapture
 
 ```quire
-present(self.order_id) and present(self.correlation_id)
+self.compensated implies (self.stock_refused or self.capture_failed)
 ```
 
-### CompensationFollowsAFailedCapture
+### CaptureIsNotAttemptedAfterAStockRefusal
 
 ```quire
-self.compensated implies self.capture_failed
+self.stock_refused implies not self.capture_failed
 ```
 
 ## Workflow
@@ -55,13 +57,13 @@ self.compensated implies self.capture_failed
 | Step | Kind | Consumes | Emits | Description |
 |---|---|---|---|---|
 | receive_order | event | OrderPlaced | | Start a run keyed by a fresh correlation id |
-| reserve_stock | command | | StockReserved | Reserve stock for every line |
-| stock_reserved | decision | StockReserved | | Continue to payment, or compensate when stock is unavailable |
-| capture_payment | command | | PaymentCaptured | Capture payment for the grand total |
-| payment_captured | decision | PaymentCaptured | | Continue to the warehouse, or compensate when payment is declined |
-| release_reservation | compensation | | OrderCancelled | Release the stock reservation and cancel the order |
+| reserve_stock | command | | | Ask Inventory to reserve stock for every line |
+| stock_reserved | decision | | | Continue to payment, or record the refusal and compensate |
+| capture_payment | command | | | Ask Payments to capture the grand total |
+| payment_captured | decision | | | Continue to the warehouse, or record the failure and compensate |
+| release_reservation | compensation | | | Release the stock reservation and cancel the order |
 | release_to_warehouse | command | | | Hand the order to the warehouse to pick and pack |
-| await_shipment | wait | | OrderShipped | Wait for the carrier to confirm the hand-over |
+| await_shipment | wait | | | Wait for the carrier to confirm the hand-over |
 
 ## States
 
@@ -82,7 +84,9 @@ the run compensates.
 ## Algorithm
 
 1. On OrderPlaced, start a run keyed by a fresh `correlation_id`.
-2. Reserve stock for every line; on refusal, compensate and cancel the order.
-3. Capture payment for `grand_total`; on decline, release the reservation.
+2. Reserve stock for every line; on refusal, set `stock_refused`, compensate
+   and cancel the order.
+3. Capture payment for `grand_total`; on decline, set `capture_failed` and
+   release the reservation.
 4. Release the order to the warehouse and wait for the shipment confirmation.
-5. Emit OrderShipped and close the run.
+5. Close the run once the carrier confirms the hand-over.

@@ -73,6 +73,16 @@ model Transition {
   ...Record<never>;
 }
 
+/**
+ * One member of a population: a declared type and the extent of its
+ * instances (quire-rs FR-075 `Type | Extent` row).
+ */
+model PopulationMember {
+  type: TypeRef;
+  extent: Multiplicity;
+  ...Record<never>;
+}
+
 /** Closed set of process step kinds. */
 enum StepKind {
   command,
@@ -225,6 +235,17 @@ model Process {
   steps?: ProcessStep[];
   clauses?: ClauseRef[];
   operations?: OperationDecl[];
+  ...Record<never>;
+}
+
+/**
+ * A population: the closed set of declared types whose instances a model
+ * ranges over, each with its extent. A population declares membership, not
+ * data: `fields` and `operations` are forbidden by the seal.
+ */
+model Population {
+  members?: PopulationMember[];
+  clauses?: ClauseRef[];
   ...Record<never>;
 }
 

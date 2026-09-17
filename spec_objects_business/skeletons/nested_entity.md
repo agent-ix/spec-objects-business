@@ -18,9 +18,9 @@ object: nested_entity
 
 | Field | Type | Multiplicity | Constraints |
 |---|---|---|---|
-| line_number | Integer | 1..1 | identity, min: 1 |
+| line_number | Integer | 1..1 | identity, min: 1, max: 1000 |
 | product_id | UUID | 1..1 | |
-| quantity | Integer | 1..1 | min: 1 |
+| quantity | Integer | 1..1 | min: 1, max: 10000 |
 | unit_price | Money | 1..1 | |
 | line_total | Money | 1..1 | |
 
@@ -32,13 +32,13 @@ The clauses the OrderLine declaration enforces. Each clause owns one
 ### LineTotalIsQuantityTimesUnitPrice
 
 ```quire
-self.line_total.amount = self.quantity * self.unit_price.amount
+self.line_total.amount_minor = self.quantity * self.unit_price.amount_minor
 ```
 
-### QuantityIsPositive
+### LineTotalIsInTheUnitPriceCurrency
 
 ```quire
-self.quantity >= 1
+self.line_total.currency = self.unit_price.currency
 ```
 
 ## Parent

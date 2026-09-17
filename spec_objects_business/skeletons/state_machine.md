@@ -22,7 +22,9 @@ object: state_machine
 # [state-machine-001] OrderLifecycle
 
 The Order aggregate moves through these states. Transitions are commands on
-the aggregate root; every transition emits a corresponding domain event.
+the aggregate root. Placing an order publishes OrderPlaced. Cancellation is
+allowed only from Draft and Placed: the Transitions table declares no
+`cancel` or `discard` row from any later state.
 
 ## Properties
 
@@ -31,22 +33,23 @@ the aggregate root; every transition emits a corresponding domain event.
 | order_id | UUID | 1..1 | |
 | current_state | OrderStatus | 1..1 | |
 | entered_state_at | Timestamp | 1..1 | |
+| placed_at | Timestamp | 0..1 | |
 
 ## Invariants
 
 The clauses the OrderLifecycle declaration enforces. Each clause owns one
 `quire` fence under its own `### <clauseId>` heading.
 
-### CancelIsAllowedUntilCapture
+### DraftOrderHasNoPlacementTime
 
 ```quire
-self.current_state = "Draft" or self.current_state = "Placed"
+self.current_state = OrderManagement::OrderStatus::Draft implies not present(self.placed_at)
 ```
 
-### ShippedIsImmutable
+### OrderPastPlacementRecordsItsPlacementTime
 
 ```quire
-self.current_state = "Shipped" implies present(self.entered_state_at)
+(self.current_state = OrderManagement::OrderStatus::Placed or self.current_state = OrderManagement::OrderStatus::Paid or self.current_state = OrderManagement::OrderStatus::Shipped or self.current_state = OrderManagement::OrderStatus::Delivered) implies present(self.placed_at)
 ```
 
 ## Operations
@@ -60,7 +63,7 @@ clauses declared in this artifact.
 
 Convert a draft order into a binding purchase request.
 
-Requires: CancelIsAllowedUntilCapture
+Ensures: OrderPastPlacementRecordsItsPlacementTime
 
 ### discard
 
@@ -74,13 +77,9 @@ Confirm payment for a placed order at the authorised amount.
 
 Cancel a placed order before payment capture succeeds.
 
-Requires: CancelIsAllowedUntilCapture
-
 ### ship
 
 Hand the paid order to the carrier.
-
-Ensures: ShippedIsImmutable
 
 ### confirm_delivery
 
@@ -101,9 +100,9 @@ Record the carrier's delivery confirmation.
 
 | From | To | Trigger | Guard | Emits |
 |---|---|---|---|---|
-| Draft | Placed | place | CancelIsAllowedUntilCapture | OrderPlaced |
-| Draft | Cancelled | discard | | OrderDiscarded |
-| Placed | Paid | capture_payment | | PaymentCaptured |
-| Placed | Cancelled | cancel | CancelIsAllowedUntilCapture | OrderCancelled |
-| Paid | Shipped | ship | | OrderShipped |
-| Shipped | Delivered | confirm_delivery | | OrderDelivered |
+| Draft | Placed | place | | OrderPlaced |
+| Draft | Cancelled | discard | | |
+| Placed | Paid | capture_payment | | |
+| Placed | Cancelled | cancel | | |
+| Paid | Shipped | ship | | |
+| Shipped | Delivered | confirm_delivery | | |

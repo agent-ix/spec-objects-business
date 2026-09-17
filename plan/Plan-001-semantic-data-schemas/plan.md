@@ -20,6 +20,8 @@ relationships:
     type: references
   - target: ix://agent-ix/spec-objects-business/NFR-001
     type: references
+  - target: ix://agent-ix/spec-objects-business/FR-006
+    type: references
   - target: ix://agent-ix/spec-objects-business/IT-001
     type: references
   - target: ix://agent-ix/spec-objects-business/IT-002
@@ -171,6 +173,9 @@ dependency" skip that FR-005 replaces with a hard failure.
 - **C1 = Task-008** NFR-001 additive-compatibility verification — Medium; exit: no 0.2.0 locator changed, the `properties` string is byte-identical, and the one blocked criterion is an expected failure naming its issue rather than a skip.
 - **C2 = Task-009** IT-002 Quoin install demonstration — Medium; exit: the module installs, is listed, and the operator's prior module state is restored whether or not the install succeeded.
 
+### Track D: Model features
+- **D1 = Task-012** FR-006 model tables, the `population` type and manifest 0.4.0 — Hard; exit: every model table extracts from its skeleton, every undeclared form is refused, and every clause is valid Quire.
+
 ## Parallel Execution Summary
 
 ```
@@ -196,9 +201,10 @@ waits on A4 because it re-posts the changed manifest. Track C begins once A6 lan
 | Task-005 | A     | FR-005, US-001           | TC-050…TC-057, TC-059                                    | done |
 | Task-006 | A     | FR-003, FR-005           | TC-023, TC-025                                           | done |
 | Task-007 | B     | FR-005, FR-002           | TC-018, TC-019, TC-058                                   | done |
-| Task-008 | C     | NFR-001                  | TC-060, TC-061, TC-062, TC-063                           | not_started |
+| Task-008 | C     | NFR-001                  | TC-060, TC-061, TC-062, TC-063                           | done |
 | Task-009 | C     | FR-003, IT-002           | TC-027, TC-070                                           | blocked |
 | Task-010 | B     | FR-001, StR-001, IT-001  | TC-001…TC-006, TC-075                                    | done |
+| Task-012 | D     | FR-006, FR-003, FR-004, FR-005, NFR-001 | TC-080…TC-087                                 | in_progress |
 
 ## Status
 
@@ -217,6 +223,9 @@ legacy-form artifact that declares `object:` errors under
 (a refused module names neither the key nor the schema path). A third,
 `agent-ix/quire-rs#392`, is why `quire` is provisioned by `make dev-quire`
 rather than declared as a dependency.
+
+Task-012 (FR-006 model features, the `population` type and manifest 0.4.0) is
+`in_progress` on PR #8.
 
 ## Coordination Rules
 

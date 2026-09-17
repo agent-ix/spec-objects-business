@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.4.0/PopulationMember.json",
+  "type": "object",
+  "properties": {
+    "type": {
+      "$ref": "https://schemas.agent-ix.org/semantic-core/0.2.0/TypeRef.json"
+    },
+    "extent": {
+      "$ref": "https://schemas.agent-ix.org/semantic-core/0.2.0/Multiplicity.json"
+    }
+  },
+  "required": [
+    "type",
+    "extent"
+  ],
+  "unevaluatedProperties": {
+    "not": {}
+  },
+  "description": "One member of a population: a declared type and the extent of its\ninstances (quire-rs FR-075 `Type | Extent` row)."
+}

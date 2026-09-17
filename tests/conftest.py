@@ -62,6 +62,7 @@ OBJECT_TYPES = (
     "state_machine",
     "process",
     "enumeration",
+    "population",
 )
 
 MODEL_OF = {
@@ -75,6 +76,7 @@ MODEL_OF = {
     "state_machine": "StateMachine",
     "process": "Process",
     "enumeration": "Enumeration",
+    "population": "Population",
 }
 
 # FR-006: the model tables quire-rs extracts (its TABLE_SPECS column sets),
@@ -86,6 +88,7 @@ TABLE_SPECS = {
     "steps": ["Step", "Kind", "Consumes", "Emits", "Description"],
     "members": ["Member", "Multiplicity"],
     "vocabulary": ["Term", "Description"],
+    "population": ["Type", "Extent"],
 }
 
 MODEL_TABLES = {
@@ -97,6 +100,7 @@ MODEL_TABLES = {
     },
     "process": {"steps": ("steps", "Workflow"), "states": ("states", "States")},
     "enumeration": {"values_table": ("values", "Values")},
+    "population": {"members": ("population", "Members")},
 }
 
 # The 0.2.0 locators whose sections FR-006 declares as model tables.
@@ -108,7 +112,12 @@ SUPERSEDED_020_LOCATORS = {
 }
 
 # The object types whose FR-006 model tables are required.
-REQUIRED_MODEL_TABLE_TYPES = ("aggregate_root", "state_machine", "process")
+REQUIRED_MODEL_TABLE_TYPES = (
+    "aggregate_root",
+    "state_machine",
+    "process",
+    "population",
+)
 
 SUPPORT_MODELS = (
     "IdentityField",
@@ -118,6 +127,7 @@ SUPPORT_MODELS = (
     "Transition",
     "ProcessStep",
     "StepKind",
+    "PopulationMember",
 )
 
 

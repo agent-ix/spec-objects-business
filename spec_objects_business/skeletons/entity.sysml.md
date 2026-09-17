@@ -15,10 +15,12 @@ object: entity
 ```sysml
 attribute customer_id : UUID[1..1] { identity }
 attribute email : String[1..1] { minLength: 3, maxLength: 254 }
+attribute email_verified : Boolean[1..1]
 attribute display_name : String[1..1] { minLength: 1 }
-ref item default_shipping_address : Money[0..1]
-ref item status : OrderStatus[1..1]
 attribute registered_at : Timestamp[1..1]
+attribute first_order_placed_at : Timestamp[0..1]
+attribute suspended : Boolean[1..1]
+attribute suspended_at : Timestamp[0..1]
 ```
 
 ## Invariants
@@ -26,14 +28,14 @@ attribute registered_at : Timestamp[1..1]
 The clauses the Customer declaration enforces. Each clause owns one
 `quire` fence under its own `### <clauseId>` heading.
 
-### EmailIsVerifiedBeforeFirstOrder
+### CustomerWithAPlacedOrderHasAVerifiedEmail
 
 ```quire
-self.status = "Draft" or size(self.email) >= 3
+present(self.first_order_placed_at) implies self.email_verified
 ```
 
-### SuspendedCustomerPlacesNoOrder
+### SuspensionTimeIsRecordedExactlyWhenSuspended
 
 ```quire
-self.status = "Cancelled" implies present(self.registered_at)
+self.suspended = present(self.suspended_at)
 ```

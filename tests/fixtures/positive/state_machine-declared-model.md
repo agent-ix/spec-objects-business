@@ -11,7 +11,8 @@ abstract: true
 # [positive-001] ReturnLifecycle
 
 A return reuses the order lifecycle's context and declares its own states,
-transitions, and operation frames.
+transitions, and operation frames. An exchange replaces the returned order
+lines with a new order, which publishes OrderPlaced.
 
 ## Properties
 
@@ -22,42 +23,43 @@ transitions, and operation frames.
 | returned_items | String | 0..* | | | items | |
 | current_state | OrderStatus | 1..1 | | required | | current_state |
 | reason | String | 0..1 | | optional | | |
+| exchanged | Boolean | 1..1 | | required | | |
 
 ## Invariants
 
-### ReturnIsOpen
+### ReturnedItemsAreAtMostTheItems
 
 ```quire
-self.current_state = "Requested"
+size(self.returned_items) <= size(self.items)
 ```
 
-### ReturnIsSettled
+### ExchangedReturnHasReturnedItems
 
 ```quire
-self.current_state = "Refunded" implies size(self.returned_items) >= 1
+self.exchanged implies size(self.returned_items) >= 1
 ```
 
 ## Operations
 
-### refund
+### exchange
 
-Refund the returned items.
+Replace the returned lines with a new order.
 
-Requires: ReturnIsOpen
-Ensures: ReturnIsSettled
-Modifies: self.current_state, self.returned_items
-Creates: Refund
-Deletes: self.items
+Requires: ReturnedItemsAreAtMostTheItems
+Ensures: ExchangedReturnHasReturnedItems
+Modifies: self.current_state, self.returned_items, self.exchanged
+Creates: Order
+Deletes: OrderLine
 
 ## States
 
 | State | Description |
 |---|---|
 | Requested | The customer asked to return items |
-| Refunded | The refund was issued |
+| Exchanged | The returned lines were replaced by a new order |
 
 ## Transitions
 
 | From | To | Trigger | Guard | Emits |
 |---|---|---|---|---|
-| Requested | Refunded | refund | ReturnIsOpen | ReturnRefunded |
+| Requested | Exchanged | exchange | ReturnedItemsAreAtMostTheItems | OrderPlaced |

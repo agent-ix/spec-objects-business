@@ -18,5 +18,5 @@ because: "a step Kind is one of command, event, decision, compensation, wait; re
 
 | Step | Kind | Consumes | Emits | Description |
 |---|---|---|---|---|
-| reserve_stock | command | OrderPlaced | StockReserved | Reserve stock for every line |
+| reserve_stock | command | OrderPlaced | | Reserve stock for every line |
 | reserve_again | retry | | | Try the reservation again |

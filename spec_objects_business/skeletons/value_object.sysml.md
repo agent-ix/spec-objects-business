@@ -11,7 +11,7 @@ object: value_object
 ## Properties
 
 ```sysml
-attribute amount : Decimal(19,2)[1..1]
+attribute amount_minor : Integer[1..1] { min: 0, max: 1000000000000 }
 attribute currency : String[1..1] { minLength: 3, maxLength: 3 }
 ```
 
@@ -20,14 +20,8 @@ attribute currency : String[1..1] { minLength: 3, maxLength: 3 }
 The clauses the Money declaration enforces. Each clause owns one
 `quire` fence under its own `### <clauseId>` heading.
 
-### CurrencyIsIso4217Alpha3
+### AmountMinorIsNonNegative
 
 ```quire
-size(self.currency) = 3
-```
-
-### ArithmeticIsSingleCurrency
-
-```quire
-present(self.amount) implies present(self.currency)
+self.amount_minor >= 0
 ```

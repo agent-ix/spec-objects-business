@@ -17,6 +17,7 @@ from tests.conftest import (
     SKELETONS_DIR,
     TABLE_SPECS,
     frontmatter,
+    load_manifest,
     locators,
     object_type,
     object_types,
@@ -30,6 +31,7 @@ REQUIRED = {
     ("process", "steps"): True,
     ("process", "states"): False,
     ("enumeration", "values_table"): True,
+    ("population", "members"): True,
 }
 
 # The key column of each model entry, as the engine names it.
@@ -42,6 +44,17 @@ ENTRY_KEY = {
     "vocabulary": "term",
 }
 
+# The key column of each model table, as the Markdown names it.
+KEY_COLUMN = {
+    "values": "Value",
+    "states": "State",
+    "transitions": "Trigger",
+    "steps": "Step",
+    "members": "Member",
+    "vocabulary": "Term",
+    "population": "Type",
+}
+
 # The fixture-name fragment that names each model table.
 STEM_OF = {
     "values": "values",
@@ -50,6 +63,7 @@ STEM_OF = {
     "steps": "step",
     "members": "members",
     "vocabulary": "vocabulary",
+    "population": "population",
 }
 
 # One negative fixture per model table, plus the refusal of a model table
@@ -65,6 +79,8 @@ MODEL_NEGATIVES = {
     "domain-vocabulary-duplicate-term.md": "semantic.duplicate-model-entry",
     "entity-table-under-undeclared-section.md": "semantic.feature-not-extractable",
     "entity-presence-not-a-presence.md": "semantic.invalid-model-cell",
+    "process-states-as-list.md": "semantic.feature-not-extractable",
+    "population-members-duplicate-type.md": "semantic.duplicate-model-entry",
 }
 
 
@@ -100,10 +116,14 @@ def test_every_model_table_locator_declares_the_engine_column_set():
         for key, loc in locators(ot).items():
             if loc.get("from") != "table_row":
                 continue
-            columns = (loc.get("assert") or {}).get("columns")
-            matches = [f for f, cols in TABLE_SPECS.items() if cols == columns]
+            columns = (loc.get("assert") or {}).get("columns") or []
+            # quire-rs recognizes a model table by its first column being a
+            # table key, then requires every column to belong to that table.
+            matches = [f for f, cols in TABLE_SPECS.items() if columns[:1] == cols[:1]]
             if matches:
-                declared[(ot["name"], key)] = (matches[0], loc["under_section"])
+                (feature,) = matches
+                assert set(columns) <= set(TABLE_SPECS[feature]), (ot["name"], key)
+                declared[(ot["name"], key)] = (feature, loc["under_section"])
     expected = {
         (name, key): spec
         for name, tables in MODEL_TABLES.items()
@@ -136,20 +156,14 @@ def test_every_skeleton_extracts_its_model_tables_row_for_row(
             rows = table_rows(text, heading)
             assert rows, (name, heading)
             spec = TABLE_SPECS[feature]
-            key_column = {
-                "values": "Value",
-                "states": "State",
-                "transitions": "Trigger",
-                "steps": "Step",
-                "members": "Member",
-                "vocabulary": "Term",
-            }[feature]
-            expected = [row[spec.index(key_column)] for row in rows]
-            entries = record["model"][feature]
-            assert [e[ENTRY_KEY[feature]] for e in entries] == expected, (
-                name,
-                feature,
-            )
+            expected = [row[spec.index(KEY_COLUMN[feature])] for row in rows]
+            if feature == "population":
+                entries = record["model"]["population"]["members"]
+                actual = [e["type"]["target"].rsplit("/", 1)[-1] for e in entries]
+            else:
+                entries = record["model"][feature]
+                actual = [e[ENTRY_KEY[feature]] for e in entries]
+            assert actual == expected, (name, feature)
 
 
 @pytest.mark.trace("TC-082", "FR-006-AC-3")
@@ -170,13 +184,20 @@ def test_the_declared_model_fixture_extracts_every_mapping_feature(
     assert features["returned_items"]["subsets"] == ["items"]
     assert features["current_state"]["redefines"] == "current_state"
     (frame,) = model["operationFrames"]
-    assert frame["operation"] == "refund"
-    assert frame["requires"] == ["ReturnIsOpen"]
-    assert frame["ensures"] == ["ReturnIsSettled"]
-    assert frame["modifies"] == ["self.current_state", "self.returned_items"]
-    assert frame["creates"] == ["Refund"]
-    assert frame["deletes"] == ["self.items"]
-    assert [t["guard"] for t in model["transitions"]] == ["ReturnIsOpen"]
+    assert frame["operation"] == "exchange"
+    assert frame["requires"] == ["ReturnedItemsAreAtMostTheItems"]
+    assert frame["ensures"] == ["ExchangedReturnHasReturnedItems"]
+    assert frame["modifies"] == [
+        "self.current_state",
+        "self.returned_items",
+        "self.exchanged",
+    ]
+    assert frame["creates"] == ["Order"]
+    assert frame["deletes"] == ["OrderLine"]
+    assert [t["guard"] for t in model["transitions"]] == [
+        "ReturnedItemsAreAtMostTheItems"
+    ]
+    assert [t["emits"] for t in model["transitions"]] == [["OrderPlaced"]]
     assert not [
         d
         for d in record.get("diagnostics", [])
@@ -205,7 +226,7 @@ def test_every_model_table_and_undeclared_form_has_a_refusing_fixture(quire_engi
         assert STEM_OF[feature] in stems, feature
 
 
-@pytest.mark.trace("TC-084", "FR-006-AC-5")
+@pytest.mark.trace("TC-087", "FR-006-AC-5")
 def test_skeleton_clauses_are_quire_and_contract_lines_are_requires_ensures(
     quire_engine, semantic_module, bundle_index
 ):
@@ -224,3 +245,47 @@ def test_skeleton_clauses_are_quire_and_contract_lines_are_requires_ensures(
             for d in record.get("diagnostics", [])
             if d.get("code") == "semantic.clause-language-unchecked"
         ], path.name
+
+
+@pytest.mark.trace("TC-085", "FR-006-AC-6")
+def test_the_population_fixture_extracts_one_member_per_row(
+    quire_engine, semantic_module, bundle_index
+):
+    path = POSITIVE_DIR / "population-members.md"
+    text = path.read_text()
+    result = quire_engine.validate_document("population", str(PACKAGE_ROOT), text)
+    assert result["is_valid"], result["errors"]
+    record = extract(quire_engine, semantic_module, path, bundle_index)
+    assert record["availability"]["model"]["state"] == "available"
+    members = record["model"]["population"]["members"]
+    rows = table_rows(text, "Members")
+    assert [m["type"]["target"].rsplit("/", 1)[-1] for m in members] == [
+        row[0] for row in rows
+    ]
+    assert [m["extent"] for m in members] == [
+        {"lower": 1, "upper": 1},
+        {"lower": 1, "upper": 1},
+        {"lower": 1},
+    ]
+
+
+FIELD_BEARING = (
+    "entity",
+    "value_object",
+    "aggregate_root",
+    "nested_entity",
+    "event",
+    "state_machine",
+    "process",
+)
+
+
+@pytest.mark.trace("TC-086", "FR-006-AC-7")
+def test_specializes_is_a_declared_structural_edge_every_field_bearing_type_admits():
+    edge = load_manifest()["edge_types"]["specializes"]
+    assert edge["category"] == "structural"
+    assert edge["inverse"] == "generalizes"
+    assert edge["description"]
+    for name in FIELD_BEARING:
+        links = object_type(name)["allowed_links"]
+        assert name in links["specializes"], name

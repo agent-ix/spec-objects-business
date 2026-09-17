@@ -2,7 +2,7 @@
 id: Task-008
 title: "NFR-001 — additive-compatibility verification"
 type: Task
-status: not_started
+status: done
 track: C
 priority: P0
 relationships:

@@ -8,12 +8,19 @@ because: "a transition From and To name rows of the States table; Archived is no
 ---
 # [negative-010] OrderLifecycleWithUnknownState
 
+## Properties
+
+| Field | Type | Multiplicity | Constraints |
+|---|---|---|---|
+| current_state | OrderStatus | 1..1 | |
+| placed_at | Timestamp | 0..1 | |
+
 ## Invariants
 
-### CancelIsAllowedUntilCapture
+### DraftOrderHasNoPlacementTime
 
 ```quire
-self.current_state = "Draft" or self.current_state = "Placed"
+self.current_state = OrderManagement::OrderStatus::Draft implies not present(self.placed_at)
 ```
 
 ## Operations

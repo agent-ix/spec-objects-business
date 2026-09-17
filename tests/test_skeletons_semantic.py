@@ -73,7 +73,7 @@ def extract(quire_engine, module, bundle, path):
 
 @pytest.mark.trace("TC-050", "FR-005-AC-1")
 def test_every_skeleton_validates_with_no_error(quire_engine, skeletons):
-    assert len(skeletons) == 13
+    assert len(skeletons) == 14
     for path in skeletons:
         text = path.read_text()
         result = quire_engine.validate_document(
@@ -150,7 +150,7 @@ def test_availability_states_match_each_type(
 @pytest.mark.trace("TC-054", "FR-005-AC-5")
 def test_every_negative_fixture_fails_for_its_own_reason(quire_engine):
     fixtures = sorted(NEGATIVE_DIR.glob("*.md"))
-    assert len(fixtures) >= 18, "the eighteen named negative cases are not all present"
+    assert len(fixtures) >= 20, "the twenty named negative cases are not all present"
     expected_codes = {
         "semantic.record-invalid",
         "semantic.properties-both-forms",

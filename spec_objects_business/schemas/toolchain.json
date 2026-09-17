@@ -32,6 +32,8 @@
     "NestedEntity.json",
     "OccurrenceField.json",
     "OccurrenceTypeRef.json",
+    "Population.json",
+    "PopulationMember.json",
     "Process.json",
     "ProcessStep.json",
     "Repository.json",
@@ -41,5 +43,5 @@
     "Transition.json",
     "ValueObject.json"
   ],
-  "digest": "sha256:1d44e05fa90dfb0eaa0252060f389a1a4f18f1597eb40bc00ccf4907c36d1f63"
+  "digest": "sha256:0dd2dce65d8c3e0327579387642efb5008e729a688d11a949a79b24cc3e3690c"
 }
