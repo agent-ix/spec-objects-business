@@ -10,35 +10,24 @@ object: value_object
        header exactly `Field | Type | Multiplicity | Constraints`. A value
        object has no identity of its own, so NO row carries `identity`
        (ValueObject.json refuses one).
-     - "## Invariants" (H2): one `### <clauseId>` per clause with one ```ocl```
-       fence. -->
+     - "## Invariants" (H2): one `### <clauseId>` per clause with one ```quire```
+       fence holding a Quire expression. -->
 # [value-object-001] Money
 
 ## Properties
 
 | Field | Type | Multiplicity | Constraints |
 |---|---|---|---|
-| amount | Decimal(19,2) | 1..1 | |
+| amount_minor | Integer | 1..1 | min: 0, max: 1000000000000 |
 | currency | String | 1..1 | minLength: 3, maxLength: 3 |
 
 ## Invariants
 
 The clauses the Money declaration enforces. Each clause owns one
-`ocl` fence under its own `### <clauseId>` heading; the fence text is carried
-verbatim and never evaluated here.
+`quire` fence under its own `### <clauseId>` heading.
 
-### CurrencyIsIso4217Alpha3
+### AmountMinorIsNonNegative
 
-```ocl
-context Money
-inv CurrencyIsIso4217Alpha3:
-  self.currency.size() = 3 and self.currency = self.currency.toUpperCase()
-```
-
-### ArithmeticIsSingleCurrency
-
-```ocl
-context Money
-inv ArithmeticIsSingleCurrency:
-  self.add(other) implies other.currency = self.currency
+```quire
+self.amount_minor >= 0
 ```

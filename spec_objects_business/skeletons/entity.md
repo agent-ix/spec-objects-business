@@ -11,7 +11,7 @@ object: entity
        exactly `Field | Type | Multiplicity | Constraints`. At least one row
        carries the `identity` constraint.
      - "## Invariants" (H2): one `### <clauseId>` per clause, each owning
-       exactly one ```ocl``` fence. -->
+       exactly one ```quire``` fence holding a Quire expression. -->
 # [entity-001] Customer
 
 ## Properties
@@ -20,29 +20,26 @@ object: entity
 |---|---|---|---|
 | customer_id | UUID | 1..1 | identity |
 | email | String | 1..1 | minLength: 3, maxLength: 254 |
+| email_verified | Boolean | 1..1 | |
 | display_name | String | 1..1 | minLength: 1 |
-| default_shipping_address | Money | 0..1 | |
-| status | OrderStatus | 1..1 | |
 | registered_at | Timestamp | 1..1 | |
+| first_order_placed_at | Timestamp | 0..1 | |
+| suspended | Boolean | 1..1 | |
+| suspended_at | Timestamp | 0..1 | |
 
 ## Invariants
 
 The clauses the Customer declaration enforces. Each clause owns one
-`ocl` fence under its own `### <clauseId>` heading; the fence text is carried
-verbatim and never evaluated here.
+`quire` fence under its own `### <clauseId>` heading.
 
-### EmailIsVerifiedBeforeFirstOrder
+### CustomerWithAPlacedOrderHasAVerifiedEmail
 
-```ocl
-context Customer
-inv EmailIsVerifiedBeforeFirstOrder:
-  self.status <> OrderStatus::Placed or self.email->notEmpty()
+```quire
+present(self.first_order_placed_at) implies self.email_verified
 ```
 
-### SuspendedCustomerPlacesNoOrder
+### SuspensionTimeIsRecordedExactlyWhenSuspended
 
-```ocl
-context Customer
-inv SuspendedCustomerPlacesNoOrder:
-  self.status = OrderStatus::Cancelled implies self.orders->forAll(o | o.placedAt < self.registeredAt)
+```quire
+self.suspended = present(self.suspended_at)
 ```

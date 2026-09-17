@@ -9,9 +9,9 @@
   },
   "semanticCore": {
     "name": "@agent-ix/semantic-core",
-    "version": "0.1.0"
+    "version": "0.2.0"
   },
-  "base": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.3.0/",
+  "base": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.4.0/",
   "normalization": {
     "name": "absolute-id-and-ref",
     "version": "1.0.0",
@@ -20,7 +20,7 @@
     "rewrittenFiles": [
       "Event.json"
     ],
-    "note": "rewrote relative $id/$ref to the module base or semantic-core 0.1.0"
+    "note": "rewrote relative $id/$ref to the module base or semantic-core 0.2.0"
   },
   "files": [
     "AggregateRoot.json",
@@ -32,6 +32,8 @@
     "NestedEntity.json",
     "OccurrenceField.json",
     "OccurrenceTypeRef.json",
+    "Population.json",
+    "PopulationMember.json",
     "Process.json",
     "ProcessStep.json",
     "Repository.json",
@@ -41,5 +43,5 @@
     "Transition.json",
     "ValueObject.json"
   ],
-  "digest": "sha256:d8165d203c587cd5860e1b1c02b7670f0bf37379e15b8943d9f46baa6ed136b4"
+  "digest": "sha256:0dd2dce65d8c3e0327579387642efb5008e729a688d11a949a79b24cc3e3690c"
 }

@@ -8,15 +8,15 @@ object: process
      - Frontmatter MUST carry id, title, type: process, object: process.
      - "## Properties" (H2): the process's typed fields; at least one carries
        `identity` — the correlation key that ties every step to one run.
-     - "## Invariants" (H2): one `### <clauseId>` per clause.
-     - "## Workflow" (H2, required) holds fenced `mermaid` diagrams
-       (`multiple: true`) — split a complex flow into several smaller
-       diagrams rather than one oversized one. Derived view of the typed
-       declarations.
-     - "## States" (H2, OPTIONAL): mermaid state diagram(s).
-     - "## Specification" and "## Algorithm" (H2) are optional prose.
-     - Mermaid hygiene: quote labels containing parentheses, no semicolons
-       inside label text. -->
+     - "## Invariants" (H2): one `### <clauseId>` per clause, each owning one
+       `quire` fence holding a Quire expression.
+     - "## Workflow" (H2, required): a
+       `| Step | Kind | Consumes | Emits | Description |` table. Kind is one
+       of command, event, decision, compensation, wait.
+     - "## States" (H2, optional): a `| State | Description |` table.
+     - Only the declared tables belong under Workflow and States; a diagram
+       or list there is refused.
+     - "## Specification" and "## Algorithm" (H2) are optional prose. -->
 # [process-001] OrderFulfilment
 
 OrderFulfilment is the long-running process that turns a placed order into a
@@ -31,62 +31,48 @@ and the warehouse.
 | order_id | UUID | 1..1 | |
 | started_at | Timestamp | 1..1 | |
 | reservation_deadline | Duration | 1..1 | |
+| stock_refused | Boolean | 1..1 | |
+| capture_failed | Boolean | 1..1 | |
 | compensated | Boolean | 1..1 | |
 
 ## Invariants
 
 The clauses the OrderFulfilment declaration enforces. Each clause owns one
-`ocl` fence under its own `### <clauseId>` heading; the fence text is carried
-verbatim and never evaluated here.
+`quire` fence under its own `### <clauseId>` heading.
 
-### OneRunPerOrder
+### CompensationFollowsARefusedReservationOrAFailedCapture
 
-```ocl
-context OrderFulfilment
-inv OneRunPerOrder:
-  OrderFulfilment.allInstances()->isUnique(r | r.order_id)
+```quire
+self.compensated implies (self.stock_refused or self.capture_failed)
 ```
 
-### CompensationFollowsAFailedCapture
+### StockRefusalExcludesCaptureFailure
 
-```ocl
-context OrderFulfilment
-inv CompensationFollowsAFailedCapture:
-  self.compensated implies self.captureFailed()
+```quire
+self.stock_refused implies not self.capture_failed
 ```
 
 ## Workflow
 
-```mermaid
-flowchart TD
-    A[OrderPlaced received] --> B[Reserve stock]
-    B --> C{Stock reserved}
-    C -- yes --> D[Capture payment]
-    C -- no --> E[Cancel order]
-    D --> F{Payment captured}
-    F -- yes --> G[Release to warehouse]
-    F -- no --> H[Release stock reservation]
-```
-
-```mermaid
-flowchart TD
-    G[Release to warehouse] --> I[Pick and pack]
-    I --> J[Hand to carrier]
-    J --> K[Emit OrderShipped]
-```
+| Step | Kind | Consumes | Emits | Description |
+|---|---|---|---|---|
+| receive_order | event | OrderPlaced | | Start a run keyed by a fresh correlation id |
+| reserve_stock | command | | | Ask Inventory to reserve stock for every line |
+| stock_reserved | decision | | | Continue to payment, or record the refusal and compensate |
+| capture_payment | command | | | Ask Payments to capture the grand total |
+| payment_captured | decision | | | Continue to the warehouse, or record the failure and compensate |
+| release_reservation | compensation | | | Release the stock reservation and cancel the order |
+| release_to_warehouse | command | | | Hand the order to the warehouse to pick and pack |
+| await_shipment | wait | | | Wait for the carrier to confirm the hand-over |
 
 ## States
 
-```mermaid
-stateDiagram-v2
-    [*] --> Reserving
-    Reserving --> Capturing: stock_reserved
-    Reserving --> Compensating: stock_unavailable
-    Capturing --> Fulfilling: payment_captured
-    Capturing --> Compensating: payment_declined
-    Fulfilling --> [*]
-    Compensating --> [*]
-```
+| State | Description |
+|---|---|
+| Reserving | Stock is being reserved for every line |
+| Capturing | Payment is being captured |
+| Fulfilling | The warehouse holds the order |
+| Compensating | A failed step is being undone |
 
 ## Specification
 
@@ -98,7 +84,9 @@ the run compensates.
 ## Algorithm
 
 1. On OrderPlaced, start a run keyed by a fresh `correlation_id`.
-2. Reserve stock for every line; on refusal, compensate and cancel the order.
-3. Capture payment for `grand_total`; on decline, release the reservation.
+2. Reserve stock for every line; on refusal, set `stock_refused`, compensate
+   and cancel the order.
+3. Capture payment for `grand_total`; on decline, set `capture_failed` and
+   release the reservation.
 4. Release the order to the warehouse and wait for the shipment confirmation.
-5. Emit OrderShipped and close the run.
+5. Close the run once the carrier confirms the hand-over.

@@ -1,31 +1,31 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.3.0/NestedEntity.json",
+  "$id": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.4.0/NestedEntity.json",
   "type": "object",
   "properties": {
     "fields": {
       "type": "array",
       "items": {
-        "$ref": "https://schemas.agent-ix.org/semantic-core/0.1.0/FieldDecl.json"
+        "$ref": "https://schemas.agent-ix.org/semantic-core/0.2.0/FieldDecl.json"
       },
       "minItems": 1,
       "contains": {
-        "$ref": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.3.0/IdentityField.json"
+        "$ref": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.4.0/IdentityField.json"
       }
     },
     "owner": {
-      "$ref": "https://schemas.agent-ix.org/semantic-core/0.1.0/RelationDecl.json"
+      "$ref": "https://schemas.agent-ix.org/semantic-core/0.2.0/RelationDecl.json"
     },
     "clauses": {
       "type": "array",
       "items": {
-        "$ref": "https://schemas.agent-ix.org/semantic-core/0.1.0/ClauseRef.json"
+        "$ref": "https://schemas.agent-ix.org/semantic-core/0.2.0/ClauseRef.json"
       }
     },
     "operations": {
       "type": "array",
       "items": {
-        "$ref": "https://schemas.agent-ix.org/semantic-core/0.1.0/OperationDecl.json"
+        "$ref": "https://schemas.agent-ix.org/semantic-core/0.2.0/OperationDecl.json"
       }
     }
   },

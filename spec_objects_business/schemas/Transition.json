@@ -1,22 +1,22 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.3.0/Transition.json",
+  "$id": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.4.0/Transition.json",
   "type": "object",
   "properties": {
     "from": {
-      "$ref": "https://schemas.agent-ix.org/semantic-core/0.1.0/Identifier.json"
+      "$ref": "https://schemas.agent-ix.org/semantic-core/0.2.0/Identifier.json"
     },
     "to": {
-      "$ref": "https://schemas.agent-ix.org/semantic-core/0.1.0/Identifier.json"
+      "$ref": "https://schemas.agent-ix.org/semantic-core/0.2.0/Identifier.json"
     },
     "trigger": {
-      "$ref": "https://schemas.agent-ix.org/semantic-core/0.1.0/Identifier.json"
+      "$ref": "https://schemas.agent-ix.org/semantic-core/0.2.0/Identifier.json"
     },
     "guard": {
-      "$ref": "https://schemas.agent-ix.org/semantic-core/0.1.0/ClauseRef.json"
+      "$ref": "https://schemas.agent-ix.org/semantic-core/0.2.0/ClauseRef.json"
     },
     "emits": {
-      "$ref": "https://schemas.agent-ix.org/semantic-core/0.1.0/SemanticId.json"
+      "$ref": "https://schemas.agent-ix.org/semantic-core/0.2.0/SemanticId.json"
     }
   },
   "required": [

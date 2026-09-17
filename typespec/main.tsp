@@ -11,7 +11,7 @@ using AgentIx.Semantic.Core;
  * that type's Quire declaration record (fields, relations, clauses,
  * operations; quire-rs FR-070..FR-072) with type-specific required keys,
  * forbidden keys, and item rules (FR-004). Every grammar item is a `$ref` to
- * `@agent-ix/semantic-core` 0.1.0 and is never redeclared here (FR-004-CON-1);
+ * `@agent-ix/semantic-core` 0.2.0 and is never redeclared here (FR-004-CON-1);
  * this namespace contributes archetype shapes only.
  *
  * The `$id` base embeds the manifest `version` by intent (FR-002-CON-5): one
@@ -20,7 +20,7 @@ using AgentIx.Semantic.Core;
  * this base and `manifest.yaml`'s `version` in one commit and re-runs
  * `make schemas`.
  */
-@jsonSchema("https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.3.0/")
+@jsonSchema("https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.4.0/")
 namespace AgentIx.SpecObjects.Business;
 
 // ---------------------------------------------------------------------------
@@ -70,6 +70,16 @@ model Transition {
   trigger: Identifier;
   guard?: ClauseRef;
   emits?: SemanticId;
+  ...Record<never>;
+}
+
+/**
+ * One member of a population: a declared type and the extent of its
+ * instances (quire-rs FR-075 `Type | Extent` row).
+ */
+model PopulationMember {
+  type: TypeRef;
+  extent: Multiplicity;
   ...Record<never>;
 }
 
@@ -225,6 +235,17 @@ model Process {
   steps?: ProcessStep[];
   clauses?: ClauseRef[];
   operations?: OperationDecl[];
+  ...Record<never>;
+}
+
+/**
+ * A population: the closed set of declared types whose instances a model
+ * ranges over, each with its extent. A population declares membership, not
+ * data: `fields` and `operations` are forbidden by the seal.
+ */
+model Population {
+  members?: PopulationMember[];
+  clauses?: ClauseRef[];
   ...Record<never>;
 }
 

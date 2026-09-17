@@ -10,9 +10,10 @@ object: aggregate_root
        carrying `identity`.
      - "## Invariants" (H2, required by AggregateRoot.json's `clauses`): the
        root exists to enforce invariants, so it declares at least one.
-     - "## Members" (H2, required): everything inside the consistency
-       boundary. It is a derived, human-facing view of the same facts the
-       typed sections declare; the typed sections are the authority. -->
+     - Each invariant owns one `quire` fence holding a Quire expression.
+     - "## Members" (H2, required): a `| Member | Multiplicity |` table naming
+       every declaration inside the consistency boundary. Prose may follow
+       the table; a list or diagram there is refused. -->
 # [aggregate-root-001] Order
 
 ## Properties
@@ -22,6 +23,7 @@ object: aggregate_root
 | order_id | UUID | 1..1 | identity |
 | customer_id | UUID | 1..1 | |
 | status | OrderStatus | 1..1 | |
+| lines | OrderLine | 0..* | |
 | subtotal | Money | 1..1 | |
 | shipping_fee | Money | 1..1 | |
 | grand_total | Money | 1..1 | |
@@ -30,46 +32,40 @@ object: aggregate_root
 ## Invariants
 
 The clauses the Order declaration enforces. Each clause owns one
-`ocl` fence under its own `### <clauseId>` heading; the fence text is carried
-verbatim and never evaluated here.
+`quire` fence under its own `### <clauseId>` heading.
 
-### GrandTotalIsSubtotalPlusShipping
+### GrandTotalIsSubtotalPlusShippingFee
 
-```ocl
-context Order
-inv GrandTotalIsSubtotalPlusShipping:
-  self.grand_total = self.subtotal.add(self.shipping_fee)
+```quire
+self.grand_total.amount_minor = self.subtotal.amount_minor + self.shipping_fee.amount_minor
 ```
 
-### PlacedOrderCarriesAtLeastOneLine
+### TotalsShareOneCurrency
 
-```ocl
-context Order
-inv PlacedOrderCarriesAtLeastOneLine:
-  self.status <> OrderStatus::Draft implies self.lines->size() >= 1
+```quire
+self.subtotal.currency = self.grand_total.currency and self.shipping_fee.currency = self.grand_total.currency
 ```
 
-### LinesAreAmendedOnlyWhileDraft
+### PlacedPaidShippedOrDeliveredOrderCarriesAtLeastOneLine
 
-```ocl
-context Order
-inv LinesAreAmendedOnlyWhileDraft:
-  self.lines->exists(l | l.isDirty()) implies self.status = OrderStatus::Draft
+```quire
+(self.status = OrderManagement::OrderStatus::Placed or self.status = OrderManagement::OrderStatus::Paid or self.status = OrderManagement::OrderStatus::Shipped or self.status = OrderManagement::OrderStatus::Delivered) implies size(self.lines) >= 1
+```
+
+### DraftOrderHasNoPlacementTime
+
+```quire
+self.status = OrderManagement::OrderStatus::Draft implies not present(self.placed_at)
 ```
 
 ## Members
 
-- **Order** (root) — identified by `order_id`; the only member addressable
-  from outside the aggregate and the single entry point for all mutations.
-- **OrderLine** (nested entity, 1..n) — one per purchased product, identified
-  by `line_number` local to the order; created, amended, and removed only
-  through Order methods.
-- **Money: subtotal, shipping_fee, grand_total** (owned value objects) —
-  recomputed by the root whenever a line changes.
-- **ShippingAddress** (owned value object) — frozen at the moment the order
-  is placed.
+| Member | Multiplicity |
+|---|---|
+| OrderLine | 0..* |
+| Money | 3..3 |
 
 All members share one transaction, so the aggregate is loaded and persisted
-as a whole. The invariants this boundary enforces are declared above under
-`## Invariants`, which is their authority; this section is the human-facing
-view of the boundary.
+as a whole. Order is the only member addressable from outside the aggregate;
+OrderLine instances are created, amended, and removed only through Order
+operations, and the three Money values are recomputed whenever a line changes.

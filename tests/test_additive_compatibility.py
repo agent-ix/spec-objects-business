@@ -1,5 +1,5 @@
-"""Additive-compatibility tests (NFR-001): the 0.3.0 module stays additive
-over the checked-in 0.2.0 set.
+"""Additive-compatibility tests (NFR-001): the module stays additive over the
+checked-in 0.2.0 set outside the sections FR-006 declares as model tables.
 
 The population is the frozen baseline under `tests/fixtures/baseline-0.2.0/`:
 the 0.2.0 `body_extraction` locators and all ten 0.2.0 skeletons, captured
@@ -15,6 +15,8 @@ import pytest
 from tests.conftest import (
     BASELINE_DIR,
     PACKAGE_ROOT,
+    REQUIRED_MODEL_TABLE_TYPES,
+    SUPERSEDED_020_LOCATORS,
     frontmatter,
     locators,
     object_type,
@@ -56,6 +58,8 @@ def test_no_baseline_locator_definition_changed():
         old = (extraction or {})["yield_pattern"]["match"]
         new = locators(object_type(name))
         for key, facets in old.items():
+            if key in SUPERSEDED_020_LOCATORS.get(name, set()):
+                continue
             if new.get(key) != facets:
                 changed.append(f"{name}.{key}")
     assert changed == []
@@ -63,21 +67,26 @@ def test_no_baseline_locator_definition_changed():
 
 @pytest.mark.trace("TC-061", "NFR-001-AC-2")
 def test_every_baseline_skeleton_validates_under_the_new_manifest(quire_engine):
-    """Measured, not assumed: the ten 0.2.0 skeletons carry no frontmatter
+    """Measured, not assumed: the 0.2.0 skeletons carry no frontmatter
     `object:` key, so Quire runs headings-only validation on them and the
-    typed record is never assembled or checked. That is what makes 0.3.0
-    additive for the artifacts that exist today."""
+    typed record is never assembled or checked. The skeletons of the types
+    whose FR-006 model tables are required are outside the population."""
     baseline = baseline_skeletons()
     assert len(baseline) == 10
     failures = {}
+    measured = 0
     for path in baseline:
         text = path.read_text()
+        if frontmatter(text)["type"] in REQUIRED_MODEL_TABLE_TYPES:
+            continue
+        measured += 1
         assert "object:" not in frontmatter(text), path.name
         result = quire_engine.validate_document(
             frontmatter(text)["type"], str(PACKAGE_ROOT), text
         )
         if result["errors"]:
             failures[path.name] = [e["message"] for e in result["errors"]]
+    assert measured == 7
     assert failures == {}
 
 
@@ -121,7 +130,7 @@ def test_each_legacy_form_skeleton_yields_exactly_one_legacy_warning(
 @pytest.mark.trace("TC-063", "NFR-001-AC-4")
 def test_the_properties_string_is_byte_identical_across_versions(quire_engine):
     """The untyped `properties` yield is what every existing consumer reads;
-    the 0.3.0 locators must leave it untouched."""
+    the current locators must leave it untouched."""
     for name in LEGACY_PROPERTIES_SKELETONS:
         path = BASELINE_DIR / "skeletons" / f"{name}.md"
         extracted = quire_engine.extract(name, str(PACKAGE_ROOT), path.read_text())

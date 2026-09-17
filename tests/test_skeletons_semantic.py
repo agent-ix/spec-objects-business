@@ -64,13 +64,16 @@ def extract(quire_engine, module, bundle, path):
             "path": str(path),
             "sourceIdentity": f"ix://agent-ix/spec-objects-business/{frontmatter(path.read_text())['id']}",
             "bundle": bundle,
+            "bodyExtraction": object_type(frontmatter(path.read_text())["object"])[
+                "body_extraction"
+            ],
         }
     )
 
 
 @pytest.mark.trace("TC-050", "FR-005-AC-1")
 def test_every_skeleton_validates_with_no_error(quire_engine, skeletons):
-    assert len(skeletons) == 13
+    assert len(skeletons) == 14
     for path in skeletons:
         text = path.read_text()
         result = quire_engine.validate_document(
@@ -147,12 +150,17 @@ def test_availability_states_match_each_type(
 @pytest.mark.trace("TC-054", "FR-005-AC-5")
 def test_every_negative_fixture_fails_for_its_own_reason(quire_engine):
     fixtures = sorted(NEGATIVE_DIR.glob("*.md"))
-    assert len(fixtures) >= 8, "the eight named negative cases are not all present"
+    assert len(fixtures) >= 20, "the twenty named negative cases are not all present"
     expected_codes = {
         "semantic.record-invalid",
         "semantic.properties-both-forms",
         "semantic.dangling-clause-ref",
         "semantic.invalid-type-token",
+        "semantic.feature-not-extractable",
+        "semantic.unknown-state",
+        "semantic.unknown-trigger",
+        "semantic.invalid-model-cell",
+        "semantic.duplicate-model-entry",
     }
     seen: set[str] = set()
     for path in fixtures:
@@ -166,7 +174,7 @@ def test_every_negative_fixture_fails_for_its_own_reason(quire_engine):
         messages = [e["message"] for e in result["errors"]]
         assert any(front["expect"] in m for m in messages), (path.name, messages)
         # The fixture must fail for its own reason, not merely with its code:
-        # five of the eight surface as `semantic.record-invalid`.
+        # five of them surface as `semantic.record-invalid`.
         hit = next(m for m in messages if front["expect"] in m)
         assert len(hit) > len(
             front["expect"]

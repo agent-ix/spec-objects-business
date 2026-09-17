@@ -27,29 +27,26 @@ Payments (capture), and Notifications (order confirmation).
 | occurred_at | Timestamp | 1..1 | |
 | order_id | UUID | 1..1 | |
 | customer_id | UUID | 1..1 | |
-| line_count | Integer | 1..1 | min: 1 |
+| line_count | Integer | 1..1 | min: 1, max: 1000 |
+| subtotal | Money | 1..1 | |
+| shipping_fee | Money | 1..1 | |
 | grand_total | Money | 1..1 | |
 
 ## Invariants
 
 The clauses the OrderPlaced declaration enforces. Each clause owns one
-`ocl` fence under its own `### <clauseId>` heading; the fence text is carried
-verbatim and never evaluated here.
+`quire` fence under its own `### <clauseId>` heading.
 
-### LineCountMatchesTheOrder
+### GrandTotalIsSubtotalPlusShippingFee
 
-```ocl
-context OrderPlaced
-inv LineCountMatchesTheOrder:
-  self.line_count = Order.allInstances()->any(o | o.order_id = self.order_id).lines->size()
+```quire
+self.grand_total.amount_minor = self.subtotal.amount_minor + self.shipping_fee.amount_minor
 ```
 
-### OccurredAtIsNotInTheFuture
+### TotalsShareOneCurrency
 
-```ocl
-context OrderPlaced
-inv OccurredAtIsNotInTheFuture:
-  self.occurred_at <= now()
+```quire
+self.subtotal.currency = self.grand_total.currency and self.shipping_fee.currency = self.grand_total.currency
 ```
 
 ## Schema
@@ -60,17 +57,33 @@ inv OccurredAtIsNotInTheFuture:
   "$id": "https://specs.agent-ix.dev/events/order-placed.schema.json",
   "title": "OrderPlaced",
   "type": "object",
-  "required": ["occurred_at", "order_id", "customer_id", "line_count", "grand_total"],
+  "required": ["occurred_at", "order_id", "customer_id", "line_count", "subtotal", "shipping_fee", "grand_total"],
   "properties": {
     "occurred_at": { "type": "string", "format": "date-time" },
     "order_id": { "type": "string", "format": "uuid" },
     "customer_id": { "type": "string", "format": "uuid" },
-    "line_count": { "type": "integer", "minimum": 1 },
+    "line_count": { "type": "integer", "minimum": 1, "maximum": 1000 },
+    "subtotal": {
+      "type": "object",
+      "required": ["amount_minor", "currency"],
+      "properties": {
+        "amount_minor": { "type": "integer", "minimum": 0, "maximum": 1000000000000 },
+        "currency": { "type": "string", "minLength": 3, "maxLength": 3 }
+      }
+    },
+    "shipping_fee": {
+      "type": "object",
+      "required": ["amount_minor", "currency"],
+      "properties": {
+        "amount_minor": { "type": "integer", "minimum": 0, "maximum": 1000000000000 },
+        "currency": { "type": "string", "minLength": 3, "maxLength": 3 }
+      }
+    },
     "grand_total": {
       "type": "object",
-      "required": ["amount", "currency"],
+      "required": ["amount_minor", "currency"],
       "properties": {
-        "amount": { "type": "string", "pattern": "^-?\\d+\\.\\d{2}$" },
+        "amount_minor": { "type": "integer", "minimum": 0, "maximum": 1000000000000 },
         "currency": { "type": "string", "minLength": 3, "maxLength": 3 }
       }
     }

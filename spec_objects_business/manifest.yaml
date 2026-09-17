@@ -1,10 +1,10 @@
 manifest_version: 1.0.0
 name: spec-objects-business
-version: 0.3.0
-description: 'Filament Module: tier-2 business ObjectTypes (DDD: domain, entity, value_object, aggregate_root, nested_entity, repository, event, state_machine, process, enumeration)'
+version: 0.4.0
+description: 'Filament Module: tier-2 business ObjectTypes (DDD: domain, entity, value_object, aggregate_root, nested_entity, repository, event, state_machine, process, enumeration, population)'
 semantic:
   contract_version: 1.0.0
-  semantic_core: 0.1.0
+  semantic_core: 0.2.0
   package: agent-ix/spec-objects-business
   exports:
   - domain
@@ -17,10 +17,11 @@ semantic:
   - state_machine
   - process
   - enumeration
+  - population
   imports: {}
   targets: [json-schema, markdown]
-  mappings: [typed-table, sysml-fence, ocl-clause]
-  compatibility_posture: additive
+  mappings: [typed-table, sysml-fence, generalization, abstract-types, presence, subsetting, redefinition, effect-frames]
+  compatibility_posture: strict
   legacy_forms: warning
 nav:
   category:
@@ -28,6 +29,8 @@ nav:
     label: Business
     icon: Boxes
     order: 51
+edge_types:
+  specializes: { description: "Generalization: the source type specializes the target type and inherits its declarations.", category: structural, inverse: generalizes }
 archetypes: []
 grammars: []
 artifact_types: []
@@ -38,7 +41,7 @@ object_types:
     contains: [entity, aggregate_root, value_object, repository, event, state_machine, process, enumeration]
   data_schema:
     schema: schemas/Domain.json
-    digest: sha256:e59103a3718f19aa7b1c9fadabd409cd776776c2ec968b6a93e62d3db9da484c
+    digest: sha256:1d5e88dcec53da2eaa4befdf106d9dc0a49ba81573f2e81bc411bbf84d4b1c15
   body_extraction:
     yield_pattern:
       match:
@@ -76,19 +79,23 @@ object_types:
           after_heading: Entity Relationship Diagram
           language: mermaid
           required: false
-        ubiquitous_language:
-          from: section_body
-          after_heading: Ubiquitous Language
+        vocabulary:
+          from: table_row
+          under_section: Ubiquitous Language
           required: false
+          assert:
+            columns: [Term, Description]
+            min_rows: 1
 - name: entity
   roles: [domain-object, persistable]
   allowed_links:
+    specializes: [entity]
     contains: [nested_entity, value_object]
     owns: [state_machine]
     references: [entity, aggregate_root, enumeration]
   data_schema:
     schema: schemas/Entity.json
-    digest: sha256:e06e39445e314d31de3206dc6d715da7245da23f5fcc9745a6147c50ca439790
+    digest: sha256:f3f7fcd604abab7e09427066287df94fac3d7a470e146b289e2ded74ef2f7d43
   body_extraction:
     yield_pattern:
       match:
@@ -106,11 +113,12 @@ object_types:
 - name: value_object
   roles: [domain-object]
   allowed_links:
+    specializes: [value_object]
     composes: [value_object, enumeration]
     references: [enumeration]
   data_schema:
     schema: schemas/ValueObject.json
-    digest: sha256:228cc48f5e1162d47df61ba8579a7ec4219d73a026c3951d38d7bc7bf0241fde
+    digest: sha256:419712a352eddae8807ffc06cd243d3207f31d4a650ded4247f6a94815ea75d9
   body_extraction:
     yield_pattern:
       match:
@@ -132,13 +140,14 @@ object_types:
 - name: aggregate_root
   roles: [domain-object, persistable]
   allowed_links:
+    specializes: [aggregate_root]
     aggregates: [entity, nested_entity]
     contains: [value_object]
     emits: [event]
     references: [aggregate_root, enumeration]
   data_schema:
     schema: schemas/AggregateRoot.json
-    digest: sha256:34c88c2b11f03f071d5ea642f2457003c062ba9855e7da99bb5932d7eafe29ab
+    digest: sha256:df782483aae8f92a0b7897c751695c578f2e1608c5f3f37256e032c16bd79df3
   body_extraction:
     yield_pattern:
       match:
@@ -154,17 +163,21 @@ object_types:
           after_heading: Invariants
           required: false
         members:
-          from: section_body
-          after_heading: Members
+          from: table_row
+          under_section: Members
           required: true
+          assert:
+            columns: [Member, Multiplicity]
+            min_rows: 1
 - name: nested_entity
   roles: [domain-object]
   allowed_links:
+    specializes: [nested_entity]
     contains: [value_object]
     references: [enumeration]
   data_schema:
     schema: schemas/NestedEntity.json
-    digest: sha256:6cb95ea5737df45d199d716c0e38dd6033899b43044b12910a7f487491dec236
+    digest: sha256:7964f7cb457630e03900c7dfbbc0b1b3b7bb06ec41269e2924fc335f623342a0
   body_extraction:
     yield_pattern:
       match:
@@ -189,7 +202,7 @@ object_types:
     references: [data_schema]
   data_schema:
     schema: schemas/Repository.json
-    digest: sha256:60077f326124031679d4a79f1e3d9c497c31d9456fb6dd753cb22ad6f52340bc
+    digest: sha256:4502e35468907484bfd7585f4130360ed18a567260179c93030f731011f7cd22
   body_extraction:
     yield_pattern:
       match:
@@ -203,11 +216,12 @@ object_types:
 - name: event
   roles: [event-like]
   allowed_links:
+    specializes: [event]
     carries: [value_object, entity]
     references: [aggregate_root, enumeration]
   data_schema:
     schema: schemas/Event.json
-    digest: sha256:e1dbf2249b6cdd89712480d828279121be8ddfd870f0bc6373b94c72aa2231e6
+    digest: sha256:18d36655ed18469e7d543a8fde5ed75affa3f0c4370b010d860100ccea5554cd
   body_extraction:
     yield_pattern:
       match:
@@ -229,12 +243,13 @@ object_types:
           language: json
 - name: state_machine
   allowed_links:
+    specializes: [state_machine]
     transitions_to: [state_machine]
     raises: [event]
     references: [enumeration]
   data_schema:
     schema: schemas/StateMachine.json
-    digest: sha256:ff54d529c04018b62954a61463c60d44b312df313a9cf217e6789b5c047a7a3b
+    digest: sha256:5a0cfb1ccafd9c40823b755a7db4fc216cd68fceb665dc12c008936c8e50d406
   body_extraction:
     yield_pattern:
       match:
@@ -253,14 +268,24 @@ object_types:
           from: section_body
           after_heading: Operations
           required: false
-        diagram:
-          from: code_block
-          after_heading: States & Transitions
+        states:
+          from: table_row
+          under_section: States
           required: true
-          language: mermaid
+          assert:
+            columns: [State, Description]
+            min_rows: 1
+        transitions:
+          from: table_row
+          under_section: Transitions
+          required: true
+          assert:
+            columns: [From, To, Trigger, Guard, Emits]
+            min_rows: 1
 - name: process
   roles: [measurable]
   allowed_links:
+    specializes: [process]
     triggers: [process, action]
     consumes: [event]
     emits: [event]
@@ -269,7 +294,7 @@ object_types:
     operates_on: [domain-object]
   data_schema:
     schema: schemas/Process.json
-    digest: sha256:84aa7fe0b9b704bd201857284c0c3bd22e389898304010e6006e84b6e1767439
+    digest: sha256:81b1b42e0c1b51444fffa28d88cb571a3c027deac1847ca404cd4c2c15356ef8
   body_extraction:
     yield_pattern:
       match:
@@ -284,22 +309,20 @@ object_types:
           from: section_body
           after_heading: Invariants
           required: false
-        # Format-walkthrough decision #13 (2026-06-11): `multiple: true`
-        # keeps EVERY Workflow diagram (complex flows split into several
-        # smaller diagrams instead of one oversized one); the optional
-        # `states` anchor types state diagrams separately.
-        diagram:
-          from: code_block
-          after_heading: Workflow
+        steps:
+          from: table_row
+          under_section: Workflow
           required: true
-          multiple: true
-          language: mermaid
+          assert:
+            columns: [Step, Kind, Consumes, Emits, Description]
+            min_rows: 1
         states:
-          from: code_block
-          after_heading: States
+          from: table_row
+          under_section: States
           required: false
-          multiple: true
-          language: mermaid
+          assert:
+            columns: [State, Description]
+            min_rows: 1
         specification:
           from: section_body
           after_heading: Specification
@@ -313,7 +336,7 @@ object_types:
     references: [enumeration]
   data_schema:
     schema: schemas/Enumeration.json
-    digest: sha256:ac3a95648b40260a5476a23573d6cccf170c10265dd1cb37e26c93cb6246c891
+    digest: sha256:c06fe053b77d48b37477a03968c3c0c729da5f6faf8b7287aaae18017ae28afc
   body_extraction:
     yield_pattern:
       match:
@@ -332,4 +355,27 @@ object_types:
             columns:
             - Value
             - Description
+            min_rows: 1
+- name: population
+  allowed_links:
+    references: [entity, aggregate_root, nested_entity, value_object, event, process]
+  data_schema:
+    schema: schemas/Population.json
+    digest: sha256:c607d524911fb6bdbf8a23b7b169b7f721653aa649b5ca65a61e852855390bec
+  body_extraction:
+    yield_pattern:
+      match:
+        id: *id001
+        title: *id002
+        type: *id003
+        invariants:
+          from: section_body
+          after_heading: Invariants
+          required: false
+        members:
+          from: table_row
+          under_section: Members
+          required: true
+          assert:
+            columns: [Type, Extent]
             min_rows: 1

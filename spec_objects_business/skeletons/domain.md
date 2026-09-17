@@ -15,7 +15,8 @@ object: domain
        relationship edges; do not duplicate their definitions here.
      - "## Entity Relationship Diagram" (H2, OPTIONAL): a mermaid diagram of
        the whole domain, extracted as `erd`.
-     - "## Ubiquitous Language" (H2, optional): the shared vocabulary.
+     - "## Ubiquitous Language" (H2, optional): the shared vocabulary as a
+       `| Term | Description |` table; a list there is refused.
      A domain declares a boundary, not data: it carries no "## Properties"
      and no "## Invariants" (Domain.json forbids `fields` and `operations`). -->
 # [domain-001] OrderManagement
@@ -61,8 +62,9 @@ erDiagram
 
 ## Ubiquitous Language
 
-- **Place** — convert a draft order into a binding purchase request.
-- **Capture** — confirm payment for a placed order at the authorised amount.
-- **Fulfilment** — the pick, pack, and ship work that completes a paid order.
-- **Cancellation window** — the period during which a placed order may still
-  be cancelled without compensation steps.
+| Term | Description |
+|---|---|
+| Place | Convert a draft order into a binding purchase request |
+| Capture | Confirm payment for a placed order at the authorised amount |
+| Fulfilment | The pick, pack, and ship work that completes a paid order |
+| Cancellation window | The period during which a placed order may still be cancelled without compensation steps |

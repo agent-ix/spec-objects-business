@@ -1,37 +1,37 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.3.0/StateMachine.json",
+  "$id": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.4.0/StateMachine.json",
   "type": "object",
   "properties": {
     "operations": {
       "type": "array",
       "items": {
-        "$ref": "https://schemas.agent-ix.org/semantic-core/0.1.0/OperationDecl.json"
+        "$ref": "https://schemas.agent-ix.org/semantic-core/0.2.0/OperationDecl.json"
       },
       "minItems": 1
     },
     "fields": {
       "type": "array",
       "items": {
-        "$ref": "https://schemas.agent-ix.org/semantic-core/0.1.0/FieldDecl.json"
+        "$ref": "https://schemas.agent-ix.org/semantic-core/0.2.0/FieldDecl.json"
       }
     },
     "states": {
       "type": "array",
       "items": {
-        "$ref": "https://schemas.agent-ix.org/semantic-core/0.1.0/EnumValue.json"
+        "$ref": "https://schemas.agent-ix.org/semantic-core/0.2.0/EnumValue.json"
       }
     },
     "transitions": {
       "type": "array",
       "items": {
-        "$ref": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.3.0/Transition.json"
+        "$ref": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.4.0/Transition.json"
       }
     },
     "clauses": {
       "type": "array",
       "items": {
-        "$ref": "https://schemas.agent-ix.org/semantic-core/0.1.0/ClauseRef.json"
+        "$ref": "https://schemas.agent-ix.org/semantic-core/0.2.0/ClauseRef.json"
       }
     }
   },
