@@ -235,6 +235,7 @@ model Process {
   steps?: ProcessStep[];
   clauses?: ClauseRef[];
   operations?: OperationDecl[];
+  emits?: SemanticId[];
   ...Record<never>;
 }
 

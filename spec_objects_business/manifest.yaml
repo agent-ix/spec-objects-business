@@ -243,6 +243,12 @@ object_types:
           from: section_body
           after_heading: Operations
           required: true
+        relationships:
+          from: table_row
+          under_section: Relationships
+          required: false
+          assert:
+            columns: [Name, Verb, Target, Multiplicity]
 - name: event
   roles: [event-like]
   allowed_links:
@@ -324,7 +330,7 @@ object_types:
     operates_on: [domain-object]
   data_schema:
     schema: schemas/Process.json
-    digest: sha256:6a98913ab86202cd351308f52f2e0e30d8b00795bdc6d0f96d117af78fca781e
+    digest: sha256:5d7a4104b0c676906e3d2741978df8409155cbc5f8243d96aad85357db9d1d7a
   body_extraction:
     yield_pattern:
       match:
@@ -361,6 +367,12 @@ object_types:
           from: section_body
           after_heading: Algorithm
           required: false
+        relationships:
+          from: table_row
+          under_section: Relationships
+          required: false
+          assert:
+            columns: [Name, Verb, Target, Multiplicity]
 - name: enumeration
   allowed_links:
     references: [enumeration]

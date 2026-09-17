@@ -30,6 +30,12 @@
       "items": {
         "$ref": "https://schemas.agent-ix.org/semantic-core/0.2.0/OperationDecl.json"
       }
+    },
+    "emits": {
+      "type": "array",
+      "items": {
+        "$ref": "https://schemas.agent-ix.org/semantic-core/0.2.0/SemanticId.json"
+      }
     }
   },
   "required": [

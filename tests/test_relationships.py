@@ -27,6 +27,10 @@ from tests.test_model_tables import table_rows
 # The object types whose record schema admits `relations` (FR-004).
 RELATION_BEARING = ("entity", "aggregate_root")
 
+# The object types that declare the Relationships table (FR-007): the
+# relation-bearing types, and the types whose rows lower into typed keys.
+TABLE_BEARING = (*RELATION_BEARING, "process", "repository")
+
 RELATIONSHIPS_LOCATOR = {
     "from": "table_row",
     "under_section": "Relationships",
@@ -144,7 +148,7 @@ def test_every_object_type_declares_the_relationships_table_and_every_verb_it_ad
     manifest = load_manifest()
     assert "relationships" in manifest["semantic"]["mappings"]
     for ot in object_types():
-        if ot["name"] in RELATION_BEARING:
+        if ot["name"] in TABLE_BEARING:
             assert locators(ot)["relationships"] == RELATIONSHIPS_LOCATOR, ot["name"]
         else:
             assert "relationships" not in locators(ot), ot["name"]
@@ -287,15 +291,17 @@ def test_a_relationships_table_on_a_type_without_relations_fails_its_record_sche
     text = path.read_text()
     front = frontmatter(text)
     assert front["expect"] == "semantic.record-invalid"
-    result = quire_engine.validate_document(
-        "value_object", str(PACKAGE_ROOT), text, bundle_package=BUNDLE_PACKAGE
-    )
-    assert not result["is_valid"]
-    (error,) = result["errors"]
-    assert error["message"].startswith("semantic.record-invalid:"), error
-    assert "relations" in error["message"], error
-    # agent-ix/quire-rs#440: the finding names no line today.
-    assert error["line"] is None, error
+    header_only = text.split("| currency_code |")[0]
+    for document in (text, header_only):
+        result = quire_engine.validate_document(
+            "value_object", str(PACKAGE_ROOT), document, bundle_package=BUNDLE_PACKAGE
+        )
+        assert not result["is_valid"]
+        (error,) = result["errors"]
+        assert error["message"].startswith("semantic.record-invalid:"), error
+        assert "at relations:" in error["message"], error
+        # agent-ix/quire-rs#440: the finding names no line today.
+        assert error["line"] is None, error
 
 
 @pytest.mark.trace("TC-095", "FR-007-AC-7")
@@ -346,3 +352,55 @@ def test_validate_document_lowers_a_target_in_another_artifact_with_an_advisory(
     assert [w["line"] for w in advisories] == [row], result["warnings"]
     assert "aggregate-root-999" in advisories[0]["message"]
     assert "no bundle index" in advisories[0]["message"]
+
+
+# The typed-key rows FR-007-AC-9 lowers: object type, row, record key, target.
+TYPED_KEY_ROWS = (
+    ("process", "| done | emits | event-001 | 0..1 |", "emits", "event-001"),
+    (
+        "repository",
+        "| orders | persists | aggregate-root-001 | 0..* |",
+        "persists",
+        "aggregate-root-001",
+    ),
+)
+
+
+@pytest.mark.trace("TC-097", "FR-007-AC-9")
+@pytest.mark.xfail(
+    strict=True,
+    reason=(
+        "FR-007-AC-9: process `emits` and repository `persists` rows lower into "
+        "the typed record keys, never `relations`. agent-ix/quire-rs#435 builds "
+        "that lowering; today the rows lower into `relations` and the record "
+        "fails `semantic.record-invalid`. An expected failure, never a skip."
+    ),
+)
+def test_process_emits_and_repository_persists_rows_lower_into_typed_keys(
+    quire_engine, semantic_module
+):
+    bundle = relationship_bundle(semantic_module)
+    table = (
+        "\n## Relationships\n\n"
+        "| Name | Verb | Target | Multiplicity |\n|---|---|---|---|\n"
+    )
+    for name, row, key, target in TYPED_KEY_ROWS:
+        assert locators(object_type(name))["relationships"] == RELATIONSHIPS_LOCATOR
+        text = (SKELETONS_DIR / f"{name}.md").read_text() + table + row + "\n"
+        result = quire_engine.validate_document(
+            name, str(PACKAGE_ROOT), text, bundle_package=BUNDLE_PACKAGE
+        )
+        assert result["is_valid"], (name, result["errors"])
+        record = quire_engine.extract_semantic(
+            {
+                "markdown": text,
+                "module": semantic_module,
+                "path": f"{name}.md",
+                "sourceIdentity": f"ix://{BUNDLE_PACKAGE}/{frontmatter(text)['id']}",
+                "bodyExtraction": object_type(name)["body_extraction"],
+                "bundle": bundle,
+                "relationVocabulary": relation_vocabulary(name),
+            }
+        )
+        assert record[key] == [f"ix://{BUNDLE_PACKAGE}/{target}"], (name, record)
+        assert not record.get("relations"), (name, record)

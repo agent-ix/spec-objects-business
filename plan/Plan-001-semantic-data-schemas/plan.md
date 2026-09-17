@@ -46,7 +46,7 @@ relationships:
 - [ ] **FR-004**: One role-distinct model per business object type — required, forbidden and item rules — with every grammar item by `$ref` to semantic-core 0.2.0 and no redeclaration; eleven object-type models and eight support models.
 - [ ] **FR-005**: Every skeleton is an executable typed fixture in the quoin FR-071/FR-072 Markdown forms, with eleven skeletons, three `sysml` alternates and twenty-six negative fixtures; the semantic suite fails rather than skips when the engine is absent.
 - [ ] **FR-006**: Every object-type model table is a manifest `table_row` locator (eight, including the `population` Members table); skeletons author those tables with valid Quire clauses and every undeclared form is refused.
-- [ ] **FR-007**: `entity` and `aggregate_root` declare the quoin FR-104 `## Relationships` table under the `relationships` mapping token; `edge_types` declares every `allowed_links` verb; rows with an unknown or inverse verb, a disallowed target or a malformed multiplicity are refused.
+- [ ] **FR-007**: `entity`, `aggregate_root`, `process` and `repository` declare the quoin FR-104 `## Relationships` table under the `relationships` mapping token; `edge_types` declares every `allowed_links` verb; rows with an unknown or inverse verb, a disallowed target or a malformed multiplicity are refused.
 
 ### Non-Functional Requirements
 - [ ] **NFR-001**: Compatibility — additive for the Properties forms and locators outside the declared model-table sections (the measured 0.2.0 skeletons validate under 0.5.0, those locators are unchanged, the untyped `properties` string is byte-identical); the model-table sections and the Relationships table are strict.
@@ -167,6 +167,7 @@ dependency" skip that FR-005 replaces with a hard failure.
 - [ ] **TC-094** (FR-007-AC-6): a table on a type without `relations` fails `semantic.record-invalid` (line null until `agent-ix/quire-rs#440`).
 - [ ] **TC-095** (FR-007-AC-7): a list-form section is refused; a prose-only section warns `semantic.relationships-no-block`.
 - [ ] **TC-096** (FR-007-AC-8): `validate_document` lowers a target in another artifact with the no-bundle-index advisory (`agent-ix/quoin#557`).
+- [ ] **TC-097** (FR-007-AC-9): process `emits` and repository `persists` rows lower into typed keys — an explicit expected failure while `agent-ix/quire-rs#435` is open.
 
 ### Verification (NFRs)
 - [ ] **TC-061** (NFR-001-AC-2): every measured 0.2.0 skeleton validates under 0.5.0 with zero errors — an explicit expected failure while `agent-ix/quire-rs#391` is open.
@@ -232,7 +233,7 @@ Track D begins once C1 lands, because FR-006 changes what NFR-001 measures. D2 f
 | Task-009 | C     | FR-003, IT-002           | TC-027, TC-070                                           | blocked |
 | Task-010 | B     | FR-001, StR-001, IT-001  | TC-001…TC-006, TC-075                                    | done |
 | Task-012 | D     | FR-006, FR-003, FR-004, FR-005, NFR-001 | TC-080…TC-088                                 | done |
-| Task-013 | D     | FR-007, FR-003, NFR-001  | TC-089…TC-096                                            | in_progress |
+| Task-013 | D     | FR-007, FR-003, NFR-001  | TC-089…TC-097                                            | in_progress |
 
 ## Status
 
