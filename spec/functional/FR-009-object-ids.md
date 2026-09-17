@@ -39,10 +39,7 @@ the ids and the references to them are enforced at intake as well as here.
 - The `id` locator every object type shares, carrying
   `regex: ^([A-Za-z][A-Za-z0-9_]*)$`.
 - Skeleton and fixture ids in underscore form (`entity_001`,
-  `aggregate_root_001`, `nested_entity_001`, ...), and every reference to them. The rule is the object id rule of QSpec FR-154 (merged at
-`ac06d5a`): QSL model intake refuses a model node whose artifact id is not an
-object id, and refuses a reference to an id no admitted node carries, so both
-the ids and the references to them are enforced at intake as well as here.
+  `aggregate_root_001`, `nested_entity_001`, ...), and every reference to them.
 
 ## Behavior
 
