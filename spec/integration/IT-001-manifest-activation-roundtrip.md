@@ -27,8 +27,8 @@ reads of the registry endpoints (`/api/v1/archetypes`, `/api/v1/object-types`,
 
 ## Preconditions
 
-A `filament-core-service` instance at revision `a77f31e` or later (the
-revision that admits the `semantic` block; no release tag contains it, so a
+A `filament-core-service` instance at revision `e33070e` or later (the
+revision that admits `ObjectTypeEntry.construct`; no release tag contains it, so a
 main build is required) is running and reachable on a clean cluster
 (or the kind dev cluster) with an empty `modules` table, so that the absence of
 duplicate rows after re-activation is meaningful. This repo's

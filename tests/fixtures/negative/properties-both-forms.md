@@ -1,12 +1,12 @@
 ---
-id: negative-006
+id: negative_006
 title: "CustomerWithBothForms"
 type: entity
 object: entity
 expect: semantic.properties-both-forms
 because: "an artifact carries one typed table or one sysml fence; the alternate form is a separate file"
 ---
-# [negative-006] CustomerWithBothForms
+# [negative_006] CustomerWithBothForms
 
 ## Properties
 

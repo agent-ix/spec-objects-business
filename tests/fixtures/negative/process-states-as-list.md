@@ -1,12 +1,12 @@
 ---
-id: negative-020
+id: negative_020
 title: "OrderFulfilmentWithStateList"
 type: process
 object: process
 expect: semantic.feature-not-extractable
 because: "the States section holds only the declared State table; a bullet list there is a form the manifest does not declare"
 ---
-# [negative-020] OrderFulfilmentWithStateList
+# [negative_020] OrderFulfilmentWithStateList
 
 ## Properties
 

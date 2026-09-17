@@ -1,12 +1,12 @@
 ---
-id: negative-011
+id: negative_011
 title: "OrderLifecycleWithUnknownTrigger"
 type: state_machine
 object: state_machine
 expect: semantic.unknown-trigger
 because: "a transition Trigger names an operation of the same artifact; archive is not one"
 ---
-# [negative-011] OrderLifecycleWithUnknownTrigger
+# [negative_011] OrderLifecycleWithUnknownTrigger
 
 ## Properties
 

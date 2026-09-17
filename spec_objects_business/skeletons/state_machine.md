@@ -1,5 +1,5 @@
 ---
-id: state-machine-001
+id: state_machine_001
 title: "OrderLifecycle"
 type: state_machine
 object: state_machine
@@ -19,7 +19,7 @@ object: state_machine
        Trigger names an operation, Guard names an invariant clause.
      - Only the declared tables belong under States and Transitions; a
        diagram or list there is refused. -->
-# [state-machine-001] OrderLifecycle
+# [state_machine_001] OrderLifecycle
 
 The Order aggregate moves through these states. Transitions are commands on
 the aggregate root. Placing an order publishes OrderPlaced. Cancellation is

@@ -1,12 +1,12 @@
 ---
-id: negative-004
+id: negative_004
 title: "OrderManagementWithFields"
 type: domain
 object: domain
 expect: semantic.record-invalid
 because: "a domain declares a boundary, not data; Domain.json is sealed and admits no fields"
 ---
-# [negative-004] OrderManagementWithFields
+# [negative_004] OrderManagementWithFields
 
 ## Bounded Context
 

@@ -360,6 +360,6 @@ def test_roundtrip_mutations_fail() -> None:
 
     # c. drop the frontmatter id
     base = _skeleton_text("state_machine")
-    mutated = base.replace("id: state-machine-001\n", "", 1)
+    mutated = base.replace("id: state_machine_001\n", "", 1)
     assert mutated != base, "state_machine mutation did not apply"
     assert "missing" in reasons("state_machine", mutated)

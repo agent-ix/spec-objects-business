@@ -1,5 +1,5 @@
 ---
-id: population-001
+id: population_001
 title: "OrderPopulation"
 type: population
 object: population
@@ -15,7 +15,7 @@ object: population
      A population declares which instances exist together, not data:
      Population.json forbids `fields` and `operations`, so there is no
      "## Properties" and no "## Operations" section. -->
-# [population-001] OrderPopulation
+# [population_001] OrderPopulation
 
 OrderPopulation is the set of instances the OrderManagement context holds at
 one time: any number of orders, each placed by one of at least one customer.

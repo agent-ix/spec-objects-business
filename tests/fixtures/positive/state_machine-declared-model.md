@@ -1,5 +1,5 @@
 ---
-id: positive-001
+id: positive_001
 title: "ReturnLifecycle"
 type: state_machine
 object: state_machine
@@ -8,7 +8,7 @@ relationships:
     target: OrderLifecycle
 abstract: true
 ---
-# [positive-001] ReturnLifecycle
+# [positive_001] ReturnLifecycle
 
 A return reuses the order lifecycle's context and declares its own states,
 transitions, and operation frames. An exchange replaces the returned order

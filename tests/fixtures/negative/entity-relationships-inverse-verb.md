@@ -1,12 +1,12 @@
 ---
-id: negative-022
+id: negative_022
 title: "CustomerWithInverseVerb"
 type: entity
 object: entity
 expect: semantic.invalid-model-cell
 because: "part_of is the inverse label of contains and aggregates; the owning artifact declares the forward verb"
 ---
-# [negative-022] CustomerWithInverseVerb
+# [negative_022] CustomerWithInverseVerb
 
 ## Properties
 
@@ -18,4 +18,4 @@ because: "part_of is the inverse label of contains and aggregates; the owning ar
 
 | Name | Verb | Target | Multiplicity |
 |---|---|---|---|
-| order | part_of | aggregate-root-001 | 1..1 |
+| order | part_of | aggregate_root_001 | 1..1 |

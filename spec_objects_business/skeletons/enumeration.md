@@ -1,5 +1,5 @@
 ---
-id: enumeration-001
+id: enumeration_001
 title: "OrderStatus"
 type: enumeration
 object: enumeration
@@ -12,7 +12,7 @@ object: enumeration
      An enumeration declares labels, not data: Enumeration.json forbids
      `fields` and `operations`, so there is no "## Properties" section and no
      "## Invariants". -->
-# [enumeration-001] OrderStatus
+# [enumeration_001] OrderStatus
 
 ## Values
 

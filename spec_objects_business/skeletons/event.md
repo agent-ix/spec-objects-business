@@ -1,5 +1,5 @@
 ---
-id: event-001
+id: event_001
 title: "OrderPlaced"
 type: event
 object: event
@@ -14,7 +14,7 @@ object: event
      - "## Schema" (H2, required) holds a fenced `json` block. It is a
        derived, human-facing view of the declared payload; the typed table
        above is the authority. -->
-# [event-001] OrderPlaced
+# [event_001] OrderPlaced
 
 OrderPlaced is published by the Order aggregate when a draft order is placed.
 It is the integration contract consumed by Inventory (stock reservation),

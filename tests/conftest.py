@@ -131,7 +131,36 @@ SUPPORT_MODELS = (
     "ProcessStep",
     "StepKind",
     "PopulationMember",
+    "ObjectId",
+    "ObjectFrontmatter",
 )
+
+
+#: FR-009: an object id is a letter, then letters, digits and underscores.
+#: `typespec/main.tsp` states it once as `ObjectId`; the manifest's shared `id`
+#: locator carries it as a capturing `regex`.
+OBJECT_ID_PATTERN = "^[A-Za-z][A-Za-z0-9_]*$"
+OBJECT_ID_LOCATOR_REGEX = "^([A-Za-z][A-Za-z0-9_]*)$"
+
+
+def locator_facets_since_020(key: str, locator: dict[str, Any]) -> dict[str, Any]:
+    """A locator's facets as 0.2.0 recorded them: the FR-009 `regex` on the
+    `id` locator is the one facet added since, so it is compared on its own."""
+    if key != "id":
+        return locator
+    return {k: v for k, v in locator.items() if k != "regex"}
+
+
+def with_object_id(markdown: str) -> str:
+    """The artifact with its frontmatter `id` hyphens written as underscores
+    (FR-009), every other byte unchanged."""
+    return re.sub(
+        r"^id: (\S+)$",
+        lambda m: f"id: {m.group(1).replace('-', '_')}",
+        markdown,
+        count=1,
+        flags=re.MULTILINE,
+    )
 
 
 def load_manifest() -> dict[str, Any]:

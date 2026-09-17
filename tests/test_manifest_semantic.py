@@ -20,6 +20,7 @@ from tests.conftest import (
     REPO_ROOT,
     SKELETONS_DIR,
     SUPERSEDED_020_LOCATORS,
+    locator_facets_since_020,
     locators,
     object_type,
     object_types,
@@ -108,7 +109,9 @@ def test_every_020_locator_is_unchanged_against_the_checked_in_baseline():
                 ), f"{name}.{key} is superseded by an FR-006 model table"
                 continue
             assert key in new, f"{name}.{key} was dropped"
-            assert new[key] == facets, f"{name}.{key} changed facets"
+            assert (
+                locator_facets_since_020(key, new[key]) == facets
+            ), f"{name}.{key} changed facets"
 
 
 @pytest.mark.trace("TC-023", "FR-003-AC-3", "FR-003-CON-2")

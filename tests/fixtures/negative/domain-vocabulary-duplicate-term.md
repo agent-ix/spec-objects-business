@@ -1,12 +1,12 @@
 ---
-id: negative-015
+id: negative_015
 title: "OrderManagementWithDuplicateTerm"
 type: domain
 object: domain
 expect: semantic.duplicate-model-entry
 because: "each vocabulary Term is declared once; Place is declared twice"
 ---
-# [negative-015] OrderManagementWithDuplicateTerm
+# [negative_015] OrderManagementWithDuplicateTerm
 
 ## Bounded Context
 

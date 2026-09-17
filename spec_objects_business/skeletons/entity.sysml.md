@@ -1,5 +1,5 @@
 ---
-id: entity-001
+id: entity_001
 title: "Customer"
 type: entity
 object: entity
@@ -8,7 +8,7 @@ object: entity
      same fields as entity.md, authored as one ```sysml``` fence instead of the
      typed table (FR-005-AC-2). One artifact carries one form; the alternate is
      a separate file, never a second block in the same artifact. -->
-# [entity-001] Customer
+# [entity_001] Customer
 
 ## Properties
 

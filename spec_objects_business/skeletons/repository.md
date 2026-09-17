@@ -1,5 +1,5 @@
 ---
-id: repository-001
+id: repository_001
 title: "OrderRepository"
 type: repository
 object: repository
@@ -14,7 +14,7 @@ object: repository
        Requires:/Ensures: lines.
      A repository declares no data of its own: Repository.json forbids
      `fields`, so there is no "## Properties" section. -->
-# [repository-001] OrderRepository
+# [repository_001] OrderRepository
 
 ## Operations
 

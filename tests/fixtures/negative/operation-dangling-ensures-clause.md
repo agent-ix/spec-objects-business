@@ -1,12 +1,12 @@
 ---
-id: negative-007
+id: negative_007
 title: "OrderRepositoryWithDanglingEnsures"
 type: repository
 object: repository
 expect: semantic.dangling-clause-ref
 because: "a Requires:/Ensures: line names a clause id declared in the same artifact; this one names none"
 ---
-# [negative-007] OrderRepositoryWithDanglingEnsures
+# [negative_007] OrderRepositoryWithDanglingEnsures
 
 ## Operations
 

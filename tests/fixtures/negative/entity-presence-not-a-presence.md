@@ -1,12 +1,12 @@
 ---
-id: negative-018
+id: negative_018
 title: "CustomerWithUnknownPresence"
 type: entity
 object: entity
 expect: semantic.invalid-model-cell
 because: "a Presence cell is required or optional; sometimes is neither"
 ---
-# [negative-018] CustomerWithUnknownPresence
+# [negative_018] CustomerWithUnknownPresence
 
 ## Properties
 

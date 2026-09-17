@@ -1,5 +1,5 @@
 ---
-id: nested-entity-001
+id: nested_entity_001
 title: "OrderLine"
 type: nested_entity
 object: nested_entity
@@ -12,7 +12,7 @@ object: nested_entity
      - "## Invariants" (H2): one `### <clauseId>` per clause.
      - "## Parent" (H2, required): the owning aggregate root and how it
        mediates every mutation. Derived view; `owner` is the typed key. -->
-# [nested-entity-001] OrderLine
+# [nested_entity_001] OrderLine
 
 ## Properties
 
@@ -43,7 +43,7 @@ self.line_total.currency = self.unit_price.currency
 
 ## Parent
 
-OrderLine belongs to the **Order** aggregate root (`aggregate-root-001`). An
+OrderLine belongs to the **Order** aggregate root (`aggregate_root_001`). An
 order line is identified by `line_number`, which is unique only within its
 parent order — there is no global OrderLine identity and no repository for
 order lines. External callers reference a line as the pair

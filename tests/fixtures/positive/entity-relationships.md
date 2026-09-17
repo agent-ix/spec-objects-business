@@ -1,10 +1,10 @@
 ---
-id: positive-004
+id: positive_004
 title: "CustomerAccount"
 type: entity
 object: entity
 ---
-# [positive-004] CustomerAccount
+# [positive_004] CustomerAccount
 
 A customer account with one relationship row per verb an entity admits.
 
@@ -19,7 +19,7 @@ A customer account with one relationship row per verb an entity admits.
 
 | Name | Verb | Target | Multiplicity |
 |---|---|---|---|
-| balance | contains | value-object-001 | 1..1 |
-| lifecycle | owns | state-machine-001 | 1..1 |
-| last_order | references | aggregate-root-001 | 0..1 |
-| referrer | references | positive-004 | 0..1 |
+| balance | contains | value_object_001 | 1..1 |
+| lifecycle | owns | state_machine_001 | 1..1 |
+| last_order | references | aggregate_root_001 | 0..1 |
+| referrer | references | positive_004 | 0..1 |

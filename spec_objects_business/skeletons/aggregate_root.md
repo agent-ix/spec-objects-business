@@ -1,5 +1,5 @@
 ---
-id: aggregate-root-001
+id: aggregate_root_001
 title: "Order"
 type: aggregate_root
 object: aggregate_root
@@ -18,7 +18,7 @@ object: aggregate_root
        table, one row per domain relationship. Verb is an `edge_types` verb
        this type's allowed_links admit, never an inverse label or
        `specializes`; Target is an artifact id; Multiplicity is required. -->
-# [aggregate-root-001] Order
+# [aggregate_root_001] Order
 
 ## Properties
 
@@ -78,7 +78,7 @@ operations, and the three Money values are recomputed whenever a line changes.
 
 | Name | Verb | Target | Multiplicity |
 |---|---|---|---|
-| lines | aggregates | nested-entity-001 | 0..* |
-| totals | contains | value-object-001 | 3..3 |
-| status | references | enumeration-001 | 1..1 |
-| placed | emits | event-001 | 0..1 |
+| lines | aggregates | nested_entity_001 | 0..* |
+| totals | contains | value_object_001 | 3..3 |
+| status | references | enumeration_001 | 1..1 |
+| placed | emits | event_001 | 0..1 |

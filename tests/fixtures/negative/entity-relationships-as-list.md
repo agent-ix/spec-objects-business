@@ -1,12 +1,12 @@
 ---
-id: negative-026
+id: negative_026
 title: "CustomerWithRelationshipList"
 type: entity
 object: entity
 expect: semantic.feature-not-extractable
 because: "relationships are declared only as the Name | Verb | Target | Multiplicity table; a bullet list is refused"
 ---
-# [negative-026] CustomerWithRelationshipList
+# [negative_026] CustomerWithRelationshipList
 
 ## Properties
 
@@ -16,4 +16,4 @@ because: "relationships are declared only as the Name | Verb | Target | Multipli
 
 ## Relationships
 
-- lifecycle: owns state-machine-001
+- lifecycle: owns state_machine_001

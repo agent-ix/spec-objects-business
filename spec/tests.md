@@ -17,6 +17,10 @@ relationships:
     type: covers
   - target: "ix://agent-ix/spec-objects-business/FR-007"
     type: covers
+  - target: "ix://agent-ix/spec-objects-business/FR-008"
+    type: covers
+  - target: "ix://agent-ix/spec-objects-business/FR-009"
+    type: covers
   - target: "ix://agent-ix/spec-objects-business/NFR-001"
     type: covers
 ---
@@ -26,7 +30,7 @@ relationships:
 
 This matrix is the verification contract for the module: the manifest
 activation requirement (FR-001, issue #1 era) and the issue #4 semantic data
-schemas, model tables and relationships (US-001, FR-002..FR-007, NFR-001, IT-002). Coverage is complete when
+schemas, model tables, relationships, construct declarations and object ids (US-001, FR-002..FR-009, NFR-001, IT-002). Coverage is complete when
 every acceptance criterion, named constraint, and NFR metric maps to at least
 one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate --strict` reports no findings on this branch, and the rows still `🚧` are the ones whose evidence needs an environment this repository cannot provision (a running `filament-core-service`, a Quoin built from main).
 
@@ -64,6 +68,8 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | FR-005 | FR-005-AC-1..8, FR-005-CON-1..2 | TC-050..TC-059 | ✅ |
 | FR-006 | FR-006-AC-1..8, FR-006-CON-1 | TC-080..TC-088 | 🚧 CON-1 (TC-088) is an expected failure blocked on filament-core-service#31; AC-8 is an Inspection |
 | FR-007 | FR-007-AC-1..10 | TC-089..TC-098 | 🚧 AC-9 (TC-097, per type) is an expected failure blocked on quire-rs#435 and AC-10 (TC-098) pins that blocker; AC-6 asserts the null line `agent-ix/quire-rs#440` fixes |
+| FR-008 | FR-008-AC-1..4 | TC-099..TC-102 | ✅ |
+| FR-009 | FR-009-AC-1..3 | TC-103..TC-105 | ✅ |
 
 ### Non-Functional Requirement Coverage
 
@@ -100,7 +106,7 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | TC-019 | `package-lock.json` resolves every package from npmjs except `@agent-ix/semantic-core` (npm.ix) | Unit | P2 | FR-002-CON-4 | ✅ |
 | TC-020 | The `semantic` block equals the nine admitted keys and `exports` equals the eleven types | Unit | P0 | FR-003-AC-1, FR-003-CON-1 | ✅ |
 | TC-021 | Every exported type's `data_schema` is the reference form whose file hashes to the recorded digest | Unit | P0 | FR-003-AC-2 | ✅ |
-| TC-022 | Every 0.2.0 locator outside the FR-006 model tables is unchanged against the checked-in baseline | Unit | P0 | FR-003-AC-3 | ✅ |
+| TC-022 | Every 0.2.0 locator outside the FR-006 model tables is unchanged against the checked-in baseline, the FR-009 `regex` on `id` aside | Unit | P0 | FR-003-AC-3 | ✅ |
 | TC-023 | Every added locator outside the FR-006 model tables is `required: false` | Unit | P1 | FR-003-AC-3, FR-003-CON-2 | ✅ |
 | TC-024 | `quire.Registry.load_from` lists all eleven archetypes | Integration | P0 | FR-003-AC-4 | ✅ |
 | TC-025 | `validate_document` on every skeleton reports no `semantic.*` load failure | Integration | P0 | FR-003-AC-4 | ✅ |
@@ -128,10 +134,10 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | TC-057 | A Properties section holding both a table and a fence is refused at the second form | Integration | P1 | FR-005-CON-2 | ✅ |
 | TC-058 | No corpus repository or vendored fixture is edited by the change (diff over the branch) | Inspection | P2 | FR-005-CON-1 | ✅ |
 | TC-059 | Skeleton titles are distinct `Identifier`s outside `KernelScalar`, and `object` equals `type` in every skeleton frontmatter | Unit | P1 | FR-005-AC-8 | ✅ |
-| TC-060 | Zero 0.2.0 locators changed outside the FR-006 model tables | Unit | P0 | NFR-001-AC-1 | ✅ |
-| TC-061 | Each of the seven measured 0.2.0 skeletons validates under the current manifest with zero errors; a legacy form that declares `object:` is not an error | Integration | P0 | NFR-001-AC-2 | ✅ the criterion passes; the `object:`-declaring case is an expected failure on quire-rs#391 |
+| TC-060 | Zero 0.2.0 locators changed outside the FR-006 model tables, the FR-009 `regex` on `id` aside, which equals the object id pattern on every type | Unit | P0 | NFR-001-AC-1 | ✅ |
+| TC-061 | Each of the seven measured 0.2.0 skeletons, its id in FR-009 underscore form, validates under the current manifest with zero errors; a legacy form that declares `object:` is not an error | Integration | P0 | NFR-001-AC-2 | ✅ the criterion passes; the `object:`-declaring case is an expected failure on quire-rs#391 |
 | TC-062 | Each legacy-form 0.2.0 skeleton yields exactly one `semantic.legacy-properties-form` warning | Integration | P1 | NFR-001-AC-3 | ✅ |
-| TC-063 | Each legacy skeleton's `properties` string is identical under 0.2.0 and the current manifest | Integration | P1 | NFR-001-AC-4 | ✅ |
+| TC-063 | Each legacy skeleton's `properties` string, its id in FR-009 underscore form, is identical under 0.2.0 and the current manifest | Integration | P1 | NFR-001-AC-4 | ✅ |
 | TC-070 | Quoin install roundtrip with state restore | Manual | P1 | IT-002-SC-01..IT-002-SC-06, FR-003-AC-5 | 🚧 needs a Quoin built from quoin main ≥ `3e842ce` (no release carries it) |
 | TC-071 | The packed npm tarball contains `manifest.yaml` and a sibling `schemas/<Model>.json` per export | Integration | P1 | FR-002-AC-7 | ✅ |
 | TC-072 | A coordinated version bump re-emits every `$id`/`$ref` at the new version with matching digests; bumping one half of the pair fails the check | Integration | P1 | FR-002-AC-8, FR-002-CON-5 | ✅ |
@@ -149,13 +155,20 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | TC-089 | `semantic.mappings` includes `relationships`; only `entity`, `aggregate_root`, `process` and `repository` declare the `relationships` locator, with no `min_rows`; `edge_types` declares `specializes` and the fifteen domain verbs with their spec-artifacts-iso category and inverse, covering every `allowed_links` verb | Unit | P0 | FR-007-AC-1 | ✅ |
 | TC-090 | Each skeleton `## Relationships` table validates under the bundle package and lowers one relation per row, in row order, with verb, category, `composite`, `ix://` target and multiplicity; no frontmatter domain relationship and no `specializes` row | Integration | P0 | FR-007-AC-2 | ✅ |
 | TC-091 | The entity relationships fixture validates and lowers every non-`specializes` entity verb, `composite` only for `contains` | Integration | P0 | FR-007-AC-3 | ✅ |
-| TC-092 | The unknown-verb, inverse-verb, target-not-allowed and bad-multiplicity fixtures each fail with exactly one `semantic.invalid-model-cell` at line 21 on both surfaces, their reason, `availability.relations` `unavailable` with `entry-errors: lines 21`, and no relation; the inverse-verb message names `aggregates` and `aggregate-root-001` | Integration | P0 | FR-007-AC-4 | ✅ |
+| TC-092 | The unknown-verb, inverse-verb, target-not-allowed and bad-multiplicity fixtures each fail with exactly one `semantic.invalid-model-cell` at line 21 on both surfaces, their reason, `availability.relations` `unavailable` with `entry-errors: lines 21`, and no relation; the inverse-verb message names `aggregates` and `aggregate_root_001` | Integration | P0 | FR-007-AC-4 | ✅ |
 | TC-093 | A header-only Relationships table validates and extracts `available` with empty `relations` | Integration | P0 | FR-007-AC-5 | ✅ |
 | TC-094 | Only `Entity` and `AggregateRoot` declare `relations`; a Relationships table on `value_object`, populated or header-only, fails with one `semantic.record-invalid` at `relations` (line null until `agent-ix/quire-rs#440`) | Integration | P0 | FR-007-AC-6 | ✅ |
 | TC-095 | A list-form Relationships section fails with `semantic.feature-not-extractable` at the list line; a prose-only section warns `semantic.relationships-no-block` at the heading | Integration | P0 | FR-007-AC-7 | ✅ |
-| TC-096 | Through `validate_document`, a row targeting another artifact (`aggregate-root-999`) validates with one `semantic.unresolved-target` advisory at the row (`agent-ix/quoin#557`) | Integration | P1 | FR-007-AC-8 | ✅ |
+| TC-096 | Through `validate_document`, a row targeting another artifact (`aggregate_root_999`) validates with one `semantic.unresolved-target` advisory at the row (`agent-ix/quoin#557`) | Integration | P1 | FR-007-AC-8 | ✅ |
 | TC-097 | Per type, a process `emits` row and a repository `persists` row validate and lower into `emits` and `persists` with the qualified target, not `relations`, with every row in `relationSources` and non-lossy availability; header-only extracts the typed key empty — an explicit expected failure while `agent-ix/quire-rs#435` is open | Integration | P1 | FR-007-AC-9 | 🚧 blocked on quire-rs#435 |
 | TC-098 | Per type, the same process and repository rows fail today with exactly one `semantic.record-invalid` at `relations`; flips when `agent-ix/quire-rs#435` lands | Integration | P1 | FR-007-AC-10 | ✅ |
+| TC-099 | Exactly the ten construct kinds declare `construct:`, `population` none, and `quire.validate_manifest` reports zero violations against the FR-035 schema at `e33070e` | Unit | P0 | FR-008-AC-1 | ✅ |
+| TC-100 | Per kind, the declaration equals its FR-008 table row and the type carries the admitted roles; exactly six kinds bind an FR-208 meaning | Unit | P0 | FR-008-AC-2 | ✅ |
+| TC-101 | Per kind, identity, shape, members and rules are FR-142 vocabulary, each rule's member presence holds, and references name non-forbidden reference members and carried roles only | Unit | P0 | FR-008-AC-3 | ✅ |
+| TC-102 | A wildcard role, an unknown identity, an unknown member presence and a missing `meaning` are each refused at their construct path | Unit | P0 | FR-008-AC-4 | ✅ |
+| TC-103 | `ObjectId.json` carries the object id pattern, `ObjectFrontmatter.json` references it, and every `id` locator carries the anchored capture of it | Unit | P0 | FR-009-AC-1 | ✅ |
+| TC-104 | `ObjectFrontmatter.json` accepts underscore ids and refuses hyphenated, leading-underscore, leading-digit and empty ids; every skeleton and fixture frontmatter validates | Unit | P0 | FR-009-AC-2 | ✅ |
+| TC-105 | Each skeleton has no missing-id error; its hyphenated form fails with only the missing-id error; the 0.2.0 `entity-001` skeleton fails with exactly that error | Integration | P0 | FR-009-AC-3 | ✅ |
 | TC-075 | Every object type ships a typed schema a fixture reader can consume; an entity and an enumeration record are distinguishable by schema alone | Demonstration | P2 | StR-001-VC-3 | ✅ |
 
 ## Test Environment

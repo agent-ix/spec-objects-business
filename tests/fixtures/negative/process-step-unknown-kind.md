@@ -1,12 +1,12 @@
 ---
-id: negative-013
+id: negative_013
 title: "OrderFulfilmentWithUnknownStepKind"
 type: process
 object: process
 expect: semantic.invalid-model-cell
 because: "a step Kind is one of command, event, decision, compensation, wait; retry is none of them"
 ---
-# [negative-013] OrderFulfilmentWithUnknownStepKind
+# [negative_013] OrderFulfilmentWithUnknownStepKind
 
 ## Properties
 

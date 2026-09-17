@@ -1,12 +1,12 @@
 ---
-id: negative-014
+id: negative_014
 title: "OrderWithMemberList"
 type: aggregate_root
 object: aggregate_root
 expect: semantic.feature-not-extractable
 because: "the Members section holds only the declared Member table; a bullet list there is a form the manifest does not declare"
 ---
-# [negative-014] OrderWithMemberList
+# [negative_014] OrderWithMemberList
 
 ## Properties
 

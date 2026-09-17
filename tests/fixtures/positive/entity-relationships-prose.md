@@ -1,10 +1,10 @@
 ---
-id: positive-006
+id: positive_006
 title: "ArchivedCustomer"
 type: entity
 object: entity
 ---
-# [positive-006] ArchivedCustomer
+# [positive_006] ArchivedCustomer
 
 ## Properties
 

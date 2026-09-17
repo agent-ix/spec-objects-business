@@ -1,10 +1,10 @@
 ---
-id: positive-002
+id: positive_002
 title: "CheckoutPopulation"
 type: population
 object: population
 ---
-# [positive-002] CheckoutPopulation
+# [positive_002] CheckoutPopulation
 
 The instances a checkout run holds together.
 

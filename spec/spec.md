@@ -130,7 +130,8 @@ the manifest against `filament-core`; FR-002 emits the schemas; FR-003
 declares the semantic contract in the manifest; FR-004 fixes each type's
 role-distinct schema; FR-005 makes the skeletons executable fixtures; FR-006
 declares the object-type model tables the engine extracts; FR-007 declares the
-`## Relationships` table and the edge verbs its rows use. NFR-001 states
+`## Relationships` table and the edge verbs its rows use; FR-008 declares each
+object type's semantic IR construct; FR-009 fixes the underscore object id. NFR-001 states
 where the contract is additive and why the model-table sections are strict. Integration tests in
 `integration/` verify the activation and Quoin-install boundaries; the third
 external boundary, the Quire engine (loader, extraction, record surface), has

@@ -1,12 +1,12 @@
 ---
-id: negative-017
+id: negative_017
 title: "CustomerWithUndeclaredStates"
 type: entity
 object: entity
 expect: semantic.feature-not-extractable
 because: "the entity manifest declares no States table, so a State table under any section is a form the manifest does not declare"
 ---
-# [negative-017] CustomerWithUndeclaredStates
+# [negative_017] CustomerWithUndeclaredStates
 
 ## Properties
 

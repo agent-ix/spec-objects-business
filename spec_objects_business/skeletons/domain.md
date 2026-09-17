@@ -1,5 +1,5 @@
 ---
-id: domain-001
+id: domain_001
 title: "OrderManagement"
 type: domain
 object: domain
@@ -19,7 +19,7 @@ object: domain
        `| Term | Description |` table; a list there is refused.
      A domain declares a boundary, not data: it carries no "## Properties"
      and no "## Invariants" (Domain.json forbids `fields` and `operations`). -->
-# [domain-001] OrderManagement
+# [domain_001] OrderManagement
 
 ## Bounded Context
 

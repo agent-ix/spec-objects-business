@@ -1,10 +1,10 @@
 ---
-id: positive-005
+id: positive_005
 title: "GuestCustomer"
 type: entity
 object: entity
 ---
-# [positive-005] GuestCustomer
+# [positive_005] GuestCustomer
 
 A guest customer declares the Relationships table with no rows: it has no
 domain relationships.
