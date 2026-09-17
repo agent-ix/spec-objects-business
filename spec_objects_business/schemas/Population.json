@@ -1,12 +1,12 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.6.0/Population.json",
+  "$id": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.7.0/Population.json",
   "type": "object",
   "properties": {
     "members": {
       "type": "array",
       "items": {
-        "$ref": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.6.0/PopulationMember.json"
+        "$ref": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.7.0/PopulationMember.json"
       }
     },
     "clauses": {

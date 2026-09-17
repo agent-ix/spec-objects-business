@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.6.0/Domain.json",
+  "$id": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.7.0/Domain.json",
   "type": "object",
   "properties": {
     "members": {
@@ -12,18 +12,12 @@
     "vocabulary": {
       "type": "array",
       "items": {
-        "$ref": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.6.0/Term.json"
-      }
-    },
-    "clauses": {
-      "type": "array",
-      "items": {
-        "$ref": "https://schemas.agent-ix.org/semantic-core/0.2.0/ClauseRef.json"
+        "$ref": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.7.0/Term.json"
       }
     }
   },
   "unevaluatedProperties": {
     "not": {}
   },
-  "description": "A bounded context. A domain declares a boundary, not data: `fields` and\n`operations` are forbidden by the seal."
+  "description": "A bounded context. A domain declares a boundary, not data: `fields`,\n`operations` and `clauses` are forbidden by the seal (QSpec FR-208: a\nnamespace declares no fields and no operations, and a `quire` clause on it\nis `unsupported_construct`/`declaration-form`)."
 }

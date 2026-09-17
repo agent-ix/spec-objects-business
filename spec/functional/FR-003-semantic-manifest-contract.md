@@ -18,7 +18,7 @@ relationships:
 
 `spec_objects_business/manifest.yaml` SHALL carry the quoin FR-070 `semantic`
 block and reference every exported object type's emitted schema by path and
-digest (quoin FR-073), at manifest `version` 0.6.0, so that Quoin verifies
+digest (quoin FR-073), at manifest `version` 0.7.0, so that Quoin verifies
 the shipped schemas at install and Quire validates every declaration record
 against them, while every extraction locator outside the FR-006 model tables
 keeps its meaning.
@@ -36,7 +36,7 @@ keeps its meaning.
 
 ## Outputs
 
-- `manifest.yaml` with `version: 0.6.0`, a `semantic` block, and reference-form
+- `manifest.yaml` with `version: 0.7.0`, a `semantic` block, and reference-form
   `data_schema` on every exported object type.
 
 ## Behavior
@@ -46,7 +46,7 @@ keeps its meaning.
 - `compatibility_posture` SHALL be `strict`, because the declared model-table sections refuse every form the manifest does not declare (NFR-001), which is a breaking change for an artifact authoring one of those sections in another form; `additive` would misstate that, and `declared-lossy` names lossy mappings, which this module declares none of.
 - Every exported object type's `data_schema` SHALL be `{ schema: schemas/<Model>.json, digest: sha256:<hex> }` where `<hex>` is the SHA-256 of the shipped file bytes.
 - No exported object type SHALL carry an inline `data_schema`.
-- The manifest `version` SHALL be `0.6.0`, because the emitted `$id` embeds it and the FR-006 model-table locators, the FR-007 `## Relationships` table, the FR-008 construct declarations and the FR-009 object id pattern change what an object type declares and admits.
+- The manifest `version` SHALL be `0.7.0`, because the emitted `$id` embeds it and the FR-006 model-table locators, the FR-007 `## Relationships` table, the FR-008 construct declarations, the FR-009 object id pattern, and the FR-008 QSpec FR-208 refusals narrowing what `domain`, `value_object` and `repository` admit (no `fields`/`operations`/`clauses` on `domain`, no `operations` on `value_object`, no `clauses` and no non-empty operation `pre`/`post` on `repository`) change what an object type declares and admits.
 - The six quire-rs FR-075 tokens `generalization`, `abstract-types`, `presence`, `subsetting`, `redefinition`, and `effect-frames` SHALL gate extraction of their forms; `typed-table` and `sysml-fence` SHALL name the two Properties forms as quoin mapping ids. The FR-075 tokens name: `generalization` the frontmatter `specializes` relationship, `abstract-types` the frontmatter `abstract` flag, `presence`, `subsetting`, and `redefinition` the Properties `Presence`, `Subsets`, and `Redefines` columns, and `effect-frames` the operation `Modifies:`, `Creates:`, and `Deletes:` lines. Quire refuses a `specializes`, `abstract`, `Presence`, `Subsets`, `Redefines`, `Modifies:`, `Creates:`, or `Deletes:` form whose token the block does not name with `semantic.feature-not-extractable`. The quoin FR-104 token `relationships` gates the FR-007 `## Relationships` table.
 - Every `body_extraction` locator present at version 0.2.0 SHALL remain present with the same `from`, heading, `language`, `required`, `multiple`, and `assert` facets, except the locators whose sections FR-006 declares as model tables (`domain.ubiquitous_language`, `aggregate_root.members`, `state_machine.diagram`, `process.diagram`, `process.states`, `enumeration.values_table`, now keyed `values`).
 - The `properties` string locator (`section_body` after `Properties`) on `entity` and `value_object` SHALL stay in place, so the untyped `properties` string continues to be yielded beside the semantic record.

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.6.0/ValueObject.json",
+  "$id": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.7.0/ValueObject.json",
   "type": "object",
   "properties": {
     "fields": {
@@ -10,7 +10,7 @@
       },
       "minItems": 1,
       "contains": {
-        "$ref": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.6.0/IdentityField.json"
+        "$ref": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.7.0/IdentityField.json"
       },
       "minContains": 0,
       "maxContains": 0
@@ -20,12 +20,6 @@
       "items": {
         "$ref": "https://schemas.agent-ix.org/semantic-core/0.2.0/ClauseRef.json"
       }
-    },
-    "operations": {
-      "type": "array",
-      "items": {
-        "$ref": "https://schemas.agent-ix.org/semantic-core/0.2.0/OperationDecl.json"
-      }
     }
   },
   "required": [
@@ -34,5 +28,5 @@
   "unevaluatedProperties": {
     "not": {}
   },
-  "description": "A value object: equality by value, so it carries no identity field of its\nown. `relations` is forbidden by the seal."
+  "description": "A value object: equality by value, so it carries no identity field of its\nown. `relations` and `operations` are forbidden by the seal (QSpec FR-208:\nan operation of a record value type is `unsupported_construct`/\n`declaration-form`)."
 }
