@@ -32,6 +32,8 @@ relationships:
     type: verifies
   - target: ix://agent-ix/spec-objects-business/TC-087
     type: verifies
+  - target: ix://agent-ix/spec-objects-business/TC-088
+    type: verifies
 ---
 # Task-012: FR-006 — model tables, the population type and manifest 0.4.0
 
@@ -52,7 +54,7 @@ Declare every object-type model table quire-rs FR-075 extracts as a manifest
 ## Deliverables
 
 - `manifest.yaml` 0.4.0, 19 schemas, 14 skeletons, 20 negative fixtures
-- Tests for TC-080..TC-083 and TC-085..TC-087
+- Tests for TC-080..TC-083 and TC-085..TC-088 (TC-088 an expected failure on `agent-ix/filament-core-service#31`)
 
 ## Notes
 

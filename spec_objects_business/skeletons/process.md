@@ -46,7 +46,7 @@ The clauses the OrderFulfilment declaration enforces. Each clause owns one
 self.compensated implies (self.stock_refused or self.capture_failed)
 ```
 
-### CaptureIsNotAttemptedAfterAStockRefusal
+### StockRefusalExcludesCaptureFailure
 
 ```quire
 self.stock_refused implies not self.capture_failed

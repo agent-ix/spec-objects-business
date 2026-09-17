@@ -18,7 +18,7 @@ because: "the Members section holds only the declared Member table; a bullet lis
 
 ## Invariants
 
-### OrderPastDraftCarriesAtLeastOneLine
+### PlacedPaidShippedOrDeliveredOrderCarriesAtLeastOneLine
 
 ```quire
 (self.status = OrderManagement::OrderStatus::Placed or self.status = OrderManagement::OrderStatus::Paid or self.status = OrderManagement::OrderStatus::Shipped or self.status = OrderManagement::OrderStatus::Delivered) implies size(self.lines) >= 1

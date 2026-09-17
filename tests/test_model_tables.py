@@ -55,15 +55,19 @@ KEY_COLUMN = {
     "population": "Type",
 }
 
-# The fixture-name fragment that names each model table.
-STEM_OF = {
-    "values": "values",
-    "states": "states",
-    "transitions": "transition",
-    "steps": "step",
-    "members": "members",
-    "vocabulary": "vocabulary",
-    "population": "population",
+# The model-table locator each model-table negative fixture refuses, keyed by
+# fixture; its object type is the fixture's frontmatter `type`.
+MODEL_NEGATIVE_LOCATOR = {
+    "enumeration-values-as-list.md": "values_table",
+    "state_machine-states-as-diagram.md": "states",
+    "state_machine-transition-unknown-state.md": "transitions",
+    "state_machine-transition-unknown-trigger.md": "transitions",
+    "state_machine-transition-dangling-guard.md": "transitions",
+    "process-step-unknown-kind.md": "steps",
+    "process-states-as-list.md": "states",
+    "aggregate_root-members-as-list.md": "members",
+    "domain-vocabulary-duplicate-term.md": "vocabulary",
+    "population-members-duplicate-type.md": "members",
 }
 
 # One negative fixture per model table, plus the refusal of a model table
@@ -109,7 +113,7 @@ def table_rows(text: str, heading: str) -> list[list[str]]:
     return [[c.strip() for c in ln.strip("|").split("|")] for ln in lines[2:]]
 
 
-@pytest.mark.trace("TC-080", "FR-006-AC-1", "FR-006-CON-1")
+@pytest.mark.trace("TC-080", "FR-006-AC-1")
 def test_every_model_table_locator_declares_the_engine_column_set():
     declared = {}
     for ot in object_types():
@@ -135,6 +139,24 @@ def test_every_model_table_locator_declares_the_engine_column_set():
         assert loc["required"] is required, (name, key)
         assert loc["assert"]["min_rows"] == 1, (name, key)
         assert set(loc["assert"]) == {"columns", "min_rows"}, (name, key)
+
+
+@pytest.mark.trace("TC-088", "FR-006-CON-1")
+@pytest.mark.xfail(
+    strict=True,
+    reason=(
+        "FR-006-CON-1 requires each model-table locator to declare its optional "
+        "columns as `assert.optional_columns`. The pinned FR-035 module-manifest "
+        "schema admits `columns` and `min_rows` only, so the manifest carries "
+        "the full column list. agent-ix/filament-core-service#31 owns the "
+        "schema change. The row is an expected failure, never a skip."
+    ),
+)
+def test_every_model_table_locator_declares_its_optional_columns():
+    for name, tables in MODEL_TABLES.items():
+        for key in tables:
+            loc = locators(object_type(name))[key]
+            assert "optional_columns" in loc["assert"], (name, key)
 
 
 @pytest.mark.trace("TC-081", "FR-006-AC-2")
@@ -183,6 +205,16 @@ def test_the_declared_model_fixture_extracts_every_mapping_feature(
     assert features["reason"]["presence"] == "optional"
     assert features["returned_items"]["subsets"] == ["items"]
     assert features["current_state"]["redefines"] == "current_state"
+    types = {f["name"]: f["type"]["target"] for f in record["fields"]}
+    assert types["current_state"].rsplit("/", 1)[-1] == "ReturnStatus"
+    status = (POSITIVE_DIR / "enumeration-return-status.md").read_text()
+    status_result = quire_engine.validate_document(
+        "enumeration", str(PACKAGE_ROOT), status
+    )
+    assert status_result["is_valid"], status_result["errors"]
+    assert [row[0] for row in table_rows(status, "Values")] == [
+        row[0] for row in table_rows(text, "States")
+    ]
     (frame,) = model["operationFrames"]
     assert frame["operation"] == "exchange"
     assert frame["requires"] == ["ReturnedItemsAreAtMostTheItems"]
@@ -218,12 +250,18 @@ def test_every_model_table_and_undeclared_form_has_a_refusing_fixture(quire_engi
             name,
             [e["message"] for e in result["errors"]],
         )
-    covered = {
-        feature for tables in MODEL_TABLES.values() for feature, _ in tables.values()
+    covered = set()
+    for name, locator in MODEL_NEGATIVE_LOCATOR.items():
+        assert name in MODEL_NEGATIVES, name
+        front = frontmatter((NEGATIVE_DIR / name).read_text())
+        assert locator in MODEL_TABLES[front["type"]], (name, locator)
+        covered.add((front["type"], locator))
+    declared = {
+        (object_name, locator)
+        for object_name, tables in MODEL_TABLES.items()
+        for locator in tables
     }
-    stems = " ".join(MODEL_NEGATIVES)
-    for feature in covered:
-        assert STEM_OF[feature] in stems, feature
+    assert covered == declared
 
 
 @pytest.mark.trace("TC-087", "FR-006-AC-5")

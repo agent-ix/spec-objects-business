@@ -1,6 +1,6 @@
 ---
 id: NFR-001
-title: "Additive compatibility of the semantic contract"
+title: "Compatibility of the semantic contract"
 type: NFR
 quality_attribute: compatibility
 relationships:
@@ -13,7 +13,7 @@ relationships:
   - target: "ix://agent-ix/spec-objects-business/FR-006"
     type: "depends_on"
 ---
-# NFR-001: Additive compatibility of the semantic contract
+# NFR-001: Compatibility of the semantic contract
 
 ## Statement
 
@@ -54,7 +54,7 @@ the engine extracts, so the sections that hold it admit only those tables.
 | Metric | Target | Threshold | Method |
 |--------|--------|-----------|--------|
 | 0.2.0 locators changed outside the declared model-table sections | 0 | 0 | Test |
-| 0.2.0 skeletons other than `aggregate_root`, `state_machine`, and `process`, under the current manifest: error findings, per skeleton | 0 | 0 | Test |
+| 0.2.0 skeletons whose type's required model tables are all authored as those tables in 0.2.0, under the current manifest: error findings, per skeleton | 0 | 0 | Test |
 | Each legacy-form `## Properties` skeleton under the current manifest: `semantic.legacy-properties-form` warnings | 1 | 1 | Test |
 | `properties` string for each legacy skeleton, 0.2.0 vs current | identical | identical | Test |
 
@@ -62,7 +62,12 @@ the engine extracts, so the sections that hold it admit only those tables.
 
 No 0.2.0 skeleton carries a frontmatter `object:` key, so Quire runs
 headings-only validation on it and never assembles or checks a typed record;
-NFR-001-AC-2 asserts that rather than assuming it.
+NFR-001-AC-2 asserts that rather than assuming it. The measured set excludes
+each skeleton whose type requires a model table that the 0.2.0 skeleton does
+not author as that table: `aggregate_root` (Members list), `state_machine`
+(diagram), and `process` (Workflow diagram). The `domain` skeleton's bulleted
+Ubiquitous Language stays in the set and passes only because the `vocabulary`
+table is optional.
 
 Once a legacy-form artifact declares `object:`, quire 0.46.0 assembles its
 declaration record as `{}` and validates it against the type schema, so it
@@ -83,7 +88,7 @@ extracted `properties` string is unchanged.
 | ID | Criteria | Verification |
 |----|----------|--------------|
 | NFR-001-AC-1 | Every 0.2.0 `body_extraction` locator outside the declared model-table sections is present with identical facets (0 changed). | Test |
-| NFR-001-AC-2 | Each 0.2.0 skeleton other than `aggregate_root`, `state_machine`, and `process` (whose 0.2.0 model sections hold a diagram or list) validates under the current manifest with 0 error findings. | Test |
+| NFR-001-AC-2 | Each 0.2.0 skeleton validates under the current manifest with 0 error findings, excluding the skeletons whose type requires a model table that the 0.2.0 skeleton does not author as that table (`aggregate_root` Members list, `state_machine` diagram, `process` Workflow diagram). The `domain` skeleton's bulleted Ubiquitous Language passes only because the `vocabulary` table is optional. | Test |
 | NFR-001-AC-3 | Each 0.2.0 skeleton carrying a legacy-form `## Properties` yields exactly 1 `semantic.legacy-properties-form` warning. | Test |
 | NFR-001-AC-4 | Each such skeleton's extracted `properties` string is byte-identical under 0.2.0 and the current manifest. | Test |
 

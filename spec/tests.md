@@ -60,7 +60,7 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | FR-003 | FR-003-AC-1..6, FR-003-CON-1..2 | TC-020..TC-027 | ✅ AC-5 is a Demonstration; AC-6's naming half is an expected failure |
 | FR-004 | FR-004-AC-1..11, FR-004-CON-1..2 | TC-030..TC-041 | ✅ |
 | FR-005 | FR-005-AC-1..8, FR-005-CON-1..2 | TC-050..TC-059 | ✅ |
-| FR-006 | FR-006-AC-1..8, FR-006-CON-1 | TC-080..TC-087 | ✅ AC-8 is an Inspection; CON-1's facet is blocked on filament-core-service#31 |
+| FR-006 | FR-006-AC-1..8, FR-006-CON-1 | TC-080..TC-088 | 🚧 CON-1 (TC-088) is an expected failure blocked on filament-core-service#31; AC-8 is an Inspection |
 
 ### Non-Functional Requirement Coverage
 
@@ -134,10 +134,11 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | TC-072 | A coordinated version bump re-emits every `$id`/`$ref` at the new version with matching digests; bumping one half of the pair fails the check | Integration | P1 | FR-002-AC-8, FR-002-CON-5 | ✅ |
 | TC-073 | `make schemas-check` names a stale committed schema with no emitted counterpart and writes nothing | Integration | P1 | FR-002-AC-9 | ✅ |
 | TC-074 | No acceptance test hard-codes the `$id` version segment; each reads it from the manifest `version` | Unit | P2 | FR-002-CON-5 | ✅ |
-| TC-080 | The `table_row` locators whose first column is a model-table key are exactly the eight FR-006 declares, with their sections, columns within the table's set, `required` flags, and `min_rows: 1` | Unit | P0 | FR-006-AC-1, FR-006-CON-1 | ✅ |
+| TC-080 | The `table_row` locators whose first column is a model-table key are exactly the eight FR-006 declares, with their sections, columns within the table's set, `required` flags, and `min_rows: 1` | Unit | P0 | FR-006-AC-1 | ✅ |
+| TC-088 | Every model-table locator declares `assert.optional_columns` — an explicit expected failure while `agent-ix/filament-core-service#31` is open | Unit | P1 | FR-006-CON-1 | 🚧 blocked on filament-core-service#31 |
 | TC-081 | Each model-table skeleton extracts one model entry per table row, in row order, with no error or refusal | Integration | P0 | FR-006-AC-2 | ✅ |
 | TC-082 | The declared-model fixture extracts supertypes, `abstract`, field presence, subsets, redefines, one operation frame, and the transition guard and emits | Integration | P0 | FR-006-AC-3 | ✅ |
-| TC-083 | Each model-table negative fixture fails with its `expect:` code and every model table has one | Integration | P0 | FR-006-AC-4 | ✅ |
+| TC-083 | Each model-table negative fixture fails with its `expect:` code and every declared model-table locator has one | Integration | P0 | FR-006-AC-4 | ✅ |
 | TC-084 | Every skeleton and fixture `quire` fence is valid Quire (qualified enum values, `present()` on `0..1` fields only, declared fields, names that state the check, invariants that hold in every state) and every `Emits`/`Consumes`/`Creates:`/`Deletes:` name resolves; mechanical check is `agent-ix/quire-spec-language#133` | Inspection | P1 | FR-006-AC-8 | ✅ |
 | TC-085 | The population fixture validates and extracts one member per `## Members` row with its type and extent | Integration | P0 | FR-006-AC-6 | ✅ |
 | TC-086 | The manifest declares `specializes` as a structural edge with inverse `generalizes`, admitted by every field-bearing type | Unit | P1 | FR-006-AC-7 | ✅ |
@@ -152,7 +153,8 @@ this repository may commit a dependency against (`internal-pypi` serves 0.33.0
 at most); `agent-ix/quire-rs#392` is the blocking issue. The suite **fails**
 rather than skips when `extract_semantic` is absent, so no row here can be
 reported green without the engine under test. The one exception is TC-061, an
-explicit expected failure while `agent-ix/quire-rs#391` is open.
+explicit expected failure while `agent-ix/quire-rs#391` is open, and TC-088, an
+explicit expected failure while `agent-ix/filament-core-service#31` is open.
 
 Rows over the declaration-record keys (`members`, `vocabulary`, `owner`,
 `emits`, `persists`, `source`, `states`, `transitions`, `steps`, `values`,

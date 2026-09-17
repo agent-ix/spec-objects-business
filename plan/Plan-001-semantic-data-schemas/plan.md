@@ -40,12 +40,13 @@ relationships:
 ### Functional Requirements
 - [ ] **FR-001**: The manifest conforms to filament-core-service FR-035 at revision `a77f31e` and activates idempotently; the registered `data_schema` is the reference object as posted.
 - [ ] **FR-002**: Emit one JSON Schema 2020-12 document per model from `typespec/main.tsp` with the official `@typespec/json-schema` emitter at a pinned toolchain; normalize `$id`/`$ref`; gate drift; package the schemas into the wheel and the npm tarball; version-embedded `$id` with an atomic bump procedure.
-- [ ] **FR-003**: `manifest.yaml` at version 0.3.0 carries the quoin FR-070 `semantic` block and a reference-form `data_schema` (path + digest) per exported object type, with every 0.2.0 locator unchanged.
-- [ ] **FR-004**: One role-distinct model per business object type — required, forbidden and item rules — with every grammar item by `$ref` to semantic-core 0.1.0 and no redeclaration.
-- [ ] **FR-005**: Every skeleton is an executable typed fixture in the quoin FR-071/FR-072 Markdown forms, with three `sysml` alternates and eight negative fixtures; the semantic suite fails rather than skips when the engine is absent.
+- [ ] **FR-003**: `manifest.yaml` at version 0.4.0 carries the quoin FR-070 `semantic` block (semantic-core 0.2.0, eleven exports, `compatibility_posture: strict`) and a reference-form `data_schema` (path + digest) per exported object type, with every 0.2.0 locator outside the FR-006 model tables unchanged.
+- [ ] **FR-004**: One role-distinct model per business object type — required, forbidden and item rules — with every grammar item by `$ref` to semantic-core 0.2.0 and no redeclaration; eleven object-type models and eight support models.
+- [ ] **FR-005**: Every skeleton is an executable typed fixture in the quoin FR-071/FR-072 Markdown forms, with eleven skeletons, three `sysml` alternates and twenty negative fixtures; the semantic suite fails rather than skips when the engine is absent.
+- [ ] **FR-006**: Every object-type model table is a manifest `table_row` locator (eight, including the `population` Members table); skeletons author those tables with valid Quire clauses and every undeclared form is refused.
 
 ### Non-Functional Requirements
-- [ ] **NFR-001**: Additive compatibility — the checked-in 0.2.0 skeleton set still validates at 0.3.0, every 0.2.0 locator definition is unchanged, and the untyped `properties` string is byte-identical.
+- [ ] **NFR-001**: Compatibility — additive for the Properties forms and locators outside the declared model-table sections (the measured 0.2.0 skeletons validate under 0.4.0, those locators are unchanged, the untyped `properties` string is byte-identical); the model-table sections are strict.
 
 ### Integration Test Requirements
 - [ ] **IT-001**: Activation roundtrip against a running filament-core-service at `a77f31e` or later.
@@ -108,15 +109,15 @@ dependency" skip that FR-005 replaces with a hard failure.
 
 ### Unit Tests
 - [ ] **TC-001** (FR-001-AC-1): the manifest validates through `quire.validate_manifest` against the vendored FR-035 schema.
-- [ ] **TC-010** (FR-002-AC-1): the emitted set equals the seventeen files `toolchain.json` lists, with compiler and emitter 1.15.0 recorded.
+- [ ] **TC-010** (FR-002-AC-1): the emitted set equals the nineteen files `toolchain.json` lists, with compiler and emitter 1.15.0 recorded.
 - [ ] **TC-011** (FR-002-AC-2): every shipped schema declares the 2020-12 `$schema` and an `$id` under the base whose version segment is read from `manifest.yaml`.
-- [ ] **TC-012** (FR-002-AC-3): every `$ref` resolves to a shipped sibling or to semantic-core 0.1.0.
+- [ ] **TC-012** (FR-002-AC-3): every `$ref` resolves to a shipped sibling or to semantic-core 0.2.0.
 - [ ] **TC-019** (FR-002-CON-4): `package-lock.json` resolves every package from npmjs except `@agent-ix/semantic-core`.
-- [ ] **TC-020** (FR-003-AC-1, FR-003-CON-1): the `semantic` block equals the nine admitted keys and `exports` equals the ten object-type names.
+- [ ] **TC-020** (FR-003-AC-1, FR-003-CON-1): the `semantic` block equals the nine admitted keys and `exports` equals the eleven object-type names.
 - [ ] **TC-021** (FR-003-AC-2): every exported type's `data_schema` is the reference form and the referenced file hashes to the recorded digest.
 - [ ] **TC-022** (FR-003-AC-3): every 0.2.0 locator is unchanged against the checked-in baseline.
 - [ ] **TC-023** (FR-003-AC-3, FR-003-CON-2): every locator added after 0.2.0 is `required: false`.
-- [ ] **TC-030** (FR-004-AC-1): the ten object-type schemas differ pairwise in a required, forbidden or item rule; none is `type: object` only.
+- [ ] **TC-030** (FR-004-AC-1): the eleven object-type schemas differ pairwise in a required, forbidden or item rule; none is `type: object` only.
 - [ ] **TC-040** (FR-004-CON-1): no module schema redeclares a semantic-core model; every grammar item is a `$ref`.
 - [ ] **TC-055** (FR-005-AC-6): every skeleton's H2 set is asserted by the manifest and includes every `required: true` heading.
 - [ ] **TC-056** (FR-005-AC-7): every skeleton is placeholder-free with non-empty asserted sections.
@@ -129,24 +130,35 @@ dependency" skip that FR-005 replaces with a hard failure.
 - [ ] **TC-014** (FR-002-AC-5): a `@jsonSchema` base version differing from the manifest version fails the generator naming both.
 - [ ] **TC-015** (FR-002-AC-6): the built wheel contains every exported schema file.
 - [ ] **TC-016** (FR-002-CON-3): two generator runs over one source are byte-identical.
-- [ ] **TC-024** (FR-003-AC-4): `quire.Registry.load_from` lists all ten archetypes.
+- [ ] **TC-024** (FR-003-AC-4): `quire.Registry.load_from` lists all eleven archetypes.
 - [ ] **TC-025** (FR-003-AC-4): `validate_document` on every skeleton reports no `semantic.*` load failure.
 - [ ] **TC-026** (FR-003-AC-6): an unknown `semantic` key and an altered digest are each refused by the loader naming the key or the path.
 - [ ] **TC-031..TC-039, TC-041** (FR-004-AC-2..AC-11, FR-004-CON-2): the per-type positive and negative record fixtures — entity identity, value-object identity refusal, aggregate clauses, event occurrence, repository operations, state-machine transitions, process steps, the empty record, the unresolved placeholder, nested-entity `owner`.
-- [ ] **TC-050** (FR-005-AC-1): every skeleton (ten plus three alternates) validates with no error.
+- [ ] **TC-050** (FR-005-AC-1): every skeleton (eleven plus three alternates) validates with no error.
 - [ ] **TC-051** (FR-005-AC-2, FR-005-CON-2): table and `sysml` skeletons extract to identical normalized fields with the recorded forms.
 - [ ] **TC-052** (FR-005-AC-3): under the skeleton bundle index every skeleton extracts with zero errors and zero unresolved tokens.
 - [ ] **TC-053** (FR-005-AC-4): availability states per skeleton match the type's declared set.
-- [ ] **TC-054** (FR-005-AC-5): every negative fixture fails with its `expect:` code and the eight named cases exist.
+- [ ] **TC-054** (FR-005-AC-5): every negative fixture fails with its `expect:` code and the twenty named cases exist.
 - [ ] **TC-057** (FR-005-CON-2): a Properties section holding both a table and a fence is refused at the second form.
 - [ ] **TC-071** (FR-002-AC-7): the packed npm tarball ships `manifest.yaml` beside `schemas/<Model>.json`.
 - [ ] **TC-072** (FR-002-AC-8, FR-002-CON-5): a coordinated version bump re-emits every `$id`/`$ref` with matching digests; half a bump fails the check.
 - [ ] **TC-073** (FR-002-AC-9): `make schemas-check` names a stale committed schema and writes nothing.
 
+### Model features (FR-006)
+- [ ] **TC-080** (FR-006-AC-1): the model-table `table_row` locators are exactly the eight FR-006 declares.
+- [ ] **TC-081** (FR-006-AC-2): each model-table skeleton extracts one model entry per table row, in row order.
+- [ ] **TC-082** (FR-006-AC-3): the declared-model fixture extracts supertypes, `abstract`, presence, subsets, redefines, one operation frame, the transition guard and emits.
+- [ ] **TC-083** (FR-006-AC-4): each model-table negative fails with its `expect:` code and every declared model-table locator has one.
+- [ ] **TC-084** (FR-006-AC-8): Inspection — every skeleton and fixture clause is valid Quire and every Emits/Consumes/Creates/Deletes name resolves.
+- [ ] **TC-085** (FR-006-AC-6): the population fixture extracts one member per row with type and extent.
+- [ ] **TC-086** (FR-006-AC-7): `specializes` is a declared structural edge admitted by every field-bearing type.
+- [ ] **TC-087** (FR-006-AC-5): skeleton clauses are `quire` with no advisory, and no `ocl`, `Pre:`/`Post:` or model-section diagram.
+- [ ] **TC-088** (FR-006-CON-1): every model-table locator declares `assert.optional_columns` — an explicit expected failure while `agent-ix/filament-core-service#31` is open.
+
 ### Verification (NFRs)
-- [ ] **TC-061** (NFR-001-AC-2): every checked-in 0.2.0 skeleton validates under 0.3.0 with zero errors — an explicit expected failure while `agent-ix/quire-rs#391` is open.
+- [ ] **TC-061** (NFR-001-AC-2): every measured 0.2.0 skeleton validates under 0.4.0 with zero errors — an explicit expected failure while `agent-ix/quire-rs#391` is open.
 - [ ] **TC-062** (NFR-001-AC-3): each legacy-form 0.2.0 skeleton yields exactly one `semantic.legacy-properties-form` warning.
-- [ ] **TC-063** (NFR-001-AC-4): each legacy skeleton's `properties` string is byte-identical under 0.2.0 and 0.3.0.
+- [ ] **TC-063** (NFR-001-AC-4): each legacy skeleton's `properties` string is byte-identical under 0.2.0 and 0.4.0.
 
 ### Environment-gated and inspection rows
 - [ ] **TC-002..TC-004** (FR-001-AC-2..AC-4, IT-001): activation, re-activation and registry reads against a running filament-core-service at `a77f31e` or later.
@@ -180,7 +192,7 @@ dependency" skip that FR-005 replaces with a hard failure.
 
 ```
 Track A  A1 ─── A2 ─── [Gate] ─── A3 ─── A4 ─── A5 ─── A6 ──┐
-                                                            ├── C1
+                                                            ├── C1 ─── D1
 Track B  B1 ────────────────────────────────────┐           └── C2
          B2 ─────────────────────────(after A4)─┘
 ```
@@ -188,6 +200,7 @@ Track B  B1 ──────────────────────�
 Track B starts immediately and independently of A1: neither the provisioning target
 nor the 0.2.0 baseline touches the generator or the models. B2's re-verification half
 waits on A4 because it re-posts the changed manifest. Track C begins once A6 lands.
+Track D begins once C1 lands, because FR-006 changes what NFR-001 measures.
 
 ## Task File Mapping
 
@@ -204,17 +217,19 @@ waits on A4 because it re-posts the changed manifest. Track C begins once A6 lan
 | Task-008 | C     | NFR-001                  | TC-060, TC-061, TC-062, TC-063                           | done |
 | Task-009 | C     | FR-003, IT-002           | TC-027, TC-070                                           | blocked |
 | Task-010 | B     | FR-001, StR-001, IT-001  | TC-001…TC-006, TC-075                                    | done |
-| Task-012 | D     | FR-006, FR-003, FR-004, FR-005, NFR-001 | TC-080…TC-087                                 | in_progress |
+| Task-012 | D     | FR-006, FR-003, FR-004, FR-005, NFR-001 | TC-080…TC-088                                 | in_progress |
 
 ## Status
 
-All eleven tasks are landed except Task-009 (IT-002), which is `blocked`: no
+Of the twelve tasks, ten are done, Task-012 (FR-006 model features) is
+`in_progress` on PR #8, and Task-009 (IT-002) is `blocked`: no
 released Quoin carries the semantic installer and the roundtrip mutates the
 operator's global module store, so it runs only behind
-`QUOIN_INSTALL_ROUNDTRIP=1` with such a build on `PATH`. `quire coverage`
-reports 101/101 matrix rows backed; the rows still `🚧` in `spec/tests.md` are
-the ones needing an environment this repository cannot provision (a running
-`filament-core-service` at `a77f31e` or later, a Quoin built from `main`).
+`QUOIN_INSTALL_ROUNDTRIP=1` with such a build on `PATH`. The rows still `🚧` in
+`spec/tests.md` are the ones needing an environment this repository cannot
+provision (a running `filament-core-service` at `a77f31e` or later, a Quoin built
+from `main`) and TC-088, an expected failure blocked on
+`agent-ix/filament-core-service#31`.
 
 Two engine defects surfaced while landing this and are carried as explicit
 expected failures rather than relaxed rules: `agent-ix/quire-rs#391` (a
@@ -223,9 +238,6 @@ legacy-form artifact that declares `object:` errors under
 (a refused module names neither the key nor the schema path). A third,
 `agent-ix/quire-rs#392`, is why `quire` is provisioned by `make dev-quire`
 rather than declared as a dependency.
-
-Task-012 (FR-006 model features, the `population` type and manifest 0.4.0) is
-`in_progress` on PR #8.
 
 ## Coordination Rules
 

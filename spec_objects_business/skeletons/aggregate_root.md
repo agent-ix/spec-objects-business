@@ -40,7 +40,13 @@ The clauses the Order declaration enforces. Each clause owns one
 self.grand_total.amount_minor = self.subtotal.amount_minor + self.shipping_fee.amount_minor
 ```
 
-### OrderPastDraftCarriesAtLeastOneLine
+### TotalsShareOneCurrency
+
+```quire
+self.subtotal.currency = self.grand_total.currency and self.shipping_fee.currency = self.grand_total.currency
+```
+
+### PlacedPaidShippedOrDeliveredOrderCarriesAtLeastOneLine
 
 ```quire
 (self.status = OrderManagement::OrderStatus::Placed or self.status = OrderManagement::OrderStatus::Paid or self.status = OrderManagement::OrderStatus::Shipped or self.status = OrderManagement::OrderStatus::Delivered) implies size(self.lines) >= 1

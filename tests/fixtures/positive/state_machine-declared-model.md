@@ -21,7 +21,7 @@ lines with a new order, which publishes OrderPlaced.
 | order_id | UUID | 1..1 | identity | required | | |
 | items | String | 0..* | | | | |
 | returned_items | String | 0..* | | | items | |
-| current_state | OrderStatus | 1..1 | | required | | current_state |
+| current_state | ReturnStatus | 1..1 | | required | | current_state |
 | reason | String | 0..1 | | optional | | |
 | exchanged | Boolean | 1..1 | | required | | |
 
