@@ -28,11 +28,10 @@ module data rather than a hard-coded kind list.
 
 ## Inputs
 
-- The FR-035 module-manifest schema at filament-core-service `5b2af8b`
-  (`$defs/ConstructDeclaration`), whose optional `immutable` boolean
-  (`agent-ix/filament-core-service#37`) filament-core-data reads to render a
-  construct's instances read-only, frozen, with no setters. Absent means
-  `false`.
+- The FR-035 module-manifest schema's `$defs/ConstructDeclaration`, whose
+  optional `immutable` boolean (`agent-ix/filament-core-service#37`)
+  filament-core-data reads to render a construct's instances read-only, frozen,
+  with no setters. Absent means `false`.
 - The FR-142 core vocabulary and the `business` module declarations of
   `agent-ix/filament-core-data#172`
   (`schema/semantic/v1/construct-vocabulary.json`,
@@ -83,16 +82,26 @@ module data rather than a hard-coded kind list.
 
 | ID | Criteria | Verification |
 |----|----------|--------------|
-| FR-008-AC-1 | Exactly the ten construct kinds declare a `construct:`, `population` declares none while `agent-ix/filament-core-data#174` is open, and the manifest has zero violations against the FR-035 schema at `5b2af8b`. | Test |
+| FR-008-AC-1 | Exactly the ten construct kinds declare a `construct:`, and `population` declares none while `agent-ix/filament-core-data#174` is open. | Test |
 | FR-008-AC-2 | Each declaration equals its row of the Behavior table, each type carries the roles the table's references admit, and every one of the ten declarations binds an FR-208 meaning id at `c8e3ca0`. | Test |
 | FR-008-AC-3 | Each declaration's identity, shape, member names and rules are FR-142 core vocabulary, no rule repeats, each rule's member presence holds, and each `references` entry names a non-forbidden reference member and only roles an object type of the manifest carries, never `*` or a type name. | Test |
-| FR-008-AC-4 | A wildcard reference role, an identity outside the enum, a member presence outside the enum, a missing `meaning`, and an `immutable: "yes"` are each refused by the FR-035 schema at the construct path. | Test |
 | FR-008-AC-5 | The manifest `roles:` registry declares exactly `aggregate-member` and `composite-owner`, each with a description; applying the quire-rs FR-040 load check to this manifest beside the spec-artifacts-iso roles and archetypes reports no unknown role other than the pre-existing `process` → `action` and `repository` → `data_schema` link targets, and removing the registry reports both roles unknown on every type that carries them. | Test |
 | FR-008-AC-6 | `event`'s `construct:` declares `immutable: true`; none of the other nine declarations declares `immutable`. | Test |
 | FR-008-AC-7 | `ValueObject.json` refuses a record with `operations`; `Repository.json` refuses a record with `clauses`, and refuses an `operations[]` entry whose `pre` or `post` is non-empty, while admitting one whose `pre` and `post` are absent or empty; `Domain.json` refuses a record with `fields`, `operations`, or `clauses`; `repository` and `domain` admit no `specializes` target in `allowed_links`. Each refusal also admits a positive record that omits the refused form. | Test |
 
+Whether the module-manifest schema *refuses* a malformed declaration — a
+wildcard reference role, an identity or member presence outside the enum, a
+missing `meaning`, a non-boolean `immutable` — is filament-core-service's
+obligation under FR-035, observable at activation or in a consumer that
+applies that schema. This module states no criterion over it: the only oracle
+it could hold locally is a copy, and a copy can only be validated against
+itself (PLAT-902). The consumer-side check becomes available here once a
+published quire applies a schema that admits `ObjectTypeEntry.construct`
+(`agent-ix/quire-rs#455`); quire 0.46.0, the newest wheel any index carries,
+does not.
+
 ## Dependencies
 
-- **Upstream**: filament-core-service FR-035 CR-004 at `5b2af8b` (`agent-ix/filament-core-service#37` adds `immutable`); filament-core-data FR-142 (`agent-ix/filament-core-data#172`); QSpec FR-208; quire-rs FR-040 roles registry (`src/loader/mod.rs` load check); the spec-artifacts-iso `roles:` registry; [FR-003](./FR-003-semantic-manifest-contract.md)
+- **Upstream**: filament-core-service FR-035 CR-004 (`agent-ix/filament-core-service#37` adds `immutable`); filament-core-data FR-142 (`agent-ix/filament-core-data#172`); QSpec FR-208; quire-rs FR-040 roles registry (`src/loader/mod.rs` load check); the spec-artifacts-iso `roles:` registry; [FR-003](./FR-003-semantic-manifest-contract.md)
 - **Downstream**: `agent-ix/quire-rs#445` carries each declaration on `CompiledArchetype::construct()`; filament-core-data pins this manifest version. Its extraction-frontend fixtures name object artifacts with hyphenated ids (`EN-001`, `VO-001`, `AR-001`, …), which this version refuses (FR-009), so pinning it renames those ids to underscore form and regenerates the goldens (`agent-ix/filament-core-data#175`); `agent-ix/filament-core-data#174` adds the population shape the `population` construct needs
 - **Downstream**: filament-core-data reads the enumeration Values table under the old locator key `values_table` (`crates/extraction-frontend/src/enumeration.rs` `VALUES_TABLE`, plus its fixture manifests and goldens); this release keys it `values`, so pinning it moves filament-core-data to `values` (`agent-ix/filament-core-data#177`)
