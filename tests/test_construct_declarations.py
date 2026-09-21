@@ -5,10 +5,9 @@ filament-core-data#172 reads it (FR-142, its `business` module table), in the
 shape filament-core-service's module-manifest schema admits under
 `ObjectTypeEntry.construct`. `population` declares none.
 
-Whether that schema *refuses* a malformed declaration is filament-core-service's
-obligation, observable only where the schema is applied: at activation, or in a
-consumer that carries it. This module holds no copy to judge it against
-(PLAT-902), so FR-008-AC-4 states no criterion here.
+Refusal of a malformed declaration is filament-core-service's obligation,
+verified where that schema is applied: at activation, or in a consumer that
+applies it. FR-008 Behavior records when it becomes observable here (PLAT-902).
 """
 
 from __future__ import annotations

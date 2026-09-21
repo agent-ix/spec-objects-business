@@ -77,6 +77,7 @@ module data rather than a hard-coded kind list.
   - `Domain.json` (`namespace/v1`) carries no `fields`, `operations`, or `clauses` key: a field or an operation on a `domain` refuses the form FR-208 refuses as `invalid_model_binding`/`malformed-declaration`; a `quire` clause on a `domain` refuses the form FR-208 refuses as `unsupported_construct`/`declaration-form`.
   - Neither `repository` nor `domain` carries `specializes` in its `allowed_links` (FR-006-AC-7 names only field-bearing types), so a `specializes` relationship naming either is already refused as an unadmitted edge (quire-rs FR-076): FR-208's `supertypes` refusal on a persistence interface or a namespace.
   - FR-208's Generalization rule (a `supertypes[]` entry naming a node of another meaning is refused) is already satisfied for `entity`, `aggregate_root`, `nested_entity` (`object-type/v1`) and `enumeration` (`variant-type/v1`): each type's `allowed_links.specializes`, where declared, names only its own kind. FR-208 states no further per-meaning intake refusal for `object-type` beyond this generalization rule and the meanings' member lists above. For `variant-type`, FR-208 additionally refuses a clause that *names* a variant type; that refusal reads a clause's target, and a clause's body is opaque `quire` grammar this module's record schema never parses, so it is outside this layer's reach.
+- Refusal of a malformed declaration — a wildcard reference role, an identity or member presence outside the enum, a missing `meaning`, a non-boolean `immutable` — is filament-core-service's obligation under FR-035, verified where that schema is applied. It becomes observable here once a published quire applies a schema admitting `ObjectTypeEntry.construct` (`agent-ix/quire-rs#455`); quire 0.46.0, the newest wheel any index carries, does not.
 
 ## Acceptance Criteria
 
@@ -88,17 +89,6 @@ module data rather than a hard-coded kind list.
 | FR-008-AC-5 | The manifest `roles:` registry declares exactly `aggregate-member` and `composite-owner`, each with a description; applying the quire-rs FR-040 load check to this manifest beside the spec-artifacts-iso roles and archetypes reports no unknown role other than the pre-existing `process` → `action` and `repository` → `data_schema` link targets, and removing the registry reports both roles unknown on every type that carries them. | Test |
 | FR-008-AC-6 | `event`'s `construct:` declares `immutable: true`; none of the other nine declarations declares `immutable`. | Test |
 | FR-008-AC-7 | `ValueObject.json` refuses a record with `operations`; `Repository.json` refuses a record with `clauses`, and refuses an `operations[]` entry whose `pre` or `post` is non-empty, while admitting one whose `pre` and `post` are absent or empty; `Domain.json` refuses a record with `fields`, `operations`, or `clauses`; `repository` and `domain` admit no `specializes` target in `allowed_links`. Each refusal also admits a positive record that omits the refused form. | Test |
-
-Whether the module-manifest schema *refuses* a malformed declaration — a
-wildcard reference role, an identity or member presence outside the enum, a
-missing `meaning`, a non-boolean `immutable` — is filament-core-service's
-obligation under FR-035, observable at activation or in a consumer that
-applies that schema. This module states no criterion over it: the only oracle
-it could hold locally is a copy, and a copy can only be validated against
-itself (PLAT-902). The consumer-side check becomes available here once a
-published quire applies a schema that admits `ObjectTypeEntry.construct`
-(`agent-ix/quire-rs#455`); quire 0.46.0, the newest wheel any index carries,
-does not.
 
 ## Dependencies
 
