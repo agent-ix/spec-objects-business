@@ -32,7 +32,7 @@ the service's storage layout is filament-core-service's own concern.
 
 ## Behavior
 
-- The manifest **SHALL** conform to the module-manifest schema filament-core-service applies at activation, including `ObjectTypeEntry.construct` and its optional `immutable`. Conformance is observed at `POST /api/v1/modules/activate` (FR-001-AC-2); FR-003 Inputs records where quire-rs and Quoin currently apply an older copy.
+- The manifest **SHALL** conform to the module-manifest schema filament-core-service applies at activation, including `ObjectTypeEntry.construct` and its optional `immutable`. Conformance is settled where that schema is applied, at `POST /api/v1/modules/activate` (FR-001-AC-2) — which needs a running filament-core and is `🚧` in this repository's matrix, so nothing here verifies it and nothing here stands in for it. FR-003 Inputs records where quire-rs and Quoin currently apply an older copy.
 - The manifest **SHALL** activate such that re-posting identical bytes yields the same content hash and no duplicated contribution, which filament-core-service delivers per FR-026-AC-1.
 - While `agent-ix/filament-core-service#23` is open, the service stores a reference-form `data_schema` verbatim rather than resolving it into a snapshot, so the registered `data_schema` of every exported object type **SHALL** be the reference object as posted (`{schema, digest}`), and FR-001-AC-4 is read against that value.
 
