@@ -26,13 +26,13 @@ keeps its meaning.
 ## Inputs
 
 - The emitted schemas and digests of [FR-002](./FR-002-emitted-json-schemas.md).
-- The module-manifest schema with the `semantic` block, at
-  `agent-ix/filament-core-service` revision `5b2af8b` (CR-004) — the same
-  revision FR-001 names. quire-rs still vendors an older copy
-  (`sha256:6782f74f…` at quire-rs `ae84bdf`) and re-vendors it under
-  `agent-ix/quire-rs#455`; Quoin still vendors an older copy
-  (`sha256:69cf9738…` at quoin `99bd4f0`) and re-vendors it under
-  `agent-ix/quoin#559`. Neither skew changes here.
+- The module-manifest schema with the `semantic` block, as filament-core-service
+  applies it at activation and as Quoin and Quire apply it at install and load.
+  Those consumers are the oracle for this manifest. They are currently skewed
+  from each other — quire-rs applies `sha256:6782f74f…` (quire-rs `ae84bdf`,
+  re-vendored under `agent-ix/quire-rs#455`) and Quoin applies
+  `sha256:69cf9738…` (quoin `99bd4f0`, re-vendored under `agent-ix/quoin#559`).
+  The skew is theirs to close, and this module names no revision of its own.
 
 ## Outputs
 

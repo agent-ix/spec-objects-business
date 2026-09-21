@@ -32,7 +32,7 @@ the service's storage layout is filament-core-service's own concern.
 
 ## Behavior
 
-- The manifest **SHALL** validate against `module-manifest.schema.json` v1.0.0 at filament-core-service revision `5b2af8b` or later (CR-004, which admits `ObjectTypeEntry.construct` and its optional `immutable`); FR-003 Inputs pins the same value and records where quire-rs and Quoin currently vendor an older copy.
+- The manifest **SHALL** conform to the module-manifest schema filament-core-service applies at activation, including `ObjectTypeEntry.construct` and its optional `immutable`. Conformance is settled where that schema is applied, at `POST /api/v1/modules/activate` (FR-001-AC-2) — which needs a running filament-core and is `🚧` in this repository's matrix, so nothing here verifies it and nothing here stands in for it. FR-003 Inputs records where quire-rs and Quoin currently apply an older copy.
 - The manifest **SHALL** activate such that re-posting identical bytes yields the same content hash and no duplicated contribution, which filament-core-service delivers per FR-026-AC-1.
 - While `agent-ix/filament-core-service#23` is open, the service stores a reference-form `data_schema` verbatim rather than resolving it into a snapshot, so the registered `data_schema` of every exported object type **SHALL** be the reference object as posted (`{schema, digest}`), and FR-001-AC-4 is read against that value.
 
@@ -40,7 +40,6 @@ the service's storage layout is filament-core-service's own concern.
 
 | ID | Criteria | Verification |
 |----|----------|--------------|
-| FR-001-AC-1 | Manifest validates against FR-035 JSON Schema | Test |
 | FR-001-AC-2 | Activation against clean filament-core succeeds with 200 | Test |
 | FR-001-AC-3 | Re-activation returns no-op (same content hash) | Test |
 | FR-001-AC-4 | Each declared archetype/object_type/artifact_type appears at the corresponding registry endpoint after activation, and each exported object type's registered `data_schema` equals the reference object as posted | Test |

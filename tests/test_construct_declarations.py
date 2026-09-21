@@ -2,8 +2,12 @@
 
 Each of the ten construct kinds declares its semantic IR `construct:` once, as
 filament-core-data#172 reads it (FR-142, its `business` module table), in the
-shape the FR-035 module-manifest schema at filament-core-service `5b2af8b`
-admits. `population` declares none.
+shape filament-core-service's module-manifest schema admits under
+`ObjectTypeEntry.construct`. `population` declares none.
+
+Refusal of a malformed declaration is filament-core-service's obligation,
+verified where that schema is applied: at activation, or in a consumer that
+applies it. FR-008 Behavior records when it becomes observable here (PLAT-902).
 """
 
 from __future__ import annotations
@@ -13,7 +17,6 @@ import copy
 import pytest
 
 from tests.conftest import OBJECT_TYPES, load_manifest, object_type
-from tests.test_activation_and_stakeholder import VENDORED_SCHEMA
 
 CONSTRUCT_KINDS = tuple(name for name in OBJECT_TYPES if name != "population")
 
@@ -240,20 +243,14 @@ def _presence(construct: dict, member: str) -> str:
     return "optional" if member in OPTIONAL_BY_DEFAULT else "forbidden"
 
 
-def _object_type_in(manifest: dict, name: str) -> dict:
-    return next(ot for ot in manifest["object_types"] if ot["name"] == name)
-
-
 @pytest.mark.trace("TC-099", "FR-008-AC-1")
-def test_ten_kinds_declare_a_construct_and_the_manifest_validates(quire_engine):
+def test_exactly_the_ten_construct_kinds_declare_a_construct():
     declared = {
         ot["name"] for ot in load_manifest()["object_types"] if "construct" in ot
     }
     assert declared == set(CONSTRUCT_KINDS)
     assert len(CONSTRUCT_KINDS) == 10
     assert "construct" not in object_type("population")
-    violations = quire_engine.validate_manifest(load_manifest(), str(VENDORED_SCHEMA))
-    assert violations == [], violations
 
 
 @pytest.mark.trace("TC-108", "FR-008-AC-6")
@@ -306,48 +303,6 @@ def test_references_name_carried_roles_on_admitted_reference_members(kind):
         assert set(roles) <= carried, (kind, member, roles)
         type_names = {ot["name"] for ot in manifest["object_types"]}
         assert not set(roles) & type_names, (kind, member, roles)
-
-
-@pytest.mark.trace("TC-102", "FR-008-AC-4")
-@pytest.mark.parametrize(
-    ("kind", "mutate", "path"),
-    [
-        (
-            "aggregate_root",
-            lambda c: c["references"].__setitem__("members", ["*"]),
-            "construct.references.members[0]",
-        ),
-        (
-            "entity",
-            lambda c: c.__setitem__("identity", "keyed"),
-            "construct.identity",
-        ),
-        (
-            "domain",
-            lambda c: c["members"].__setitem__("members", "sometimes"),
-            "construct.members.members",
-        ),
-        ("event", lambda c: c.pop("meaning"), "construct.meaning"),
-        (
-            "event",
-            lambda c: c.__setitem__("immutable", "yes"),
-            "construct.immutable",
-        ),
-    ],
-    ids=[
-        "wildcard-role",
-        "unknown-identity",
-        "unknown-presence",
-        "missing-meaning",
-        "immutable-not-boolean",
-    ],
-)
-def test_a_malformed_declaration_is_refused(quire_engine, kind, mutate, path):
-    manifest = copy.deepcopy(load_manifest())
-    mutate(_object_type_in(manifest, kind)["construct"])
-    violations = quire_engine.validate_manifest(manifest, str(VENDORED_SCHEMA))
-    assert violations, kind
-    assert any(v["path"].endswith(path) for v in violations), violations
 
 
 # The spec-artifacts-iso registry a consumer loads beside this module

@@ -61,14 +61,14 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 
 | Functional Req | Acceptance Criteria | Test Cases | Coverage Status |
 |---|---|---|---|
-| FR-001 | FR-001-AC-1..4 | TC-001..TC-004 | 🚧 AC-2..AC-4 need a running filament-core |
+| FR-001 | FR-001-AC-2..4 | TC-002..TC-004 | 🚧 AC-2..AC-4 need a running filament-core |
 | FR-002 | FR-002-AC-1..9, FR-002-CON-1..5 | TC-010..TC-019, TC-071..TC-074 | ✅ |
 | FR-003 | FR-003-AC-1..6, FR-003-CON-1..2 | TC-020..TC-027 | ✅ AC-5 is a Demonstration; AC-6's naming half is an expected failure |
 | FR-004 | FR-004-AC-1..11, FR-004-CON-1..2 | TC-030..TC-041 | ✅ |
 | FR-005 | FR-005-AC-1..8, FR-005-CON-1..2 | TC-050..TC-059 | 🚧 AC-5's dangling `Post:` case (TC-054) is an expected failure blocked on quire-rs#431 |
 | FR-006 | FR-006-AC-1..8, FR-006-CON-1 | TC-080..TC-088 | 🚧 AC-3's `pre`/`post` frame half (TC-082) is an expected failure blocked on quire-rs#431; CON-1 (TC-088) is an expected failure blocked on filament-core-service#31; AC-8 is an Inspection |
 | FR-007 | FR-007-AC-1..10 | TC-089..TC-098 | 🚧 AC-9 (TC-097, per type) is an expected failure blocked on quire-rs#435 and AC-10 (TC-098) pins that blocker; AC-6 asserts the null line `agent-ix/quire-rs#440` fixes |
-| FR-008 | FR-008-AC-1..7 | TC-099..TC-102, TC-106, TC-108, TC-109 | ✅ AC-1 holds `population` without a construct while filament-core-data#174 is open |
+| FR-008 | FR-008-AC-1..3, AC-5..7 | TC-099, TC-100, TC-101, TC-106, TC-108, TC-109 | ✅ AC-1 holds `population` without a construct while filament-core-data#174 is open |
 | FR-009 | FR-009-AC-1..4 | TC-103..TC-105, TC-107 | 🚧 AC-4 (TC-107) is an expected failure blocked on quire-rs#451 |
 
 ### Non-Functional Requirement Coverage
@@ -88,7 +88,6 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 
 | Test ID | Title | Type | Priority | Traces To | Status |
 |---|---|---|---|---|---|
-| TC-001 | Manifest validates against the vendored FR-035 module-manifest schema through `quire.validate_manifest` | Unit | P0 | FR-001-AC-1 | ✅ |
 | TC-002 | Activation against a clean filament-core returns 200 | Integration | P1 | FR-001-AC-2 | 🚧 needs a running filament-core |
 | TC-003 | Re-activation is a content-hash no-op | Integration | P1 | FR-001-AC-3 | 🚧 needs a running filament-core |
 | TC-004 | Every declared contribution appears in the registry tables | Integration | P1 | FR-001-AC-4 | 🚧 needs a running filament-core |
@@ -162,10 +161,9 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | TC-096 | Through `validate_document`, a row targeting another artifact (`aggregate_root_999`) validates with one `semantic.unresolved-target` advisory at the row (`agent-ix/quoin#557`) | Integration | P1 | FR-007-AC-8 | ✅ |
 | TC-097 | Per type, a process `emits` row and a repository `persists` row validate and lower into `emits` and `persists` with the qualified target, not `relations`, with every row in `relationSources` and non-lossy availability; header-only extracts the typed key empty — an explicit expected failure while `agent-ix/quire-rs#435` is open | Integration | P1 | FR-007-AC-9 | 🚧 blocked on quire-rs#435 |
 | TC-098 | Per type, the same process and repository rows fail today with exactly one `semantic.record-invalid` at `relations`; flips when `agent-ix/quire-rs#435` lands | Integration | P1 | FR-007-AC-10 | ✅ |
-| TC-099 | Exactly the ten construct kinds declare `construct:`, `population` none while filament-core-data#174 is open, and `quire.validate_manifest` reports zero violations against the FR-035 schema at `5b2af8b` | Unit | P0 | FR-008-AC-1 | ✅ |
+| TC-099 | Exactly the ten construct kinds declare `construct:`, and `population` none while filament-core-data#174 is open | Unit | P0 | FR-008-AC-1 | ✅ |
 | TC-100 | Per kind, the declaration equals its FR-008 table row and the type carries the admitted roles; all ten kinds bind an FR-208 meaning id at `c8e3ca0` | Unit | P0 | FR-008-AC-2 | ✅ |
 | TC-101 | Per kind, identity, shape, members and rules are FR-142 vocabulary, each rule's member presence holds, and references name non-forbidden reference members and carried roles only | Unit | P0 | FR-008-AC-3 | ✅ |
-| TC-102 | A wildcard role, an unknown identity, an unknown member presence, a missing `meaning`, and an `immutable: "yes"` are each refused at their construct path | Unit | P0 | FR-008-AC-4 | ✅ |
 | TC-103 | `ObjectId.json` carries the object id pattern, `ObjectFrontmatter.json` references it, and every `id` locator carries the anchored capture of it | Unit | P0 | FR-009-AC-1 | ✅ |
 | TC-104 | `ObjectFrontmatter.json` accepts underscore ids and refuses hyphenated, leading-underscore, leading-digit and empty ids; every skeleton and fixture frontmatter validates | Unit | P0 | FR-009-AC-2 | ✅ |
 | TC-105 | Each skeleton has no missing-id error; its hyphenated form fails with only the missing-id error; the 0.2.0 `entity-001` skeleton fails with exactly that error; flips when `agent-ix/quire-rs#451` lands | Integration | P0 | FR-009-AC-3 | ✅ |

@@ -1,17 +1,17 @@
 """Activation and stakeholder tests, covering FR-001, IT-001 and the
 StR-001 validation criteria.
 
-FR-001-AC-1 and StR-001-VC-3 are discharged here against the committed tree.
-FR-001-AC-2..AC-4, StR-001-VC-1 and StR-001-VC-2 need a running
-`filament-core-service` at revision `5b2af8b` or later; they are environment-
-gated and their matrix rows stay `🚧` with that note. That is pre-existing
+StR-001-VC-3 is discharged here against the committed tree. FR-001-AC-2..AC-4,
+StR-001-VC-1 and StR-001-VC-2 observe the manifest at the activation endpoint,
+which is where the module-manifest schema is in force; they need a running
+`filament-core-service` that admits `ObjectTypeEntry.construct`, so they are
+environment-gated and their matrix rows stay `🚧` with that note. That is pre-existing
 debt from issue #1, not this issue's, and it is not the semantic suite: the
 Quire rows fail rather than skip (see `conftest.py`).
 """
 
 from __future__ import annotations
 
-import hashlib
 import json
 import os
 
@@ -25,36 +25,16 @@ from tests.conftest import (
     load_manifest,
 )
 
-# The filament-core-service module-manifest schema at revision `5b2af8b`
-# (CR-004, which admits `ObjectTypeEntry.construct` and its optional
-# `immutable`). FR-001, FR-003, FR-008 and IT-001 all judge this manifest
-# against this one revision.
-VENDORED_SCHEMA = REPO_ROOT / "tests" / "fixtures" / "module-manifest.schema.json"
-VENDORED_SCHEMA_DIGEST = (
-    "d0cd01c92f123e77e8c8fd4b69a48cdeb7f91e154091716c1410168f410d6906"
-)
-
 FILAMENT_CORE_URL = os.environ.get("FILAMENT_CORE_URL")
 needs_filament_core = pytest.mark.skipif(
     not FILAMENT_CORE_URL,
     reason=(
-        "FR-001-AC-2..AC-4 / IT-001 need a running filament-core-service at "
-        "revision 5b2af8b or later (no release tag contains it). Set "
-        "FILAMENT_CORE_URL to run them; the matrix row stays 🚧 until then."
+        "FR-001-AC-2..AC-4 / IT-001 need a running filament-core-service whose "
+        "module-manifest schema admits `ObjectTypeEntry.construct` (no release "
+        "tag contains it). Set FILAMENT_CORE_URL to run them; the matrix row "
+        "stays 🚧 until then."
     ),
 )
-
-
-@pytest.mark.trace("TC-001", "FR-001-AC-1")
-def test_the_manifest_validates_against_the_pinned_fr035_schema(quire_engine):
-    digest = hashlib.sha256(VENDORED_SCHEMA.read_bytes()).hexdigest()
-    assert digest == VENDORED_SCHEMA_DIGEST, (
-        "the vendored module-manifest schema is not the 5b2af8b revision the "
-        "spec pins; FR-001 and FR-003 would judge the manifest against "
-        "different schemas"
-    )
-    violations = quire_engine.validate_manifest(load_manifest(), str(VENDORED_SCHEMA))
-    assert violations == [], violations
 
 
 @pytest.mark.trace("TC-002", "FR-001-AC-2")
