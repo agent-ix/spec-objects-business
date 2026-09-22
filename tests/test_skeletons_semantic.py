@@ -159,7 +159,7 @@ RELATIONSHIP_FIXTURES = {
 }
 
 
-# The negative whose refusal waits on quire-rs reading `Pre:`/`Post:` lines.
+# The negative refused through its `Post:` line naming an undeclared clause.
 POST_CLAUSE_FIXTURE = "operation-dangling-post-clause.md"
 
 

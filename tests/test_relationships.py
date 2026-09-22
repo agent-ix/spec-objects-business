@@ -118,7 +118,19 @@ def extract_relations(quire_engine, semantic_module, path, bundle):
 
 # Multiplicity.json (semantic-core 0.3.0) requires `ordered`/`unique`. The
 # Markdown cell authors them as flags (`0..* unique`); an unflagged cell is
-# `false` for both.
+# `false` for both. Each collection's (ordered, unique) is pinned here so a
+# skeleton that drops or adds a flag fails:
+#   - `lines`: OrderLine members are identified by `line_number`, so one
+#     cannot appear twice (unique), and position is carried by that field,
+#     not by row order (unordered).
+#   - `totals`: Money is a value object; two equal amounts are legitimate
+#     (not unique), and the three are told apart by field name (unordered).
+RELATIONSHIP_ORDER_UNIQUE = {
+    "lines": (False, True),
+    "totals": (False, False),
+}
+
+
 def expected_relations(text: str) -> list[dict]:
     manifest = load_manifest()
     relations = []
@@ -131,6 +143,10 @@ def expected_relations(text: str) -> list[dict]:
             bound["upper"] = int(upper)
         bound["ordered"] = "ordered" in flags
         bound["unique"] = "unique" in flags
+        if name in RELATIONSHIP_ORDER_UNIQUE:
+            assert (bound["ordered"], bound["unique"]) == RELATIONSHIP_ORDER_UNIQUE[
+                name
+            ], (name, multiplicity)
         relations.append(
             {
                 "name": name,

@@ -11,9 +11,8 @@ evidence (`agent-ix/quoin#335`).
 
 Not exercised here: FR-208 also refuses a non-empty operation frame
 (`Modifies:`/`Creates:`/`Deletes:`) on a persistence interface. That data
-reaches no member of `Repository.json`'s record (FR-006, blocked on
-`agent-ix/quire-rs#431`), so this module cannot refuse it at the
-record-schema layer.
+reaches no member of `Repository.json`'s record, so this module cannot
+refuse it at the record-schema layer.
 """
 
 from __future__ import annotations
