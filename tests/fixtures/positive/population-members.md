@@ -14,4 +14,4 @@ The instances a checkout run holds together.
 |---|---|
 | Order | 1..1 |
 | Customer | 1..1 |
-| OrderLine | 1..* |
+| OrderLine | 1..* unique |

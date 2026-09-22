@@ -21,7 +21,6 @@ from tests.conftest import (
     MODEL_OF,
     OBJECT_TYPES,
     SCHEMAS_DIR,
-    semantic_core_engine_xfail,
 )
 
 
@@ -229,7 +228,6 @@ def test_the_empty_record_passes_only_domain_enumeration_and_population(
 
 
 @pytest.mark.trace("TC-039", "FR-004-AC-10")
-@semantic_core_engine_xfail()
 def test_an_unresolved_placeholder_target_is_accepted_and_a_bare_token_is_refused(
     schema_registry, quire_engine, semantic_module
 ):

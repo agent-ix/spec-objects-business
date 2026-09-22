@@ -252,8 +252,7 @@ def test_the_lockfile_resolves_public_packages_from_npmjs():
         if path.endswith("@agent-ix/semantic-core"):
             # 0.3.0 is the first `@agent-ix/semantic-core` release actually
             # published anywhere reachable in CI: GitHub Packages
-            # (`npm.pkg.github.com`), not the private npm.ix dev mirror
-            # 0.1.0/0.2.0 lived on. The lockfile was regenerated against the
+            # (`npm.pkg.github.com`). The lockfile was regenerated against the
             # real registry (FR-002-CON-4's exception for this dependency no
             # longer applies now that it is really published).
             assert "npm.pkg.github.com" in resolved, resolved

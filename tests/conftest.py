@@ -2,12 +2,9 @@
 
 Two policies are enforced here and nowhere else:
 
-* **The engine is a hard dependency of the semantic rows.** ``quire`` is not
-  declared in ``pyproject.toml`` — no index a repository may commit against
-  carries 0.46.0 (``internal-pypi`` serves 0.33.0 at most and no ``quire-rs``
-  tag carries the semantic layer), so the wheel is provisioned by
-  ``make dev-quire`` and ``agent-ix/quire-rs#392`` is the blocking issue. When
-  it is absent the semantic tests **fail**; they never skip, because a skipped
+* **The engine is a hard dependency of the semantic rows.** ``quire`` is a
+  dev dependency resolved from ``internal-pypi`` (``poetry install``). When it
+  is absent the semantic tests **fail**; they never skip, because a skipped
   row is not coverage (FR-005).
 * **The emitted schemas are read from the committed tree**, and every
   ``$ref`` to semantic-core resolves against the package the toolchain
@@ -16,7 +13,6 @@ Two policies are enforced here and nowhere else:
 
 from __future__ import annotations
 
-import functools
 import hashlib
 import json
 import pathlib
@@ -50,32 +46,11 @@ SEMANTIC_CORE_BASE = "https://schemas.agent-ix.org/semantic-core/0.3.0/"
 
 QUIRE_MISSING = (
     "the Quire wheel exposing `extract_semantic` is not installed in this "
-    "environment. Run `make dev-quire` (agent-ix/quire-rs#392 tracks publishing "
-    "0.46.0 to an index this repository may depend on). The semantic tests fail "
-    "rather than skip, because a skipped row is not coverage."
+    "environment. Run `poetry install` (quire is a dev dependency from "
+    "internal-pypi). The semantic tests fail rather than skip, because a "
+    "skipped row is not coverage."
 )
 
-#: The manifest declares `semantic_core: 0.3.0` (the only real, published
-#: version — 0.1.0/0.2.0 never left a private dev-only mirror). quire-rs
-#: vendors semantic-core bundles by exact version string
-#: (`src/semantic/vendored.rs` `SEMANTIC_CORE_VERSIONS`) and the installed
-#: wheel (pypi.ix's quire 0.46.0, the latest published anywhere) only vendors
-#: 0.1.0/0.2.0, so every call through the engine for THIS module now fails: a
-#: direct `extract_semantic` call raises `semantic.unsupported-semantic-core`,
-#: and `validate_document`/`Registry.load_from` (which read the manifest from
-#: disk themselves) silently load zero archetypes, so they report
-#: `quire.QuireSchemaError`/a failed `is_valid` instead. Confirmed empirically
-#: (verified against 0.3.0 directly, not assumed from the error string).
-#: agent-ix/quire-rs#487 already tracks vendoring 0.3.0 (filed against
-#: spec-objects-architecture hitting the identical gap first); this module is
-#: a second, independent instance of the same root cause, not a new issue.
-SEMANTIC_CORE_ENGINE_ISSUE = "agent-ix/quire-rs#487"
-SEMANTIC_CORE_ENGINE_REASON = (
-    "the installed quire wheel (0.46.0, the latest published anywhere) only "
-    "vendors semantic-core 0.1.0/0.2.0 and this module's real semantic_core is "
-    "0.3.0, so extract_semantic/validate_document/Registry.load_from all "
-    f"fail against it; {SEMANTIC_CORE_ENGINE_ISSUE}"
-)
 
 OBJECT_TYPES = (
     "domain",
@@ -126,7 +101,7 @@ MODEL_TABLES = {
     },
     "process": {"steps": ("steps", "Workflow"), "states": ("states", "States")},
     "enumeration": {"values": ("values", "Values")},
-    "population": {"members": ("population", "Members")},
+    "population": {"population": ("population", "Members")},
 }
 
 # The 0.2.0 locators whose sections FR-006 declares as model tables.
@@ -245,55 +220,6 @@ def quire_engine():
     return require_quire()
 
 
-@functools.cache
-def engine_accepts_module_semantic_core() -> bool:
-    """Whether the installed quire engine vendors a bundle for this module's
-    *real* declared `semantic_core` (read from the manifest). Probed
-    empirically against the manifest value, never assumed from the version
-    number alone."""
-    try:
-        import quire
-    except ImportError:
-        return True  # `require_quire` fails those tests by name.
-    version = load_manifest()["semantic"]["semantic_core"]
-    request = {
-        "markdown": (
-            "---\nid: probe\ntitle: Probe\ntype: value_object\n"
-            "object: value_object\n---\n# [probe] Probe\n\n"
-            "## Properties\n\n| Field | Type | Multiplicity | Constraints |\n"
-            "|---|---|---|---|\n| a | UUID | 1..1 | |\n"
-        ),
-        "module": {
-            "contractVersion": "1.0.0",
-            "semanticCore": version,
-            "package": BUNDLE_PACKAGE,
-            "exports": ["value_object"],
-        },
-        "path": "spec/probe.md",
-        "bundle": {"package": BUNDLE_PACKAGE},
-    }
-    try:
-        quire.extract_semantic(request)
-    except TypeError as error:
-        if "semantic.unsupported-semantic-core" in str(error):
-            return False
-        raise
-    return True
-
-
-def semantic_core_engine_xfail():
-    """A strict xfail on an installed engine that does not vendor this
-    module's declared `semantic_core` yet; agent-ix/quire-rs#487. Covers both
-    failure shapes: a direct `extract_semantic` `TypeError` and the silent
-    zero-archetype load that `validate_document`/`Registry.load_from` turn
-    into a failed `is_valid` or an `unknown archetype` error."""
-    return pytest.mark.xfail(
-        condition=not engine_accepts_module_semantic_core(),
-        strict=True,
-        reason=SEMANTIC_CORE_ENGINE_REASON,
-    )
-
-
 @pytest.fixture(scope="session")
 def manifest() -> dict[str, Any]:
     return load_manifest()
@@ -360,8 +286,8 @@ def schema_registry():
     if not SEMANTIC_CORE_DIR.is_dir():
         pytest.fail(
             "@agent-ix/semantic-core is not installed, so `$ref`s to the grammar "
-            "cannot resolve. Run `npm ci` (FR-002-CON-4: `@agent-ix` resolves "
-            "from npm.ix through the user-level npm config)."
+            "cannot resolve. Run `make semantic-install` (FR-002-CON-4: `@agent-ix` "
+            "resolves from GitHub Packages)."
         )
     resources = []
     for path in sorted(SCHEMAS_DIR.glob("*.json")):
