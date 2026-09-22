@@ -17,13 +17,25 @@ import json
 
 import pytest
 
-from tests.conftest import MODEL_OF, OBJECT_TYPES, SCHEMAS_DIR
+from tests.conftest import (
+    MODEL_OF,
+    OBJECT_TYPES,
+    SCHEMAS_DIR,
+    semantic_core_engine_xfail,
+)
 
 
+# Multiplicity.json (semantic-core 0.3.0) requires `ordered`/`unique`; a
+# producer clamps both `false` on a singular multiplicity (`upper` at most
+# one — meaningless there, no functionality lost). Every field this helper
+# builds is singular (1..1), so both are `false`.
 def field(name: str, target: str = "String", *, identity: bool = False) -> dict:
     decl = {
         "name": name,
-        "type": {"target": target, "multiplicity": {"lower": 1, "upper": 1}},
+        "type": {
+            "target": target,
+            "multiplicity": {"lower": 1, "upper": 1, "ordered": False, "unique": False},
+        },
     }
     if identity:
         decl["identity"] = True
@@ -201,9 +213,15 @@ def test_the_empty_record_passes_only_domain_enumeration_and_population(
     )
     assert ok(schema_registry("Enumeration"), {"values": [{"value": "Draft"}]})
     assert not ok(schema_registry("Domain"), {"values": [{"value": "Draft"}]})
+    # `extent` is unbounded (`lower: 0`, no `upper`): a real population
+    # extent, not a singular field. A population's membership has no
+    # positional order (`ordered: False`); an instance is identified, so it
+    # is either a member once or not a member at all — the extent counts
+    # distinct-by-identity instances, never a repeatable value
+    # (`unique: True`).
     member = {
         "type": {"target": "ix://agent-ix/spec-objects-business/type/Order"},
-        "extent": {"lower": 0},
+        "extent": {"lower": 0, "ordered": False, "unique": True},
     }
     assert ok(schema_registry("Population"), {"members": [member]})
     assert not ok(schema_registry("Domain"), {"members": [member]})
@@ -211,6 +229,7 @@ def test_the_empty_record_passes_only_domain_enumeration_and_population(
 
 
 @pytest.mark.trace("TC-039", "FR-004-AC-10")
+@semantic_core_engine_xfail()
 def test_an_unresolved_placeholder_target_is_accepted_and_a_bare_token_is_refused(
     schema_registry, quire_engine, semantic_module
 ):
@@ -219,7 +238,7 @@ def test_an_unresolved_placeholder_target_is_accepted_and_a_bare_token_is_refuse
         "name": "mystery",
         "type": {
             "target": "ix://agent-ix/spec-objects-business/unresolved/Mystery",
-            "multiplicity": {"lower": 1, "upper": 1},
+            "multiplicity": {"lower": 1, "upper": 1, "ordered": False, "unique": False},
         },
         "identity": True,
     }

@@ -6,7 +6,7 @@
     "fields": {
       "type": "array",
       "items": {
-        "$ref": "https://schemas.agent-ix.org/semantic-core/0.2.0/FieldDecl.json"
+        "$ref": "https://schemas.agent-ix.org/semantic-core/0.3.0/FieldDecl.json"
       },
       "contains": {
         "$ref": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.7.0/IdentityField.json"
@@ -15,32 +15,32 @@
     "clauses": {
       "type": "array",
       "items": {
-        "$ref": "https://schemas.agent-ix.org/semantic-core/0.2.0/ClauseRef.json"
+        "$ref": "https://schemas.agent-ix.org/semantic-core/0.3.0/ClauseRef.json"
       },
       "minItems": 1
     },
     "relations": {
       "type": "array",
       "items": {
-        "$ref": "https://schemas.agent-ix.org/semantic-core/0.2.0/RelationDecl.json"
+        "$ref": "https://schemas.agent-ix.org/semantic-core/0.3.0/RelationDecl.json"
       }
     },
     "operations": {
       "type": "array",
       "items": {
-        "$ref": "https://schemas.agent-ix.org/semantic-core/0.2.0/OperationDecl.json"
+        "$ref": "https://schemas.agent-ix.org/semantic-core/0.3.0/OperationDecl.json"
       }
     },
     "members": {
       "type": "array",
       "items": {
-        "$ref": "https://schemas.agent-ix.org/semantic-core/0.2.0/RelationDecl.json"
+        "$ref": "https://schemas.agent-ix.org/semantic-core/0.3.0/RelationDecl.json"
       }
     },
     "emits": {
       "type": "array",
       "items": {
-        "$ref": "https://schemas.agent-ix.org/semantic-core/0.2.0/SemanticId.json"
+        "$ref": "https://schemas.agent-ix.org/semantic-core/0.3.0/SemanticId.json"
       }
     }
   },

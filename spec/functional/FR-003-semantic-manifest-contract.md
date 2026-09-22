@@ -41,7 +41,7 @@ keeps its meaning.
 
 ## Behavior
 
-- The manifest `semantic` block SHALL carry exactly these keys and values: `contract_version: 1.0.0`, `semantic_core: 0.2.0`, `package: agent-ix/spec-objects-business`, `exports` listing every object type that ships a schema, `imports: {}`, `targets: [json-schema, markdown]`, `mappings: [typed-table, sysml-fence, generalization, abstract-types, presence, subsetting, redefinition, effect-frames, relationships]`, `compatibility_posture: strict`, `legacy_forms: warning`.
+- The manifest `semantic` block SHALL carry exactly these keys and values: `contract_version: 1.0.0`, `semantic_core: 0.3.0`, `package: agent-ix/spec-objects-business`, `exports` listing every object type that ships a schema, `imports: {}`, `targets: [json-schema, markdown]`, `mappings: [typed-table, sysml-fence, generalization, abstract-types, presence, subsetting, redefinition, effect-frames, relationships]`, `compatibility_posture: strict`, `legacy_forms: warning`.
 - `semantic.exports` SHALL name all eleven object types: `domain`, `entity`, `value_object`, `aggregate_root`, `nested_entity`, `repository`, `event`, `state_machine`, `process`, `enumeration`, `population`.
 - `compatibility_posture` SHALL be `strict`, because the declared model-table sections refuse every form the manifest does not declare (NFR-001), which is a breaking change for an artifact authoring one of those sections in another form; `additive` would misstate that, and `declared-lossy` names lossy mappings, which this module declares none of.
 - Every exported object type's `data_schema` SHALL be `{ schema: schemas/<Model>.json, digest: sha256:<hex> }` where `<hex>` is the SHA-256 of the shipped file bytes.

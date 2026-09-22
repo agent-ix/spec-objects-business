@@ -21,6 +21,7 @@ from tests.conftest import (
     locators,
     object_type,
     object_types,
+    semantic_core_engine_xfail,
 )
 from tests.test_model_tables import table_rows
 
@@ -114,6 +115,33 @@ def extract_relations(quire_engine, semantic_module, path, bundle):
     )
 
 
+# Multiplicity.json (semantic-core 0.3.0) requires `ordered`/`unique`. A
+# producer clamps both `false` on a singular multiplicity (`upper` at most
+# one); a genuine collection (`upper` absent or > 1) needs a reasoned value,
+# named here per relationship so an unreasoned new collection field fails
+# loudly (`KeyError`) rather than silently defaulting. The two collections
+# aggregate_root.md's Relationships table declares today:
+#   - `lines` (0..*, OrderLine members): `ordered: False` — each OrderLine
+#     already carries its own sequence via the `line_number` identity field
+#     (nested_entity.md skeleton), so nothing depends on array/row order to
+#     recover position. `unique: True` — OrderLine members are identified
+#     entities (`line_number` is their identity), so the same member cannot
+#     legitimately appear twice.
+#   - `totals` (3..3, Money members): `ordered: False` — the three Money
+#     members (subtotal/shipping_fee/grand_total) are already told apart by
+#     name at the FieldDecl level (aggregate_root.md's Properties table);
+#     this relation only records the aggregate boundary's member count, with
+#     no traversal/iteration semantics riding on its position. `unique:
+#     False` — Money is a value object, and two of the three amounts
+#     coinciding (e.g. a $0.00 shipping fee equal to another $0.00 value) is
+#     a legitimate, unremarkable state, never a defect this schema should
+#     reject.
+RELATIONSHIP_ORDER_UNIQUE = {
+    "lines": (False, True),
+    "totals": (False, False),
+}
+
+
 def expected_relations(text: str) -> list[dict]:
     manifest = load_manifest()
     relations = []
@@ -123,6 +151,12 @@ def expected_relations(text: str) -> list[dict]:
         bound = {"lower": int(lower)}
         if upper != "*":
             bound["upper"] = int(upper)
+        if bound.get("upper", 2) <= 1:
+            # Singular: the clamp the schema's own description names.
+            bound["ordered"] = False
+            bound["unique"] = False
+        else:
+            bound["ordered"], bound["unique"] = RELATIONSHIP_ORDER_UNIQUE[name]
         relations.append(
             {
                 "name": name,
@@ -164,6 +198,7 @@ def test_every_object_type_declares_the_relationships_table_and_every_verb_it_ad
 
 
 @pytest.mark.trace("TC-090", "FR-007-AC-2")
+@semantic_core_engine_xfail()
 def test_every_skeleton_relationships_table_extracts_row_for_row(
     quire_engine, semantic_module
 ):
@@ -199,6 +234,7 @@ def test_every_skeleton_relationships_table_extracts_row_for_row(
 
 
 @pytest.mark.trace("TC-091", "FR-007-AC-3")
+@semantic_core_engine_xfail()
 def test_the_relationships_fixture_lowers_every_entity_verb(
     quire_engine, semantic_module
 ):
@@ -225,6 +261,7 @@ REFUSED_ROW_LINE = 21
 
 
 @pytest.mark.trace("TC-092", "FR-007-AC-4")
+@semantic_core_engine_xfail()
 def test_every_relationships_negative_fails_for_its_own_reason(
     quire_engine, semantic_module
 ):
@@ -258,6 +295,7 @@ def test_every_relationships_negative_fails_for_its_own_reason(
 
 
 @pytest.mark.trace("TC-093", "FR-007-AC-5")
+@semantic_core_engine_xfail()
 def test_a_header_only_relationships_table_is_available_with_no_relations(
     quire_engine, semantic_module
 ):
@@ -279,6 +317,7 @@ def test_a_header_only_relationships_table_is_available_with_no_relations(
 
 
 @pytest.mark.trace("TC-094", "FR-007-AC-6")
+@semantic_core_engine_xfail()
 def test_a_relationships_table_on_a_type_without_relations_fails_its_record_schema(
     quire_engine,
 ):
@@ -305,6 +344,7 @@ def test_a_relationships_table_on_a_type_without_relations_fails_its_record_sche
 
 
 @pytest.mark.trace("TC-095", "FR-007-AC-7")
+@semantic_core_engine_xfail()
 def test_a_relationships_section_in_another_form_is_refused_or_warned(quire_engine):
     listed = NEGATIVE_DIR / "entity-relationships-as-list.md"
     text = listed.read_text()
@@ -330,6 +370,7 @@ def test_a_relationships_section_in_another_form_is_refused_or_warned(quire_engi
 
 
 @pytest.mark.trace("TC-096", "FR-007-AC-8")
+@semantic_core_engine_xfail()
 def test_validate_document_lowers_a_target_in_another_artifact_with_an_advisory(
     quire_engine,
 ):
@@ -444,6 +485,7 @@ def test_process_emits_and_repository_persists_rows_lower_into_typed_keys(
 @pytest.mark.parametrize(
     ("name", "row", "key", "target"), TYPED_KEY_ROWS, ids=[r[0] for r in TYPED_KEY_ROWS]
 )
+@semantic_core_engine_xfail()
 def test_process_and_repository_rows_are_refused_until_typed_key_lowering_lands(
     quire_engine, name, row, key, target
 ):

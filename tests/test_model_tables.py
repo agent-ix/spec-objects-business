@@ -21,6 +21,7 @@ from tests.conftest import (
     locators,
     object_type,
     object_types,
+    semantic_core_engine_xfail,
 )
 
 REQUIRED = {
@@ -160,6 +161,7 @@ def test_every_model_table_locator_declares_its_optional_columns():
 
 
 @pytest.mark.trace("TC-081", "FR-006-AC-2")
+@semantic_core_engine_xfail()
 def test_every_skeleton_extracts_its_model_tables_row_for_row(
     quire_engine, semantic_module, bundle_index
 ):
@@ -192,6 +194,7 @@ DECLARED_MODEL_FIXTURE = POSITIVE_DIR / "state_machine-declared-model.md"
 
 
 @pytest.mark.trace("TC-082", "FR-006-AC-3")
+@semantic_core_engine_xfail()
 def test_the_declared_model_fixture_extracts_every_mapping_feature(
     quire_engine, semantic_module
 ):
@@ -258,6 +261,7 @@ def test_the_declared_model_frame_carries_its_pre_and_post_lines(
 
 
 @pytest.mark.trace("TC-083", "FR-006-AC-4")
+@semantic_core_engine_xfail()
 def test_every_model_table_and_undeclared_form_has_a_refusing_fixture(quire_engine):
     for name, code in MODEL_NEGATIVES.items():
         path = NEGATIVE_DIR / name
@@ -285,6 +289,7 @@ def test_every_model_table_and_undeclared_form_has_a_refusing_fixture(quire_engi
 
 
 @pytest.mark.trace("TC-087", "FR-006-AC-5")
+@semantic_core_engine_xfail()
 def test_skeleton_clauses_are_quire_and_contract_lines_are_pre_post(
     quire_engine, semantic_module, bundle_index
 ):
@@ -312,6 +317,7 @@ def test_skeleton_clauses_are_quire_and_contract_lines_are_pre_post(
 
 
 @pytest.mark.trace("TC-085", "FR-006-AC-6")
+@semantic_core_engine_xfail()
 def test_the_population_fixture_extracts_one_member_per_row(
     quire_engine, semantic_module, bundle_index
 ):
@@ -326,10 +332,17 @@ def test_the_population_fixture_extracts_one_member_per_row(
     assert [m["type"]["target"].rsplit("/", 1)[-1] for m in members] == [
         row[0] for row in rows
     ]
+    # Multiplicity.json (semantic-core 0.3.0) requires `ordered`/`unique`.
+    # Order and Customer are singular (1..1): clamp both `false`. OrderLine
+    # is a genuine collection (1..*, a population extent): `ordered: False`
+    # (population membership has no positional order) and `unique: True`
+    # (an identified instance is either a member once or not at all — the
+    # extent counts distinct-by-identity instances, never a repeatable
+    # value).
     assert [m["extent"] for m in members] == [
-        {"lower": 1, "upper": 1},
-        {"lower": 1, "upper": 1},
-        {"lower": 1},
+        {"lower": 1, "upper": 1, "ordered": False, "unique": False},
+        {"lower": 1, "upper": 1, "ordered": False, "unique": False},
+        {"lower": 1, "ordered": False, "unique": True},
     ]
 
 

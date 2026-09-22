@@ -4,7 +4,7 @@
   "type": "object",
   "properties": {
     "name": {
-      "$ref": "https://schemas.agent-ix.org/semantic-core/0.2.0/Identifier.json"
+      "$ref": "https://schemas.agent-ix.org/semantic-core/0.3.0/Identifier.json"
     },
     "kind": {
       "$ref": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.7.0/StepKind.json"
@@ -12,13 +12,13 @@
     "consumes": {
       "type": "array",
       "items": {
-        "$ref": "https://schemas.agent-ix.org/semantic-core/0.2.0/SemanticId.json"
+        "$ref": "https://schemas.agent-ix.org/semantic-core/0.3.0/SemanticId.json"
       }
     },
     "emits": {
       "type": "array",
       "items": {
-        "$ref": "https://schemas.agent-ix.org/semantic-core/0.2.0/SemanticId.json"
+        "$ref": "https://schemas.agent-ix.org/semantic-core/0.3.0/SemanticId.json"
       }
     },
     "doc": {

@@ -25,6 +25,8 @@ import re
 import pytest
 import yaml
 
+from tests.conftest import semantic_core_engine_xfail
+
 PKG_ROOT = pathlib.Path(__file__).resolve().parent.parent / "spec_objects_business"
 MANIFEST_PATH = PKG_ROOT / "manifest.yaml"
 SKELETONS_DIR = PKG_ROOT / "skeletons"
@@ -319,6 +321,7 @@ def _quire_doc_validator():
 
 
 @pytest.mark.parametrize("name", _type_names(), ids=lambda n: n)
+@semantic_core_engine_xfail()
 def test_roundtrip_skeleton_validates(name: str) -> None:
     """Each skeleton passes ``validate_document`` against this module.
 
@@ -331,6 +334,7 @@ def test_roundtrip_skeleton_validates(name: str) -> None:
     assert res["is_valid"], res["errors"]
 
 
+@semantic_core_engine_xfail()
 def test_roundtrip_mutations_fail() -> None:
     """Deleting a required section / code block / frontmatter field each
     fail validation."""

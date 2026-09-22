@@ -23,7 +23,7 @@ would separate a minimal entity from a nested entity or a process (`owner`,
 
 ## Inputs
 
-- semantic-core 0.2.0 grammar models: `FieldDecl`, `RelationDecl`,
+- semantic-core 0.3.0 grammar models: `FieldDecl`, `RelationDecl`,
   `OperationDecl`, `ClauseRef`, `EnumValue`, `Identifier`, `SemanticId`,
   `KernelScalar`.
 - The declaration record Quire assembles per artifact: `fields` from
@@ -43,7 +43,7 @@ would separate a minimal entity from a nested entity or a process (`owner`,
 
 Each model SHALL enforce its row of the following table. "Identity field"
 means a `FieldDecl` with `identity: true`; "occurrence field" a `FieldDecl`
-whose `type.target` is `Timestamp`. Both readings are semantic-core 0.2.0
+whose `type.target` is `Timestamp`. Both readings are semantic-core 0.3.0
 reader conventions (the flag is set only by a bare `identity` keyword in a
 Constraints cell and is absent, not `false`, otherwise; the kernel scalar is
 the bare token `Timestamp`), so a semantic-core release that renders
@@ -70,7 +70,7 @@ admitted: a composite key is a legitimate declaration and no rule forbids it.
 - `Transition` SHALL be `{ from: Identifier, to: Identifier, trigger: Identifier, guard?: ClauseRef, emits?: SemanticId }`.
 - `PopulationMember` SHALL be `{ type: TypeRef, extent: Multiplicity }`, sealed.
 - `ProcessStep` SHALL be `{ name: Identifier, kind: StepKind, consumes?: SemanticId[], emits?: SemanticId[], doc?: string }` with `StepKind` the closed set `command`, `event`, `decision`, `compensation`, `wait`.
-- Every `fields`, `params`, `clauses`, `operations`, `relations`, `members`, `owner`, `values`, and `states` item SHALL be validated by `$ref` to the semantic-core 0.2.0 model, never by a copied definition.
+- Every `fields`, `params`, `clauses`, `operations`, `relations`, `members`, `owner`, `values`, and `states` item SHALL be validated by `$ref` to the semantic-core 0.3.0 model, never by a copied definition.
 - The TypeSpec source SHALL express the item rules through the official emitter's decorators over open marker models: `@contains(IdentityField)` for "≥ 1 identity field", `@contains(IdentityField) @minContains(0) @maxContains(0)` for "0 identity fields", and, because JSON Schema admits one `contains` per array, the event occurrence rule as an `@extension("allOf", …)` clause whose `contains` references `OccurrenceField.json` (a marker whose `type.target` is `Timestamp`); the generator normalizes that relative `$ref` per FR-002.
 - Every cross-reference a declaration makes (`type.target`, `RelationDecl.target`, `emits`, `persists`, `source`, `Transition.emits`, `ProcessStep.consumes`/`emits`) SHALL be a `SemanticId` or `KernelScalar` per semantic-core, so a bare token is rejected by the schema; resolution against the bundle, and the placeholder `ix://<org>/<repo>/unresolved/<Token>` with its `semantic.unresolved-type` finding, exist today for `type.target` only (quire-rs FR-070) and for the other keys once `agent-ix/quoin#335` publishes their mapping.
 - Each schema SHALL describe the declared shape only, never a runtime occurrence (an entity row, an emitted event instance), which is why `Event` carries no identity field and no `eventId`: occurrence identity belongs to the runtime record, not the declaration.

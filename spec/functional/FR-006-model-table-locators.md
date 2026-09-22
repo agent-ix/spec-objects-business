@@ -96,5 +96,5 @@ form the manifest does not declare.
 
 ## Dependencies
 
-- **Upstream**: [FR-003](./FR-003-semantic-manifest-contract.md); quire-rs FR-071 (clauses and operation contracts) and FR-075 (model features); `@agent-ix/semantic-core` 0.2.0; `agent-ix/filament-core-service#31` (optional columns), `agent-ix/quire-rs#433` (inline guard expressions), `agent-ix/quire-specification#84` (fence model alias)
+- **Upstream**: [FR-003](./FR-003-semantic-manifest-contract.md); quire-rs FR-071 (clauses and operation contracts) and FR-075 (model features); `@agent-ix/semantic-core` 0.3.0; `agent-ix/filament-core-service#31` (optional columns), `agent-ix/quire-rs#433` (inline guard expressions), `agent-ix/quire-specification#84` (fence model alias)
 - **Downstream**: [FR-005](./FR-005-executable-skeletons.md), [NFR-001](../non-functional/NFR-001-additive-compatibility.md)

@@ -4,19 +4,19 @@
   "type": "object",
   "properties": {
     "from": {
-      "$ref": "https://schemas.agent-ix.org/semantic-core/0.2.0/Identifier.json"
+      "$ref": "https://schemas.agent-ix.org/semantic-core/0.3.0/Identifier.json"
     },
     "to": {
-      "$ref": "https://schemas.agent-ix.org/semantic-core/0.2.0/Identifier.json"
+      "$ref": "https://schemas.agent-ix.org/semantic-core/0.3.0/Identifier.json"
     },
     "trigger": {
-      "$ref": "https://schemas.agent-ix.org/semantic-core/0.2.0/Identifier.json"
+      "$ref": "https://schemas.agent-ix.org/semantic-core/0.3.0/Identifier.json"
     },
     "guard": {
-      "$ref": "https://schemas.agent-ix.org/semantic-core/0.2.0/ClauseRef.json"
+      "$ref": "https://schemas.agent-ix.org/semantic-core/0.3.0/ClauseRef.json"
     },
     "emits": {
-      "$ref": "https://schemas.agent-ix.org/semantic-core/0.2.0/SemanticId.json"
+      "$ref": "https://schemas.agent-ix.org/semantic-core/0.3.0/SemanticId.json"
     }
   },
   "required": [
