@@ -496,7 +496,7 @@ object_types:
           from: section_body
           after_heading: Invariants
           required: false
-        members:
+        population:
           from: table_row
           under_section: Members
           required: true

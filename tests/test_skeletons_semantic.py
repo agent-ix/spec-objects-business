@@ -23,7 +23,6 @@ from tests.conftest import (
     locators,
     object_type,
     object_types,
-    semantic_core_engine_xfail,
 )
 
 KERNEL_SCALARS = {
@@ -74,7 +73,6 @@ def extract(quire_engine, module, bundle, path):
 
 
 @pytest.mark.trace("TC-050", "FR-005-AC-1")
-@semantic_core_engine_xfail()
 def test_every_skeleton_validates_with_no_error(quire_engine, skeletons):
     assert len(skeletons) == 14
     for path in skeletons:
@@ -89,7 +87,6 @@ def test_every_skeleton_validates_with_no_error(quire_engine, skeletons):
 
 
 @pytest.mark.trace("TC-051", "FR-005-AC-2", "FR-005-CON-2")
-@semantic_core_engine_xfail()
 def test_table_and_sysml_skeletons_extract_to_identical_fields(
     quire_engine, semantic_module, bundle_index
 ):
@@ -109,7 +106,6 @@ def test_table_and_sysml_skeletons_extract_to_identical_fields(
 
 
 @pytest.mark.trace("TC-052", "FR-005-AC-3")
-@semantic_core_engine_xfail()
 def test_under_the_bundle_index_every_skeleton_extracts_clean(
     quire_engine, semantic_module, bundle_index
 ):
@@ -134,7 +130,6 @@ def test_under_the_bundle_index_every_skeleton_extracts_clean(
 
 
 @pytest.mark.trace("TC-053", "FR-005-AC-4")
-@semantic_core_engine_xfail()
 def test_availability_states_match_each_type(
     quire_engine, semantic_module, bundle_index
 ):
@@ -186,15 +181,6 @@ def _assert_fails_for_its_own_reason(quire_engine, path):
 
 
 @pytest.mark.trace("TC-054", "FR-005-AC-5")
-@pytest.mark.xfail(
-    strict=True,
-    reason=(
-        "FR-005-AC-5: an operation whose `Post:` names an undeclared clause fails "
-        "`semantic.dangling-clause-ref`. quire-rs main still reads only "
-        "the renamed contract keywords; agent-ix/quire-rs#431 reverts it. An "
-        "expected failure, not a skip."
-    ),
-)
 def test_a_dangling_post_clause_is_refused(quire_engine):
     path = NEGATIVE_DIR / POST_CLAUSE_FIXTURE
     assert _assert_fails_for_its_own_reason(quire_engine, path) == (
@@ -203,7 +189,6 @@ def test_a_dangling_post_clause_is_refused(quire_engine):
 
 
 @pytest.mark.trace("TC-054", "FR-005-AC-5")
-@semantic_core_engine_xfail()
 def test_every_negative_fixture_fails_for_its_own_reason(quire_engine):
     fixtures = sorted(NEGATIVE_DIR.glob("*.md"))
     assert (
@@ -228,8 +213,6 @@ def test_every_negative_fixture_fails_for_its_own_reason(quire_engine):
         front = frontmatter(path.read_text())
         assert front["expect"] in expected_codes, path.name
         seen.add(front["expect"])
-        if path.name == POST_CLAUSE_FIXTURE:
-            continue  # test_a_dangling_post_clause_is_refused (quire-rs#431)
         _assert_fails_for_its_own_reason(quire_engine, path)
     assert seen == expected_codes
 
@@ -277,7 +260,6 @@ def test_every_skeleton_is_placeholder_free():
 
 
 @pytest.mark.trace("TC-057", "FR-005-CON-2")
-@semantic_core_engine_xfail()
 def test_a_properties_section_with_both_forms_is_refused(quire_engine):
     path = NEGATIVE_DIR / "properties-both-forms.md"
     text = path.read_text()

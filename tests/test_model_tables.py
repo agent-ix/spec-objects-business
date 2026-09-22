@@ -21,7 +21,6 @@ from tests.conftest import (
     locators,
     object_type,
     object_types,
-    semantic_core_engine_xfail,
 )
 
 REQUIRED = {
@@ -32,7 +31,7 @@ REQUIRED = {
     ("process", "steps"): True,
     ("process", "states"): False,
     ("enumeration", "values"): True,
-    ("population", "members"): True,
+    ("population", "population"): True,
 }
 
 # The key column of each model entry, as the engine names it.
@@ -68,7 +67,7 @@ MODEL_NEGATIVE_LOCATOR = {
     "process-states-as-list.md": "states",
     "aggregate_root-members-as-list.md": "members",
     "domain-vocabulary-duplicate-term.md": "vocabulary",
-    "population-members-duplicate-type.md": "members",
+    "population-members-duplicate-type.md": "population",
 }
 
 # One negative fixture per model table, plus the refusal of a model table
@@ -161,7 +160,6 @@ def test_every_model_table_locator_declares_its_optional_columns():
 
 
 @pytest.mark.trace("TC-081", "FR-006-AC-2")
-@semantic_core_engine_xfail()
 def test_every_skeleton_extracts_its_model_tables_row_for_row(
     quire_engine, semantic_module, bundle_index
 ):
@@ -194,7 +192,6 @@ DECLARED_MODEL_FIXTURE = POSITIVE_DIR / "state_machine-declared-model.md"
 
 
 @pytest.mark.trace("TC-082", "FR-006-AC-3")
-@semantic_core_engine_xfail()
 def test_the_declared_model_fixture_extracts_every_mapping_feature(
     quire_engine, semantic_module
 ):
@@ -242,15 +239,6 @@ def test_the_declared_model_fixture_extracts_every_mapping_feature(
 
 
 @pytest.mark.trace("TC-082", "FR-006-AC-3")
-@pytest.mark.xfail(
-    strict=True,
-    reason=(
-        "FR-006-AC-3: the operation frame carries the `Pre:`/`Post:` lines as "
-        "`pre`/`post`. quire-rs main still reads the renamed contract keywords "
-        "into the renamed frame keys; agent-ix/quire-rs#431 reverts it. An "
-        "expected failure, not a skip."
-    ),
-)
 def test_the_declared_model_frame_carries_its_pre_and_post_lines(
     quire_engine, semantic_module
 ):
@@ -261,7 +249,6 @@ def test_the_declared_model_frame_carries_its_pre_and_post_lines(
 
 
 @pytest.mark.trace("TC-083", "FR-006-AC-4")
-@semantic_core_engine_xfail()
 def test_every_model_table_and_undeclared_form_has_a_refusing_fixture(quire_engine):
     for name, code in MODEL_NEGATIVES.items():
         path = NEGATIVE_DIR / name
@@ -289,7 +276,6 @@ def test_every_model_table_and_undeclared_form_has_a_refusing_fixture(quire_engi
 
 
 @pytest.mark.trace("TC-087", "FR-006-AC-5")
-@semantic_core_engine_xfail()
 def test_skeleton_clauses_are_quire_and_contract_lines_are_pre_post(
     quire_engine, semantic_module, bundle_index
 ):
@@ -317,7 +303,6 @@ def test_skeleton_clauses_are_quire_and_contract_lines_are_pre_post(
 
 
 @pytest.mark.trace("TC-085", "FR-006-AC-6")
-@semantic_core_engine_xfail()
 def test_the_population_fixture_extracts_one_member_per_row(
     quire_engine, semantic_module, bundle_index
 ):

@@ -22,7 +22,6 @@ from tests.conftest import (
     locator_facets_since_020,
     locators,
     object_type,
-    semantic_core_engine_xfail,
     with_object_id,
 )
 
@@ -71,7 +70,6 @@ def test_no_baseline_locator_definition_changed():
 
 
 @pytest.mark.trace("TC-061", "NFR-001-AC-2")
-@semantic_core_engine_xfail()
 def test_every_baseline_skeleton_validates_under_the_new_manifest(quire_engine):
     """Measured, not assumed: the 0.2.0 skeletons carry no frontmatter
     `object:` key, so Quire runs headings-only validation on them and the
@@ -119,7 +117,6 @@ def test_a_legacy_form_artifact_that_declares_its_object_is_not_an_error(quire_e
 
 
 @pytest.mark.trace("TC-062", "NFR-001-AC-3")
-@semantic_core_engine_xfail()
 def test_each_legacy_form_skeleton_yields_exactly_one_legacy_warning(
     quire_engine, semantic_module
 ):
@@ -137,7 +134,6 @@ def test_each_legacy_form_skeleton_yields_exactly_one_legacy_warning(
 
 
 @pytest.mark.trace("TC-063", "NFR-001-AC-4")
-@semantic_core_engine_xfail()
 def test_the_properties_string_is_byte_identical_across_versions(quire_engine):
     """The untyped `properties` yield is what every existing consumer reads;
     the current locators must leave it untouched."""

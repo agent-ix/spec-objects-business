@@ -25,7 +25,6 @@ from tests.conftest import (
     frontmatter,
     locators,
     object_type,
-    semantic_core_engine_xfail,
 )
 
 AUTHORED = sorted(
@@ -80,7 +79,6 @@ def test_every_skeleton_and_fixture_frontmatter_validates(schema_registry, path)
 @pytest.mark.parametrize(
     "path", sorted(SKELETONS_DIR.glob("*.md")), ids=lambda p: p.name
 )
-@semantic_core_engine_xfail()
 def test_quire_refuses_the_hyphenated_form_of_each_skeleton_id(quire_engine, path):
     text = path.read_text()
     front = frontmatter(text)
@@ -98,7 +96,6 @@ def test_quire_refuses_the_hyphenated_form_of_each_skeleton_id(quire_engine, pat
 
 
 @pytest.mark.trace("TC-105", "FR-009-AC-3")
-@semantic_core_engine_xfail()
 def test_a_hyphenated_020_artifact_is_refused_only_for_its_id(quire_engine):
     path = BASELINE_DIR / "skeletons" / "entity.md"
     text = path.read_text()

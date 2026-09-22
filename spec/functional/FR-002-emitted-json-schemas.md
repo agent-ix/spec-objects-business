@@ -26,7 +26,7 @@ build.
 - `typespec/main.tsp`: namespace `AgentIx.SpecObjects.Business`, decorated
   `@jsonSchema("https://schemas.agent-ix.org/agent-ix/spec-objects-business/<version>/")`
   where `<version>` is the manifest `version`.
-- `@agent-ix/semantic-core` 0.3.0 from npm.ix (`FieldDecl`, `TypeRef`,
+- `@agent-ix/semantic-core` 0.3.0 from GitHub Packages (`FieldDecl`, `TypeRef`,
   `Multiplicity`, `ConstraintDecl`, `RelationDecl`, `OperationDecl`,
   `ClauseRef`, `EnumValue`, `KernelScalar`, `Identifier`, `SemanticId`).
 - `@typespec/compiler` 1.15.0, `@typespec/json-schema` 1.15.0 and

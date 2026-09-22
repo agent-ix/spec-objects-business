@@ -23,7 +23,6 @@ from tests.conftest import (
     OBJECT_TYPES,
     REPO_ROOT,
     load_manifest,
-    semantic_core_engine_xfail,
 )
 
 FILAMENT_CORE_URL = os.environ.get("FILAMENT_CORE_URL")
@@ -96,7 +95,6 @@ def test_every_declared_contribution_is_readable_from_the_registry_endpoints():
 @pytest.mark.trace("TC-006", "StR-001-VC-2")
 @pytest.mark.integration
 @needs_filament_core
-@semantic_core_engine_xfail()
 def test_a_generator_produces_an_artifact_that_validates_against_the_shipped_module(
     quire_engine,
 ):

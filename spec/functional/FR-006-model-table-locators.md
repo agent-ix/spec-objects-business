@@ -51,7 +51,7 @@ form the manifest does not declare.
 
   | Object type | Locator | Section | Columns | Optional columns | Required |
   |---|---|---|---|---|---|
-  | `population` | `members` | `Members` | `Type, Extent` | none | true |
+  | `population` | `population` | `Members` | `Type, Extent` | none | true |
   | `enumeration` | `values` | `Values` | `Value, Description` | `Description` | true |
   | `domain` | `vocabulary` | `Ubiquitous Language` | `Term, Description` | `Description` | false |
   | `aggregate_root` | `members` | `Members` | `Member, Multiplicity` | none | true |
