@@ -12,7 +12,7 @@
     "clauses": {
       "type": "array",
       "items": {
-        "$ref": "https://schemas.agent-ix.org/semantic-core/0.2.0/ClauseRef.json"
+        "$ref": "https://schemas.agent-ix.org/semantic-core/0.3.0/ClauseRef.json"
       }
     }
   },

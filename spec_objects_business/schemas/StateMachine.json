@@ -6,20 +6,20 @@
     "operations": {
       "type": "array",
       "items": {
-        "$ref": "https://schemas.agent-ix.org/semantic-core/0.2.0/OperationDecl.json"
+        "$ref": "https://schemas.agent-ix.org/semantic-core/0.3.0/OperationDecl.json"
       },
       "minItems": 1
     },
     "fields": {
       "type": "array",
       "items": {
-        "$ref": "https://schemas.agent-ix.org/semantic-core/0.2.0/FieldDecl.json"
+        "$ref": "https://schemas.agent-ix.org/semantic-core/0.3.0/FieldDecl.json"
       }
     },
     "states": {
       "type": "array",
       "items": {
-        "$ref": "https://schemas.agent-ix.org/semantic-core/0.2.0/EnumValue.json"
+        "$ref": "https://schemas.agent-ix.org/semantic-core/0.3.0/EnumValue.json"
       }
     },
     "transitions": {
@@ -31,7 +31,7 @@
     "clauses": {
       "type": "array",
       "items": {
-        "$ref": "https://schemas.agent-ix.org/semantic-core/0.2.0/ClauseRef.json"
+        "$ref": "https://schemas.agent-ix.org/semantic-core/0.3.0/ClauseRef.json"
       }
     }
   },

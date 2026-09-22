@@ -9,7 +9,7 @@
   },
   "semanticCore": {
     "name": "@agent-ix/semantic-core",
-    "version": "0.2.0"
+    "version": "0.3.0"
   },
   "base": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/0.7.0/",
   "normalization": {
@@ -45,5 +45,5 @@
     "Transition.json",
     "ValueObject.json"
   ],
-  "digest": "sha256:4e3dac4ce4f5ad37388a5abdfbdca91ce7c7bf4c2764d03fcbdfeb175e605b0c"
+  "digest": "sha256:743836c83e00f0e34facbcc88196316f0ca6b1a197bb3706e6ea8991c31807b6"
 }

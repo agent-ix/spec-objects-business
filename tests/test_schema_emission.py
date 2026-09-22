@@ -234,7 +234,7 @@ def test_no_npmrc_no_local_dependency_and_exact_toolchain_pins():
     dev = package["devDependencies"]
     assert dev["@typespec/compiler"] == "1.15.0"
     assert dev["@typespec/json-schema"] == "1.15.0"
-    assert dev["@agent-ix/semantic-core"] == "0.2.0"
+    assert dev["@agent-ix/semantic-core"] == "0.3.0"
     assert "dependencies" not in package or not package["dependencies"]
     for section in ("dependencies", "devDependencies"):
         for name, spec in (package.get(section) or {}).items():
@@ -250,7 +250,13 @@ def test_the_lockfile_resolves_public_packages_from_npmjs():
         if not resolved:
             continue
         if path.endswith("@agent-ix/semantic-core"):
-            assert "npm.ix" in resolved, resolved
+            # 0.3.0 is the first `@agent-ix/semantic-core` release actually
+            # published anywhere reachable in CI: GitHub Packages
+            # (`npm.pkg.github.com`), not the private npm.ix dev mirror
+            # 0.1.0/0.2.0 lived on. The lockfile was regenerated against the
+            # real registry (FR-002-CON-4's exception for this dependency no
+            # longer applies now that it is really published).
+            assert "npm.pkg.github.com" in resolved, resolved
         else:
             assert resolved.startswith(
                 "https://registry.npmjs.org/"
