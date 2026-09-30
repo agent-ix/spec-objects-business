@@ -24,7 +24,6 @@ from tests.conftest import (
     locators,
     object_type,
     object_types,
-    sha256_of,
 )
 
 ADMITTED_KEYS = {
@@ -80,15 +79,14 @@ def test_the_semantic_block_carries_the_nine_admitted_keys_and_eleven_exports(
 
 
 @pytest.mark.trace("TC-021", "FR-003-AC-2")
-def test_every_exported_type_carries_the_reference_form_and_a_matching_digest():
+def test_every_exported_type_carries_the_reference_form():
     for ot in object_types():
         data_schema = ot["data_schema"]
-        assert set(data_schema) == {"schema", "digest"}, ot["name"]
+        assert set(data_schema) == {"schema"}, ot["name"]
         expected = f"schemas/{MODEL_OF[ot['name']]}.json"
         assert data_schema["schema"] == expected, ot["name"]
         path = PACKAGE_ROOT / data_schema["schema"]
         assert path.is_file(), path
-        assert data_schema["digest"] == sha256_of(path), ot["name"]
         assert (
             "type" not in data_schema
         ), f"{ot['name']} still carries an inline data_schema"
@@ -156,12 +154,9 @@ def test_validate_document_reports_no_semantic_load_failure_for_any_skeleton(
 
 
 @pytest.mark.trace("TC-026", "FR-003-AC-6")
-def test_an_unknown_semantic_key_and_an_altered_digest_are_refused(
-    quire_engine, tmp_path
-):
+def test_an_unknown_semantic_key_is_refused(quire_engine, tmp_path):
     """Measured against quire 0.47.1: an unknown `semantic` key drops every
-    object type of the module (the manifest is refused whole), while a wrong
-    digest drops the refused object type alone."""
+    object type of the module (the manifest is refused whole)."""
 
     def add_unknown_key(data):
         data["semantic"]["foo"] = "bar"
@@ -169,19 +164,9 @@ def test_an_unknown_semantic_key_and_an_altered_digest_are_refused(
     unknown = module_copy(tmp_path / "unknown", add_unknown_key)
     assert quire_engine.Registry.load_from([str(unknown)]).archetype_names() == []
 
-    def break_digest(data):
-        assert data["object_types"][1]["name"] == "entity"
-        data["object_types"][1]["data_schema"]["digest"] = "sha256:" + "0" * 64
-
-    altered = module_copy(tmp_path / "digest", break_digest)
-    loaded = set(quire_engine.Registry.load_from([str(altered)]).archetype_names())
-    assert "entity" not in loaded
-    assert loaded >= set(OBJECT_TYPES) - {"entity"}
-
     text = (SKELETONS_DIR / "entity.md").read_text()
-    for search_path in (unknown, altered):
-        with pytest.raises(Exception):
-            quire_engine.validate_document("entity", str(search_path / "module"), text)
+    with pytest.raises(Exception):
+        quire_engine.validate_document("entity", str(unknown / "module"), text)
 
 
 @pytest.mark.trace("TC-026", "FR-003-AC-6")
@@ -191,8 +176,8 @@ def test_an_unknown_semantic_key_and_an_altered_digest_are_refused(
         "FR-003-AC-6 requires the refusal to NAME the offending key and schema "
         "path. quire 0.47.1 empties the registry silently instead: no "
         "ArchetypeLoadFailure, no semantic.* code, nothing naming `foo` or the "
-        "path. Blocked on agent-ix/quire-rs#221 (unknown key) and "
-        "agent-ix/quire-rs#394 (digest). The criterion stands; the schema is "
+        "path. Blocked on agent-ix/quire-rs#221 (unknown key). The "
+        "criterion stands; the schema is "
         "not relaxed and the test is not skipped."
     ),
 )

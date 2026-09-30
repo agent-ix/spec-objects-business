@@ -39,7 +39,7 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 1. Every acceptance criterion and named constraint has at least one test case.
 2. Both Properties forms (typed table, `sysml` fence) and every object type are tested.
 3. Item-rule boundaries are tested at their allowed and refused edges (zero versus one identity field, empty versus one-item arrays).
-4. Every named refusal (digest mismatch, unknown key, both forms, dangling clause, non-Identifier token, undeclared model form, unknown state, trigger, or step kind, unknown or inverse relationship verb, disallowed relationship target, malformed relationship multiplicity, list-form Relationships section, Relationships table on a type without `relations`) has a failing fixture.
+4. Every named refusal (unknown key, both forms, dangling clause, non-Identifier token, undeclared model form, unknown state, trigger, or step kind, unknown or inverse relationship verb, disallowed relationship target, malformed relationship multiplicity, list-form Relationships section, Relationships table on a type without `relations`) has a failing fixture.
 5. Availability states (`available`, `not_applicable`, `missing`) are tested per declaration kind.
 6. Legacy artifacts, the empty record, and unresolved tokens are covered as edge cases.
 
@@ -96,7 +96,7 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | TC-010 | Emitted set equals the eleven object-type models plus the declared support models; `toolchain.json` records compiler and emitter 1.15.0 | Unit | P0 | FR-002-AC-1 | ✅ |
 | TC-011 | Every shipped schema declares the 2020-12 `$schema` and the `$id` matching its file name under the manifest-version base | Unit | P0 | FR-002-AC-2 | ✅ |
 | TC-012 | Every `$ref` resolves to a shipped sibling or semantic-core 0.3.0 | Unit | P0 | FR-002-AC-3 | ✅ |
-| TC-013 | `make schemas-check` exits zero on the committed tree and non-zero naming a mutated schema or digest | Integration | P1 | FR-002-AC-4 | ✅ |
+| TC-013 | `make schemas-check` exits zero on the committed tree and non-zero naming a mutated schema | Integration | P1 | FR-002-AC-4 | ✅ |
 | TC-014 | A `@jsonSchema` base version differing from the manifest version fails the generator naming both | Integration | P1 | FR-002-AC-5 | ✅ |
 | TC-015 | The built wheel contains every exported schema file | Integration | P1 | FR-002-AC-6 | ✅ |
 | TC-016 | Two generator runs over one source are byte-identical | Integration | P1 | FR-002-CON-3 | ✅ |
@@ -104,12 +104,12 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | TC-018 | No `.npmrc`, no `file:`/`link:` dependency, exact toolchain pins in `package.json` | Inspection | P2 | FR-002-CON-2 | ✅ |
 | TC-019 | `package-lock.json` resolves every package from npmjs except `@agent-ix/semantic-core` (GitHub Packages) | Unit | P2 | FR-002-CON-4 | ✅ |
 | TC-020 | The `semantic` block equals the nine admitted keys and `exports` equals the eleven types | Unit | P0 | FR-003-AC-1, FR-003-CON-1 | ✅ |
-| TC-021 | Every exported type's `data_schema` is the reference form whose file hashes to the recorded digest | Unit | P0 | FR-003-AC-2 | ✅ |
+| TC-021 | Every exported type's `data_schema` is the reference form | Unit | P0 | FR-003-AC-2 | ✅ |
 | TC-022 | Every 0.2.0 locator outside the FR-006 model tables is unchanged against the checked-in baseline, the FR-009 `regex` on `id` aside | Unit | P0 | FR-003-AC-3 | ✅ |
 | TC-023 | Every added locator outside the FR-006 model tables is `required: false` | Unit | P1 | FR-003-AC-3, FR-003-CON-2 | ✅ |
 | TC-024 | `quire.Registry.load_from` lists all eleven archetypes | Integration | P0 | FR-003-AC-4 | ✅ |
 | TC-025 | `validate_document` on every skeleton reports no `semantic.*` load failure | Integration | P0 | FR-003-AC-4 | ✅ |
-| TC-026 | An unknown `semantic` key and an altered digest are each refused by the loader; the refusal names the key or path | Integration | P1 | FR-003-AC-6 | ✅ refusal verified; the naming half is an expected failure blocked on quire-rs#221 and quire-rs#394 |
+| TC-026 | An unknown `semantic` key is refused by the loader; the refusal names the key or path | Integration | P1 | FR-003-AC-6 | ✅ refusal verified; the naming half is an expected failure blocked on quire-rs#221 |
 | TC-027 | `quoin module install path:` succeeds, lists the module, and the prior entry is restored | Manual | P1 | FR-003-AC-5 | 🚧 |
 | TC-030 | Each of the eleven schemas differs from every other in a required, forbidden, or item rule; none is `type: object` only | Unit | P0 | FR-004-AC-1 | ✅ |
 | TC-031 | Entity: identity record validates; identity flag removed fails; no `fields` fails | Integration | P0 | FR-004-AC-2 | ✅ |
@@ -139,7 +139,7 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | TC-063 | Each legacy skeleton's `properties` string, its id in FR-009 underscore form, is identical under 0.2.0 and the current manifest | Integration | P1 | NFR-001-AC-4 | ✅ |
 | TC-070 | Quoin install roundtrip with state restore | Manual | P1 | IT-002-SC-01..IT-002-SC-06, FR-003-AC-5 | 🚧 needs a Quoin built from quoin main ≥ `3e842ce` (no release carries it) |
 | TC-071 | The packed npm tarball contains `manifest.yaml` and a sibling `schemas/<Model>.json` per export | Integration | P1 | FR-002-AC-7 | ✅ |
-| TC-072 | A coordinated version bump re-emits every `$id`/`$ref` at the new version with matching digests; bumping one half of the pair fails the check | Integration | P1 | FR-002-AC-8, FR-002-CON-5 | ✅ |
+| TC-072 | A coordinated version bump re-emits every `$id`/`$ref` at the new version; bumping one half of the pair fails the check | Integration | P1 | FR-002-AC-8, FR-002-CON-5 | ✅ |
 | TC-073 | `make schemas-check` names a stale committed schema with no emitted counterpart and writes nothing | Integration | P1 | FR-002-AC-9 | ✅ |
 | TC-074 | No acceptance test hard-codes the `$id` version segment; each reads it from the manifest `version` | Unit | P2 | FR-002-CON-5 | ✅ |
 | TC-080 | The `table_row` locators whose first column is a model-table key are exactly the eight FR-006 declares, with their sections, columns within the table's set, `required` flags, and `min_rows: 1` | Unit | P0 | FR-006-AC-1 | ✅ |

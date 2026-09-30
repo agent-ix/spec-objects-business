@@ -9,7 +9,6 @@ from __future__ import annotations
 
 import json
 import pathlib
-import re
 import shutil
 import subprocess
 import tarfile
@@ -141,20 +140,6 @@ def test_schemas_check_is_green_on_the_committed_tree_and_names_a_mutation(tmp_p
     mutated = run_generator("--check", cwd=tree)
     assert mutated.returncode != 0
     assert "Entity.json" in mutated.stderr
-
-    tree = worktree_copy(tmp_path / "digest")
-    manifest = tree / "spec_objects_business" / "manifest.yaml"
-    manifest.write_text(
-        re.sub(
-            r"digest: sha256:\w+",
-            "digest: sha256:deadbeef",
-            manifest.read_text(),
-            count=1,
-        )
-    )
-    digest_run = run_generator("--check", cwd=tree)
-    assert digest_run.returncode != 0
-    assert "manifest.yaml" in digest_run.stderr
 
 
 @pytest.mark.trace("TC-014", "FR-002-AC-5")
@@ -305,7 +290,7 @@ def test_the_npm_tarball_ships_the_schemas_beside_the_manifest(tmp_path):
 
 
 @pytest.mark.trace("TC-072", "FR-002-AC-8", "FR-002-CON-5")
-def test_a_coordinated_version_bump_reemits_every_id_and_digest(tmp_path):
+def test_a_coordinated_version_bump_reemits_every_id(tmp_path):
     tree = worktree_copy(tmp_path)
     old, new = manifest_version(), "9.9.9"
     source = tree / "typespec" / "main.tsp"
