@@ -283,7 +283,7 @@ def test_no_module_schema_redeclares_a_semantic_core_model(schema_registry):
         "Identifier",
         "SemanticId",
     }
-    shipped = {path.stem for path in SCHEMAS_DIR.glob("*.json")} - {"toolchain"}
+    shipped = {path.stem for path in SCHEMAS_DIR.glob("*.json")}
     assert shipped & grammar == set(), f"the module redeclares {shipped & grammar}"
     for name in OBJECT_TYPES:
         schema = json.loads((SCHEMAS_DIR / f"{MODEL_OF[name]}.json").read_text())
