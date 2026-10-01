@@ -20,7 +20,6 @@ from tests.conftest import (
     REPO_ROOT,
     SCHEMAS_DIR,
     SEMANTIC_CORE_BASE,
-    SUPPORT_MODELS,
     module_base,
 )
 
