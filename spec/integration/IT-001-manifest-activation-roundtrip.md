@@ -53,7 +53,7 @@ Each step performs one discrete action and has its own success criterion.
    - IT-001-SC-03: every item declared by the manifest is present with the
      declared attributes; while `agent-ix/filament-core-service#23` is open the
      registered `data_schema` of each exported object type is the reference
-     object as posted (`{schema, digest}`), not a resolved snapshot.
+     object as posted (`{schema}`), not a resolved snapshot.
 4. Re-POST the same manifest unchanged.
    - IT-001-SC-04: the activation is an idempotent no-op (same `modules.id`, same
      SHA-256 content hash, no row duplication).
