@@ -24,8 +24,7 @@ build.
 ## Inputs
 
 - `typespec/main.tsp`: namespace `AgentIx.SpecObjects.Business`, decorated
-  `@jsonSchema("https://schemas.agent-ix.org/agent-ix/spec-objects-business/<version>/")`
-  where `<version>` is the manifest `version`.
+  `@jsonSchema("https://schemas.agent-ix.org/agent-ix/spec-objects-business/")`
 - `@agent-ix/semantic-core` from GitHub Packages (`FieldDecl`, `TypeRef`,
   `Multiplicity`, `ConstraintDecl`, `RelationDecl`, `OperationDecl`,
   `ClauseRef`, `EnumValue`, `KernelScalar`, `Identifier`, `SemanticId`).
@@ -46,13 +45,8 @@ build.
 - If `tsp compile` fails or emits no module model, then the generator SHALL exit non-zero without touching the committed output.
 - If `node` is older than 20 or `tsp` is not resolvable, then the generator SHALL exit non-zero naming the required Node version or the missing binary.
 - In `--check` mode the generator SHALL write no file under `spec_objects_business/schemas/`.
-- Every emitted schema SHALL declare `$schema: https://json-schema.org/draft/2020-12/schema` and `$id: https://schemas.agent-ix.org/agent-ix/spec-objects-business/<manifest version>/<Model>.json`.
-- The `$id` base SHALL embed the manifest `version`, which is the decision this module records rather than a side effect: it matches the semantic-core bundle convention (`https://schemas.agent-ix.org/semantic-core/0.3.0/`), and it makes one schema URL name exactly one immutable byte sequence, so a downstream fixture reader (`agent-ix/quire-contract-ir#52`, `agent-ix/filament-core-data#36`) that pinned a version can never silently read a later version's bytes under the same URL. The cost — every bump rewrites every `$id`, `$ref` and `toolchain.json` — is accepted and discharged by the bump procedure below, not avoided by a version-less base.
-- If the manifest `version` changes, then the bump procedure SHALL be: edit the `@jsonSchema` base in `typespec/main.tsp` and the manifest `version` in the same commit, run `make schemas`, and commit the re-emitted schemas, the rewritten `$id` and `$ref` values together; a commit that carries one half of the pair is refused by `make schemas-check`.
-- No acceptance criterion, test, or fixture SHALL hard-code the version segment of the `$id` base.
-- Each acceptance criterion, test, and fixture SHALL read the version segment of the `$id` base from the manifest `version`.
-- Every `$ref` in an emitted schema SHALL name either a sibling `https://schemas.agent-ix.org/agent-ix/spec-objects-business/<manifest version>/<File>.json` that ships in `schemas/`, or `https://schemas.agent-ix.org/semantic-core/0.3.0/<Model>.json`.
-- If the `@jsonSchema` base version in `typespec/main.tsp` differs from the manifest `version`, then the generator SHALL fail naming both values.
+- Every emitted schema SHALL declare `$schema: https://json-schema.org/draft/2020-12/schema` and `$id: https://schemas.agent-ix.org/agent-ix/spec-objects-business/<Model>.json`.
+- Every `$ref` in an emitted schema SHALL name either a sibling `https://schemas.agent-ix.org/agent-ix/spec-objects-business/<File>.json` that ships in `schemas/`, or `https://schemas.agent-ix.org/semantic-core/0.3.0/<Model>.json`.
 - `make schemas-check` SHALL run the generator with `--check`.
 - `make lint` SHALL run `make schemas-check`, so a `typespec/` edit that was never regenerated fails before push rather than at review.
 - If any emitted file differs from the committed output, or a committed file under `spec_objects_business/schemas/` is stale (it has no emitted counterpart in this run), then the check SHALL exit non-zero naming each such file.
@@ -70,19 +64,16 @@ build.
 | FR-002-CON-2 | The repository SHALL carry no `.npmrc`, no `file:` or `link:` dependency, and no upper version bound on the TypeSpec toolchain beyond the exact pin. | Packaging | Inspection |
 | FR-002-CON-3 | Emission SHALL be deterministic: two runs over one source produce byte-identical files. | Integrity | Test |
 | FR-002-CON-4 | `package-lock.json` SHALL resolve every public package from `registry.npmjs.org`; `@agent-ix/semantic-core` `0.3.0` is the first version actually published anywhere reachable in CI (GitHub Packages, `npm.pkg.github.com`) and the lockfile resolves it from there — the earlier `0.1.0`/`0.2.0` npm.ix-dev-mirror exception (`agent-ix/filament-core-data#11`, still open for the broader multi-language publish) no longer applies to this dependency. | Packaging | Inspection |
-| FR-002-CON-5 | The `$id` base SHALL embed the manifest `version`, bumped as one atomic regeneration (source base, manifest version, schemas in one commit). | Compatibility | Test |
 
 ## Acceptance Criteria
 
 | ID | Criteria | Verification |
 |----|----------|--------------|
-| FR-002-AC-2 | Every shipped schema declares the 2020-12 `$schema` and the `$id` `https://schemas.agent-ix.org/agent-ix/spec-objects-business/<manifest version>/<Model>.json` matching its file name, with the version segment read from `manifest.yaml` rather than hard-coded. | Test |
+| FR-002-AC-2 | Every shipped schema declares the 2020-12 `$schema` and the `$id` `https://schemas.agent-ix.org/agent-ix/spec-objects-business/<Model>.json` matching its file name. | Test |
 | FR-002-AC-3 | Every `$ref` across the shipped schemas resolves to a shipped sibling or to semantic-core `0.3.0`; a `$ref` to any other host or version is absent. | Test |
 | FR-002-AC-4 | `make schemas-check` on the committed tree exits zero; after one byte of any shipped schema is changed, it exits non-zero naming that file. | Test |
-| FR-002-AC-5 | A `@jsonSchema` base whose version segment differs from the manifest `version` makes the generator fail naming both versions. | Test |
 | FR-002-AC-6 | The wheel built by `make build` contains `spec_objects_business/schemas/<Model>.json` for every exported model. | Test |
 | FR-002-AC-7 | The npm tarball produced by `npm pack` contains `manifest.yaml` and a sibling `schemas/<Model>.json` for every exported model, so a manifest-relative `schema:` path resolves inside the tarball. | Test |
-| FR-002-AC-8 | Bumping the manifest `version` and the `@jsonSchema` base together and re-running the generator yields every `$id` and every sibling `$ref` at the new version; `make schemas-check` then exits zero, while bumping only one of the pair exits non-zero. | Test |
 | FR-002-AC-9 | `make schemas-check` on a committed tree carrying an extra `spec_objects_business/schemas/Stale.json` with no emitted counterpart exits non-zero naming that file, and writes nothing. | Test |
 
 ## Dependencies

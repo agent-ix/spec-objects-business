@@ -88,7 +88,7 @@ not author as that table: `aggregate_root` (Members list), `state_machine`
 Ubiquitous Language stays in the set and passes only because the `vocabulary`
 table is optional.
 
-Once a legacy-form artifact declares `object:`, quire 0.46.0 assembles its
+Once a legacy-form artifact declares `object:`, quire assembles its
 declaration record as `{}` and validates it against the type schema, so it
 fails `semantic.record-invalid` at error severity even under `legacy_forms:
 warning`. `agent-ix/quire-rs#391` owns that rule. The module carries that case

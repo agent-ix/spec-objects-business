@@ -62,7 +62,7 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | Functional Req | Acceptance Criteria | Test Cases | Coverage Status |
 |---|---|---|---|
 | FR-001 | FR-001-AC-2..4 | TC-002..TC-004 | 🚧 AC-2..AC-4 need a running filament-core |
-| FR-002 | FR-002-AC-2..9, FR-002-CON-1..5 | TC-011..TC-019, TC-071..TC-074 | ✅ |
+| FR-002 | FR-002-AC-2..4, FR-002-AC-6, FR-002-AC-7, FR-002-AC-9, FR-002-CON-1..4 | TC-011..TC-013, TC-015..TC-019, TC-071, TC-073 | ✅ |
 | FR-003 | FR-003-AC-1..6, FR-003-CON-1..2 | TC-020..TC-027 | ✅ AC-5 is a Demonstration; AC-6's naming half is an expected failure |
 | FR-004 | FR-004-AC-1..11, FR-004-CON-1..2 | TC-030..TC-041 | ✅ |
 | FR-005 | FR-005-AC-1..8, FR-005-CON-1..2 | TC-050..TC-059 | ✅ |
@@ -96,7 +96,6 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | TC-011 | Every shipped schema declares the 2020-12 `$schema` and the `$id` matching its file name under the manifest-version base | Unit | P0 | FR-002-AC-2 | ✅ |
 | TC-012 | Every `$ref` resolves to a shipped sibling or semantic-core 0.3.0 | Unit | P0 | FR-002-AC-3 | ✅ |
 | TC-013 | `make schemas-check` exits zero on the committed tree and non-zero naming a mutated schema | Integration | P1 | FR-002-AC-4 | ✅ |
-| TC-014 | A `@jsonSchema` base version differing from the manifest version fails the generator naming both | Integration | P1 | FR-002-AC-5 | ✅ |
 | TC-015 | The built wheel contains every exported schema file | Integration | P1 | FR-002-AC-6 | ✅ |
 | TC-016 | Two generator runs over one source are byte-identical | Integration | P1 | FR-002-CON-3 | ✅ |
 | TC-017 | The build uses the official `@typespec/json-schema` emitter only and no emitted file is hand-edited | Inspection | P2 | FR-002-CON-1 | ✅ |
@@ -136,11 +135,9 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | TC-061 | Each of the seven measured 0.2.0 skeletons, its id in FR-009 underscore form, validates under the current manifest with zero errors; a legacy form that declares `object:` is not an error | Integration | P0 | NFR-001-AC-2 | ✅ the criterion passes; the `object:`-declaring case is an expected failure on quire-rs#391 |
 | TC-062 | Each legacy-form 0.2.0 skeleton yields exactly one `semantic.legacy-properties-form` warning | Integration | P1 | NFR-001-AC-3 | ✅ |
 | TC-063 | Each legacy skeleton's `properties` string, its id in FR-009 underscore form, is identical under 0.2.0 and the current manifest | Integration | P1 | NFR-001-AC-4 | ✅ |
-| TC-070 | Quoin install roundtrip with state restore | Manual | P1 | IT-002-SC-01..IT-002-SC-06, FR-003-AC-5 | 🚧 needs a Quoin built from quoin main ≥ `3e842ce` (no release carries it) |
+| TC-070 | Quoin install roundtrip with state restore | Manual | P1 | IT-002-SC-01..IT-002-SC-06, FR-003-AC-5 | 🚧 needs a Quoin built from quoin main (no release carries it) |
 | TC-071 | The packed npm tarball contains `manifest.yaml` and a sibling `schemas/<Model>.json` per export | Integration | P1 | FR-002-AC-7 | ✅ |
-| TC-072 | A coordinated version bump re-emits every `$id`/`$ref` at the new version; bumping one half of the pair fails the check | Integration | P1 | FR-002-AC-8, FR-002-CON-5 | ✅ |
 | TC-073 | `make schemas-check` names a stale committed schema with no emitted counterpart and writes nothing | Integration | P1 | FR-002-AC-9 | ✅ |
-| TC-074 | No acceptance test hard-codes the `$id` version segment; each reads it from the manifest `version` | Unit | P2 | FR-002-CON-5 | ✅ |
 | TC-080 | The `table_row` locators whose first column is a model-table key are exactly the eight FR-006 declares, with their sections, columns within the table's set, `required` flags, and `min_rows: 1` | Unit | P0 | FR-006-AC-1 | ✅ |
 | TC-088 | Every model-table locator declares `assert.optional_columns` — an explicit expected failure while `agent-ix/filament-core-service#31` is open | Unit | P1 | FR-006-CON-1 | 🚧 blocked on filament-core-service#31 |
 | TC-081 | Each model-table skeleton extracts one model entry per table row, in row order, with no error or refusal | Integration | P0 | FR-006-AC-2 | ✅ |
