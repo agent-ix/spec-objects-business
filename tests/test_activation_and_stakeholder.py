@@ -30,9 +30,8 @@ needs_filament_core = pytest.mark.skipif(
     not FILAMENT_CORE_URL,
     reason=(
         "FR-001-AC-2..AC-4 / IT-001 need a running filament-core-service whose "
-        "module-manifest schema admits `ObjectTypeEntry.construct` (no release "
-        "tag contains it). Set FILAMENT_CORE_URL to run them; the matrix row "
-        "stays 🚧 until then."
+        "module-manifest schema admits `ObjectTypeEntry.construct`. "
+        "Set FILAMENT_CORE_URL to run them; the matrix row stays 🚧 until then."
     ),
 )
 

@@ -31,7 +31,6 @@ SCHEMAS_DIR = PACKAGE_ROOT / "schemas"
 SKELETONS_DIR = PACKAGE_ROOT / "skeletons"
 NEGATIVE_DIR = REPO_ROOT / "tests" / "fixtures" / "negative"
 POSITIVE_DIR = REPO_ROOT / "tests" / "fixtures" / "positive"
-BASELINE_DIR = REPO_ROOT / "tests" / "fixtures" / "baseline-0.2.0"
 SEMANTIC_CORE_DIR = (
     REPO_ROOT
     / "node_modules"
@@ -41,7 +40,10 @@ SEMANTIC_CORE_DIR = (
     / "json-schema"
 )
 
-SEMANTIC_CORE_BASE = "https://schemas.agent-ix.org/semantic-core/0.3.0/"
+SEMANTIC_CORE_BASE = (
+    "https://schemas.agent-ix.org/semantic-core/"
+    f"{yaml.safe_load(MANIFEST_PATH.read_text())['semantic']['semantic_core']}/"
+)
 
 QUIRE_MISSING = (
     "the Quire wheel exposing `extract_semantic` is not installed in this "
@@ -103,23 +105,6 @@ MODEL_TABLES = {
     "population": {"population": ("population", "Members")},
 }
 
-# The 0.2.0 locators whose sections FR-006 declares as model tables.
-SUPERSEDED_020_LOCATORS = {
-    "domain": {"ubiquitous_language"},
-    "aggregate_root": {"members"},
-    "state_machine": {"diagram"},
-    "process": {"diagram", "states"},
-    "enumeration": {"values_table"},
-}
-
-# The object types whose FR-006 model tables are required.
-REQUIRED_MODEL_TABLE_TYPES = (
-    "aggregate_root",
-    "state_machine",
-    "process",
-    "population",
-)
-
 SUPPORT_MODELS = (
     "IdentityField",
     "OccurrenceField",
@@ -139,14 +124,6 @@ SUPPORT_MODELS = (
 #: locator carries it as a capturing `regex`.
 OBJECT_ID_PATTERN = "^[A-Za-z][A-Za-z0-9_]*$"
 OBJECT_ID_LOCATOR_REGEX = "^([A-Za-z][A-Za-z0-9_]*)$"
-
-
-def locator_facets_since_020(key: str, locator: dict[str, Any]) -> dict[str, Any]:
-    """A locator's facets as 0.2.0 recorded them: the FR-009 `regex` on the
-    `id` locator is the one facet added since, so it is compared on its own."""
-    if key != "id":
-        return locator
-    return {k: v for k, v in locator.items() if k != "regex"}
 
 
 def with_object_id(markdown: str) -> str:

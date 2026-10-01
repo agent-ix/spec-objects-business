@@ -21,8 +21,6 @@ relationships:
     type: covers
   - target: "ix://agent-ix/spec-objects-business/FR-009"
     type: covers
-  - target: "ix://agent-ix/spec-objects-business/NFR-001"
-    type: covers
 ---
 # Test Matrix
 
@@ -30,9 +28,9 @@ relationships:
 
 This matrix is the verification contract for the module: the manifest
 activation requirement (FR-001, issue #1 era) and the issue #4 semantic data
-schemas, model tables, relationships, construct declarations and object ids (US-001, FR-002..FR-009, NFR-001, IT-002). Coverage is complete when
-every acceptance criterion, named constraint, and NFR metric maps to at least
-one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate --strict` reports no findings on this branch, and the rows still `🚧` are the ones whose evidence needs an environment this repository cannot provision (a running `filament-core-service`, a Quoin built from main).
+schemas, model tables, relationships, construct declarations and object ids (US-001, FR-002..FR-009, IT-002). Coverage is complete when
+every acceptance criterion and named constraint maps to at least
+one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate --strict` reports no findings on this branch, and the rows still `🚧` are the ones whose evidence needs an environment this repository cannot provision (a running `filament-core-service`, a Quoin with the semantic installer).
 
 ## Test Matrix Rules
 
@@ -55,7 +53,7 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 
 | User Story | Acceptance Criteria | Test Cases | Coverage Status |
 |---|---|---|---|
-| US-001 | US-001-EX-1..3 (illustrative) implemented by FR-002..FR-005 | TC-050, TC-053, TC-070 | 🚧 TC-070 needs a Quoin built from main |
+| US-001 | US-001-EX-1..3 (illustrative) implemented by FR-002..FR-005 | TC-050, TC-053, TC-070 | 🚧 TC-070 needs a Quoin with the semantic installer |
 
 ### Functional Requirement Coverage
 
@@ -63,7 +61,7 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 |---|---|---|---|
 | FR-001 | FR-001-AC-2..4 | TC-002..TC-004 | 🚧 AC-2..AC-4 need a running filament-core |
 | FR-002 | FR-002-AC-2..4, FR-002-AC-6, FR-002-AC-7, FR-002-AC-9, FR-002-CON-1..4 | TC-011..TC-013, TC-015..TC-019, TC-071, TC-073 | ✅ |
-| FR-003 | FR-003-AC-1..6, FR-003-CON-1..2 | TC-020..TC-027 | ✅ AC-5 is a Demonstration; AC-6's naming half is an expected failure |
+| FR-003 | FR-003-AC-1..2, FR-003-AC-4..6, FR-003-CON-1 | TC-020, TC-021, TC-024..TC-027 | ✅ AC-5 is a Demonstration; AC-6's naming half is an expected failure |
 | FR-004 | FR-004-AC-1..11, FR-004-CON-1..2 | TC-030..TC-041 | ✅ |
 | FR-005 | FR-005-AC-1..8, FR-005-CON-1..2 | TC-050..TC-059 | ✅ |
 | FR-006 | FR-006-AC-1..8, FR-006-CON-1 | TC-080..TC-088 | 🚧 CON-1 (TC-088) is an expected failure blocked on filament-core-service#31; AC-8 is an Inspection |
@@ -71,18 +69,12 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | FR-008 | FR-008-AC-1..3, AC-5..7 | TC-099, TC-100, TC-101, TC-106, TC-108, TC-109 | ✅ AC-1 holds `population` without a construct while filament-core-data#174 is open |
 | FR-009 | FR-009-AC-1..4 | TC-103..TC-105, TC-107 | 🚧 AC-4 (TC-107) is an expected failure blocked on quire-rs#451 |
 
-### Non-Functional Requirement Coverage
-
-| Non-Functional Req | Verification Method | Evidence/Test Cases | Status |
-|---|---|---|---|
-| NFR-001 | Test (NFR-001-AC-1..4: locator baseline diff outside the declared model-table sections, legacy skeleton validation) | TC-060..TC-063 | ✅ |
-
 ### Integration Test Coverage
 
 | Integration Test | Success Criteria | Test Cases | Coverage Status |
 |---|---|---|---|
 | IT-001 | IT-001-SC-01..04 | TC-002..TC-004 | 🚧 needs a running filament-core |
-| IT-002 | IT-002-SC-01..06 | TC-070 | 🚧 needs a Quoin built from main |
+| IT-002 | IT-002-SC-01..06 | TC-070 | 🚧 needs a Quoin with the semantic installer |
 
 ## Test Case Summary
 
@@ -94,7 +86,7 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | TC-005 | Module activation registers the declared contents | Demonstration | P2 | StR-001-VC-1 | 🚧 needs a running filament-core |
 | TC-006 | Generators produce valid artifacts from the shipped skeletons and schemas | Manual | P2 | StR-001-VC-2 | 🚧 |
 | TC-011 | Every shipped schema declares the 2020-12 `$schema` and the `$id` matching its file name under the manifest-version base | Unit | P0 | FR-002-AC-2 | ✅ |
-| TC-012 | Every `$ref` resolves to a shipped sibling or semantic-core 0.3.0 | Unit | P0 | FR-002-AC-3 | ✅ |
+| TC-012 | Every `$ref` resolves to a shipped sibling or the declared semantic-core bundle | Unit | P0 | FR-002-AC-3 | ✅ |
 | TC-013 | `make schemas-check` exits zero on the committed tree and non-zero naming a mutated schema | Integration | P1 | FR-002-AC-4 | ✅ |
 | TC-015 | The built wheel contains every exported schema file | Integration | P1 | FR-002-AC-6 | ✅ |
 | TC-016 | Two generator runs over one source are byte-identical | Integration | P1 | FR-002-CON-3 | ✅ |
@@ -103,8 +95,6 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | TC-019 | `package-lock.json` resolves every package from npmjs except `@agent-ix/semantic-core` (GitHub Packages) | Unit | P2 | FR-002-CON-4 | ✅ |
 | TC-020 | The `semantic` block equals the nine admitted keys and `exports` equals the eleven types | Unit | P0 | FR-003-AC-1, FR-003-CON-1 | ✅ |
 | TC-021 | Every exported type's `data_schema` is the reference form | Unit | P0 | FR-003-AC-2 | ✅ |
-| TC-022 | Every 0.2.0 locator outside the FR-006 model tables is unchanged against the checked-in baseline, the FR-009 `regex` on `id` aside | Unit | P0 | FR-003-AC-3 | ✅ |
-| TC-023 | Every added locator outside the FR-006 model tables is `required: false` | Unit | P1 | FR-003-AC-3, FR-003-CON-2 | ✅ |
 | TC-024 | `quire.Registry.load_from` lists all eleven archetypes | Integration | P0 | FR-003-AC-4 | ✅ |
 | TC-025 | `validate_document` on every skeleton reports no `semantic.*` load failure | Integration | P0 | FR-003-AC-4 | ✅ |
 | TC-026 | An unknown `semantic` key is refused by the loader; the refusal names the key or path | Integration | P1 | FR-003-AC-6 | ✅ refusal verified; the naming half is an expected failure blocked on quire-rs#221 |
@@ -131,11 +121,7 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | TC-057 | A Properties section holding both a table and a fence is refused at the second form | Integration | P1 | FR-005-CON-2 | ✅ |
 | TC-058 | No corpus repository or vendored fixture is edited by the change (diff over the branch) | Inspection | P2 | FR-005-CON-1 | ✅ |
 | TC-059 | Skeleton titles are distinct `Identifier`s outside `KernelScalar`, and `object` equals `type` in every skeleton frontmatter | Unit | P1 | FR-005-AC-8 | ✅ |
-| TC-060 | Zero 0.2.0 locators changed outside the FR-006 model tables, the FR-009 `regex` on `id` aside, which equals the object id pattern on every type | Unit | P0 | NFR-001-AC-1 | ✅ |
-| TC-061 | Each of the seven measured 0.2.0 skeletons, its id in FR-009 underscore form, validates under the current manifest with zero errors; a legacy form that declares `object:` is not an error | Integration | P0 | NFR-001-AC-2 | ✅ the criterion passes; the `object:`-declaring case is an expected failure on quire-rs#391 |
-| TC-062 | Each legacy-form 0.2.0 skeleton yields exactly one `semantic.legacy-properties-form` warning | Integration | P1 | NFR-001-AC-3 | ✅ |
-| TC-063 | Each legacy skeleton's `properties` string, its id in FR-009 underscore form, is identical under 0.2.0 and the current manifest | Integration | P1 | NFR-001-AC-4 | ✅ |
-| TC-070 | Quoin install roundtrip with state restore | Manual | P1 | IT-002-SC-01..IT-002-SC-06, FR-003-AC-5 | 🚧 needs a Quoin built from quoin main (no release carries it) |
+| TC-070 | Quoin install roundtrip with state restore | Manual | P1 | IT-002-SC-01..IT-002-SC-06, FR-003-AC-5 | 🚧 needs a Quoin with the semantic installer |
 | TC-071 | The packed npm tarball contains `manifest.yaml` and a sibling `schemas/<Model>.json` per export | Integration | P1 | FR-002-AC-7 | ✅ |
 | TC-073 | `make schemas-check` names a stale committed schema with no emitted counterpart and writes nothing | Integration | P1 | FR-002-AC-9 | ✅ |
 | TC-080 | The `table_row` locators whose first column is a model-table key are exactly the eight FR-006 declares, with their sections, columns within the table's set, `required` flags, and `min_rows: 1` | Unit | P0 | FR-006-AC-1 | ✅ |
@@ -162,7 +148,7 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | TC-101 | Per kind, identity, shape, members and rules are FR-142 vocabulary, each rule's member presence holds, and references name non-forbidden reference members and carried roles only | Unit | P0 | FR-008-AC-3 | ✅ |
 | TC-103 | `ObjectId.json` carries the object id pattern, `ObjectFrontmatter.json` references it, and every `id` locator carries the anchored capture of it | Unit | P0 | FR-009-AC-1 | ✅ |
 | TC-104 | `ObjectFrontmatter.json` accepts underscore ids and refuses hyphenated, leading-underscore, leading-digit and empty ids; every skeleton and fixture frontmatter validates | Unit | P0 | FR-009-AC-2 | ✅ |
-| TC-105 | Each skeleton has no missing-id error; its hyphenated form fails with only the missing-id error; the 0.2.0 `entity-001` skeleton fails with exactly that error; flips when `agent-ix/quire-rs#451` lands | Integration | P0 | FR-009-AC-3 | ✅ |
+| TC-105 | Each skeleton has no missing-id error; its hyphenated form fails with only the missing-id error; flips when `agent-ix/quire-rs#451` lands | Integration | P0 | FR-009-AC-3 | ✅ |
 | TC-106 | The manifest `roles:` registry declares `aggregate-member` and `composite-owner`; the quire-rs FR-040 load check over this manifest beside the spec-artifacts-iso roles and archetypes finds only the pre-existing `action` and `data_schema` targets unknown, and without the registry both roles are unknown | Unit | P0 | FR-008-AC-5 | ✅ |
 | TC-107 | A hyphenated skeleton id fails with one pattern-mismatch error naming the id and the pattern — an explicit expected failure while `agent-ix/quire-rs#451` is open | Integration | P1 | FR-009-AC-4 | 🚧 blocked on quire-rs#451 |
 | TC-108 | `event`'s `construct:` declares `immutable: true`; every other of the ten kinds' `construct:` lacks the key | Unit | P0 | FR-008-AC-6 | ✅ |
@@ -175,8 +161,7 @@ Every `Integration` row that names Quire runs against the Quire wheel FR-005
 Inputs pins, a dev dependency resolved from `internal-pypi` by `poetry install`.
 The suite **fails**
 rather than skips when `extract_semantic` is absent, so no row here can be
-reported green without the engine under test. The exceptions are TC-061, an
-explicit expected failure while `agent-ix/quire-rs#391` is open, TC-097, an explicit expected failure while `agent-ix/quire-rs#435` is open, TC-107, an explicit expected failure while `agent-ix/quire-rs#451` is open, and TC-088, an
+reported green without the engine under test. The exceptions are TC-097, an explicit expected failure while `agent-ix/quire-rs#435` is open, TC-107, an explicit expected failure while `agent-ix/quire-rs#451` is open, and TC-088, an
 explicit expected failure while `agent-ix/filament-core-service#31` is open.
 A Relationships table whose columns do not match the locator assert reports that
 assert error twice (`agent-ix/quire-rs#441`); FR-007 tests pin no such error list.

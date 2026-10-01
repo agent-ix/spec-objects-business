@@ -116,7 +116,7 @@ def extract_relations(quire_engine, semantic_module, path, bundle):
     )
 
 
-# Multiplicity.json (semantic-core 0.3.0) requires `ordered`/`unique`. The
+# Multiplicity.json requires `ordered`/`unique`. The
 # Markdown cell authors them as flags (`0..* unique`); an unflagged cell is
 # `false` for both. Each collection's (ordered, unique) is pinned here so a
 # skeleton that drops or adds a flag fails:
