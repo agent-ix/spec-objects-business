@@ -84,4 +84,4 @@ not admit.
 ## Dependencies
 
 - **Upstream**: [FR-003](./FR-003-semantic-manifest-contract.md), [FR-004](./FR-004-role-schemas.md); quoin FR-104; quire-rs FR-076 (`agent-ix/quire-rs#418`); `agent-ix/quire-rs#435` (derived `emits`), `agent-ix/quire-rs#440` (record-invalid line), `agent-ix/quire-rs#441` (column-assert error reported twice), `agent-ix/quoin#557` (bundle index in `quoin validate`)
-- **Downstream**: [FR-005](./FR-005-executable-skeletons.md), [NFR-001](../non-functional/NFR-001-additive-compatibility.md)
+- **Downstream**: [FR-005](./FR-005-executable-skeletons.md)

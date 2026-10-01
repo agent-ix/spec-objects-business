@@ -5,24 +5,17 @@ locator preservation, and what Quire's loader refuses.
 
 from __future__ import annotations
 
-import json
 import shutil
 
 import pytest
 import yaml
 
 from tests.conftest import (
-    BASELINE_DIR,
     MODEL_OF,
-    MODEL_TABLES,
     OBJECT_TYPES,
     PACKAGE_ROOT,
     REPO_ROOT,
     SKELETONS_DIR,
-    SUPERSEDED_020_LOCATORS,
-    locator_facets_since_020,
-    locators,
-    object_type,
     object_types,
 )
 
@@ -89,42 +82,6 @@ def test_every_exported_type_carries_the_reference_form():
         assert (
             "type" not in data_schema
         ), f"{ot['name']} still carries an inline data_schema"
-
-
-@pytest.mark.trace("TC-022", "FR-003-AC-3")
-def test_every_020_locator_is_unchanged_against_the_checked_in_baseline():
-    baseline = json.loads((BASELINE_DIR / "body_extraction.json").read_text())
-    assert baseline["version"] == "0.2.0"
-    for name, extraction in baseline["object_types"].items():
-        current = object_type(name).get("body_extraction")
-        old = (extraction or {})["yield_pattern"]["match"]
-        new = (current or {})["yield_pattern"]["match"]
-        for key, facets in old.items():
-            if key in SUPERSEDED_020_LOCATORS.get(name, set()):
-                assert key not in new or key in MODEL_TABLES.get(
-                    name, {}
-                ), f"{name}.{key} is superseded by an FR-006 model table"
-                continue
-            assert key in new, f"{name}.{key} was dropped"
-            assert (
-                locator_facets_since_020(key, new[key]) == facets
-            ), f"{name}.{key} changed facets"
-
-
-@pytest.mark.trace("TC-023", "FR-003-AC-3", "FR-003-CON-2")
-def test_every_locator_added_after_020_is_optional():
-    baseline = json.loads((BASELINE_DIR / "body_extraction.json").read_text())
-    added = 0
-    for name, extraction in baseline["object_types"].items():
-        old = set((extraction or {})["yield_pattern"]["match"])
-        for key, facets in locators(object_type(name)).items():
-            if key in old or key in MODEL_TABLES.get(name, {}):
-                continue
-            added += 1
-            assert (
-                facets.get("required") is False
-            ), f"{name}.{key} was added as required"
-    assert added > 0, "no locator was added; FR-005's sections would not be asserted"
 
 
 @pytest.mark.trace("TC-024", "FR-003-AC-4")

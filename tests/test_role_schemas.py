@@ -24,7 +24,7 @@ from tests.conftest import (
 )
 
 
-# Multiplicity.json (semantic-core 0.3.0) requires `ordered`/`unique`; a
+# Multiplicity.json requires `ordered`/`unique`; a
 # producer clamps both `false` on a singular multiplicity (`upper` at most
 # one — meaningless there, no functionality lost). Every field this helper
 # builds is singular (1..1), so both are `false`.

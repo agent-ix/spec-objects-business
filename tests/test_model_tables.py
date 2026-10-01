@@ -317,7 +317,7 @@ def test_the_population_fixture_extracts_one_member_per_row(
     assert [m["type"]["target"].rsplit("/", 1)[-1] for m in members] == [
         row[0] for row in rows
     ]
-    # Multiplicity.json (semantic-core 0.3.0) requires `ordered`/`unique`.
+    # Multiplicity.json requires `ordered`/`unique`.
     # Order and Customer are singular (1..1): clamp both `false`. OrderLine
     # is a genuine collection (1..*, a population extent): `ordered: False`
     # (population membership has no positional order) and `unique: True`

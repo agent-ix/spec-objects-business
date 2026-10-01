@@ -276,16 +276,9 @@ def test_a_properties_section_with_both_forms_is_refused(quire_engine):
 def test_the_branch_edits_no_corpus_repository_or_vendored_fixture():
     """FR-005-CON-1, inspection over the tracked tree.
 
-    Stated over the tree rather than over ``origin/main...HEAD``. A branch
-    diff is a fixed historical fact, but computing it against a moving ref
-    makes the assertion change meaning once the branch merges: the range
-    empties, ``assert changed`` fails, and this repository's ``main`` goes red
-    for a branch that is no longer a branch. It did — from 567e5c4 until this
-    fix.
-
-    The tree form is merge-invariant and strictly stronger: it says these
-    paths are absent from the repository at all, not merely that one branch
-    left them alone.
+    Stated over the tracked tree, not a diff against a moving ref, whose meaning
+    changes once the branch merges. It says these paths are absent from the
+    repository at all, not merely that one branch left them alone.
     """
     import subprocess
 

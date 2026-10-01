@@ -28,8 +28,7 @@ reads of the registry endpoints (`/api/v1/archetypes`, `/api/v1/object-types`,
 ## Preconditions
 
 A `filament-core-service` instance whose module-manifest schema admits
-`ObjectTypeEntry.construct` and its optional `immutable` (no release tag
-contains it, so a main build is required) is running and reachable on a clean cluster
+`ObjectTypeEntry.construct` and its optional `immutable` is running and reachable on a clean cluster
 (or the kind dev cluster) with an empty `modules` table, so that the absence of
 duplicate rows after re-activation is meaningful. This repo's
 `spec_objects_business/manifest.yaml` is available as the activation payload.

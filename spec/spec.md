@@ -47,7 +47,7 @@ module activates against `filament-core`.
 - The functional requirement that the manifest activates idempotently against
   `filament-core-service`, and the integration test that verifies it.
 - The semantic-module contract (issue #4): a TypeSpec source importing
-  `@agent-ix/semantic-core` 0.3.0, the emitted JSON Schema per object type
+  `@agent-ix/semantic-core`, the emitted JSON Schema per object type
   shipped under `spec_objects_business/schemas/`, the manifest `semantic`
   block with reference-form `data_schema`, and the skeletons rewritten as
   executable typed fixtures with negative counterparts.
@@ -84,12 +84,6 @@ module activates against `filament-core`.
   manifest key empties the model silently) and `agent-ix/quire-rs#394`.
   FR-003-AC-6's "naming the key or the path" half is blocked on them and is
   carried as an explicit expected failure.
-- Record validation of a legacy-form artifact that declares `object:`:
-  `agent-ix/quire-rs#391` (the engine validates an `unavailable` record as
-  `{}`, so a legacy form errors even under `legacy_forms: warning`).
-  NFR-001-AC-2 itself holds — no 0.2.0 artifact carries `object:` — and the
-  defect is carried as an explicit expected failure beside it rather than
-  worked around by relaxing a schema.
 - Resolving a reference-form `data_schema` into a stored snapshot at
   activation: `agent-ix/filament-core-service#23`. Until it lands the service
   stores the reference verbatim, which is what FR-001-AC-4 and IT-001-SC-03
@@ -124,8 +118,7 @@ declares the semantic contract in the manifest; FR-004 fixes each type's
 role-distinct schema; FR-005 makes the skeletons executable fixtures; FR-006
 declares the object-type model tables the engine extracts; FR-007 declares the
 `## Relationships` table and the edge verbs its rows use; FR-008 declares each
-object type's semantic IR construct; FR-009 fixes the underscore object id. NFR-001 states
-where the contract is additive and why the model-table sections are strict. Integration tests in
+object type's semantic IR construct; FR-009 fixes the underscore object id. Integration tests in
 `integration/` verify the activation and Quoin-install boundaries; the third
 external boundary, the Quire engine (loader, extraction, record surface), has
 no IT artifact of its own — the FR-003 and FR-005 test harness is this
