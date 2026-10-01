@@ -29,9 +29,9 @@ not admit.
 
 ## Inputs
 
-- quoin FR-104 (`agent-ix/quoin` `99bd4f0`): the `relationships` mapping token
+- quoin FR-104: the `relationships` mapping token
   and the `Name | Verb | Target | Multiplicity` table.
-- quire-rs FR-076 (`agent-ix/quire-rs` `44df254`): the row checks, their
+- quire-rs FR-076: the row checks, their
   refusal reasons, and the Python `validate_document(..., bundle_package=...)`
   surface.
 - The `edge_types` of `agent-ix/spec-artifacts-iso`
