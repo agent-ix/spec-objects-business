@@ -146,9 +146,8 @@ def test_every_model_table_locator_declares_the_engine_column_set():
     strict=True,
     reason=(
         "FR-006-CON-1 requires each model-table locator to declare its optional "
-        "columns as `assert.optional_columns`. The pinned FR-035 module-manifest "
-        "schema admits `columns` and `min_rows` only, so the manifest carries "
-        "the full column list. agent-ix/filament-core-service#31 owns the "
+        "columns as `assert.optional_columns`. "
+        "agent-ix/filament-core-service#31 owns the "
         "schema change. The row is an expected failure, never a skip."
     ),
 )

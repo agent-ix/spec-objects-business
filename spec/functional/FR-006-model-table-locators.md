@@ -79,7 +79,7 @@ form the manifest does not declare.
 
 | ID | Constraint | Type | Validation |
 |----|------------|------|------------|
-| FR-006-CON-1 | Each model-table locator SHALL declare its optional columns as the manifest facet `assert.optional_columns`. Blocked on `agent-ix/filament-core-service#31`: the pinned FR-035 schema admits `columns` and `min_rows` only, so the manifest carries the full column list and no other assert key until it admits the facet. | Compatibility | Test |
+| FR-006-CON-1 | Each model-table locator SHALL declare its optional columns as the manifest facet `assert.optional_columns`. Blocked on `agent-ix/filament-core-service#31`. | Compatibility | Test |
 
 ## Acceptance Criteria
 
