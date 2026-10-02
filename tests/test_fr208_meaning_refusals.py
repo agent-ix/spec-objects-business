@@ -1,7 +1,7 @@
 """QSpec FR-208 meaning-vocabulary refusal tests (agent-ix/spec-objects-business#15).
 
 FR-008 binds each object type to a QSpec FR-208
-(`agent-ix/quire-specification` `c8e3ca0`,
+(`agent-ix/quire-specification`,
 `spec/objects/foundation/FR-208-quire-meaning-vocabulary.md`) meaning id.
 FR-208 states intake refusals for that meaning; this module's own record
 schema (FR-004) must refuse the forms it governs. Several of the exercised
