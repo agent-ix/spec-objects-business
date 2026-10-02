@@ -66,7 +66,7 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | FR-005 | FR-005-AC-1..8, FR-005-CON-1..2 | TC-050..TC-059 | ✅ |
 | FR-006 | FR-006-AC-1..8, FR-006-CON-1 | TC-080..TC-088 | 🚧 CON-1 (TC-088) is an expected failure blocked on filament-core-service#31; AC-8 is an Inspection |
 | FR-007 | FR-007-AC-1..10 | TC-089..TC-098 | 🚧 AC-9 (TC-097, per type) is an expected failure blocked on quire-rs#435 and AC-10 (TC-098) pins that blocker; AC-6 asserts the null line `agent-ix/quire-rs#440` fixes |
-| FR-008 | FR-008-AC-1..3, AC-5..7 | TC-099, TC-100, TC-101, TC-106, TC-108, TC-109 | ✅ AC-1 holds `population` without a construct while filament-core-data#174 is open |
+| FR-008 | FR-008-AC-1, AC-3, AC-5..7 | TC-099, TC-101, TC-106, TC-108, TC-109 | ✅ AC-1 holds `population` without a construct while filament-core-data#174 is open |
 | FR-009 | FR-009-AC-1..4 | TC-103..TC-105, TC-107 | 🚧 AC-4 (TC-107) is an expected failure blocked on quire-rs#451 |
 
 ### Integration Test Coverage
@@ -85,7 +85,7 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | TC-004 | Every declared contribution appears in the registry tables | Integration | P1 | FR-001-AC-4 | 🚧 needs a running filament-core |
 | TC-005 | Module activation registers the declared contents | Demonstration | P2 | StR-001-VC-1 | 🚧 needs a running filament-core |
 | TC-006 | Generators produce valid artifacts from the shipped skeletons and schemas | Manual | P2 | StR-001-VC-2 | 🚧 |
-| TC-011 | Every shipped schema declares the 2020-12 `$schema` and the `$id` matching its file name under the manifest-version base | Unit | P0 | FR-002-AC-2 | ✅ |
+| TC-011 | Every shipped schema declares the 2020-12 `$schema` and the `$id` matching its file name | Unit | P0 | FR-002-AC-2 | ✅ |
 | TC-012 | Every `$ref` resolves to a shipped sibling or the declared semantic-core bundle | Unit | P0 | FR-002-AC-3 | ✅ |
 | TC-013 | `make schemas-check` exits zero on the committed tree and non-zero naming a mutated schema | Integration | P1 | FR-002-AC-4 | ✅ |
 | TC-015 | The built wheel contains every exported schema file | Integration | P1 | FR-002-AC-6 | ✅ |
@@ -144,12 +144,11 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | TC-097 | Per type, a process `emits` row and a repository `persists` row validate and lower into `emits` and `persists` with the qualified target, not `relations`, with every row in `relationSources` and non-lossy availability; header-only extracts the typed key empty — an explicit expected failure while `agent-ix/quire-rs#435` is open | Integration | P1 | FR-007-AC-9 | 🚧 blocked on quire-rs#435 |
 | TC-098 | Per type, the same process and repository rows fail today with exactly one `semantic.record-invalid` at `relations`; flips when `agent-ix/quire-rs#435` lands | Integration | P1 | FR-007-AC-10 | ✅ |
 | TC-099 | Exactly the ten construct kinds declare `construct:`, and `population` none while filament-core-data#174 is open | Unit | P0 | FR-008-AC-1 | ✅ |
-| TC-100 | Per kind, the declaration equals its FR-008 table row and the type carries the admitted roles; all ten kinds bind an FR-208 meaning id at `c8e3ca0` | Unit | P0 | FR-008-AC-2 | ✅ |
-| TC-101 | Per kind, identity, shape, members and rules are FR-142 vocabulary, each rule's member presence holds, and references name non-forbidden reference members and carried roles only | Unit | P0 | FR-008-AC-3 | ✅ |
+| TC-101 | Per kind, `references` name only roles an object type of the manifest carries, never `*` or a type name | Unit | P0 | FR-008-AC-3 | ✅ |
 | TC-103 | `ObjectId.json` carries the object id pattern, `ObjectFrontmatter.json` references it, and every `id` locator carries the anchored capture of it | Unit | P0 | FR-009-AC-1 | ✅ |
 | TC-104 | `ObjectFrontmatter.json` accepts underscore ids and refuses hyphenated, leading-underscore, leading-digit and empty ids; every skeleton and fixture frontmatter validates | Unit | P0 | FR-009-AC-2 | ✅ |
 | TC-105 | Each skeleton has no missing-id error; its hyphenated form fails with only the missing-id error; flips when `agent-ix/quire-rs#451` lands | Integration | P0 | FR-009-AC-3 | ✅ |
-| TC-106 | The manifest `roles:` registry declares `aggregate-member` and `composite-owner`; the quire-rs FR-040 load check over this manifest beside the spec-artifacts-iso roles and archetypes finds only the pre-existing `action` and `data_schema` targets unknown, and without the registry both roles are unknown | Unit | P0 | FR-008-AC-5 | ✅ |
+| TC-106 | The manifest `roles:` registry declares `aggregate-member` and `composite-owner`, each with a description, and each type carries the roles its references admit | Unit | P0 | FR-008-AC-5 | ✅ |
 | TC-107 | A hyphenated skeleton id fails with one pattern-mismatch error naming the id and the pattern — an explicit expected failure while `agent-ix/quire-rs#451` is open | Integration | P1 | FR-009-AC-4 | 🚧 blocked on quire-rs#451 |
 | TC-108 | `event`'s `construct:` declares `immutable: true`; every other of the ten kinds' `construct:` lacks the key | Unit | P0 | FR-008-AC-6 | ✅ |
 | TC-109 | Each QSpec FR-208 refusal this module's record schema can express fails validation, and the same record without the refused form passes: an operation on `ValueObject`/`Event`; a `clauses` key or a non-empty operation `pre`/`post` on `Repository`; a `fields`, `operations` or `clauses` key on `Domain`; and no `repository` or `domain` `allowed_links` admits `specializes` | Unit | P0 | FR-008-AC-7 | ✅ |

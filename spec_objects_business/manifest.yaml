@@ -94,8 +94,7 @@ object_types:
           - type
           required: true
         # Format-walkthrough decision #18 (2026-06-11): Bounded Context
-        # is the domain object's required kernel (20/20 wild domain FRs
-        # carry it; 0/20 had '## Entities'). `entities` is an OPTIONAL
+        # is the domain object's required kernel. `entities` is an OPTIONAL
         # summary — entities are first-class `entity` FRs linked via
         # `contains` edges, never duplicated inline. The optional `erd`
         # extracts the whole-domain mermaid diagram.

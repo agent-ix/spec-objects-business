@@ -34,7 +34,7 @@ form the manifest does not declare.
 - The manifest `semantic.mappings` tokens of FR-003.
 - The Quire expression grammar: QSpec `proposals/quire-v1/shared-grammar.md`
   and `proposals/state-core/profile.md`.
-- The Quire wheel FR-005 Inputs names, at quire-rs `6eec7e8` or later.
+- The Quire wheel FR-005 Inputs names.
 
 ## Outputs
 
