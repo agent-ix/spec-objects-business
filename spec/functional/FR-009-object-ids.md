@@ -22,10 +22,12 @@ refused in object ids. A type-definition document whose frontmatter is governed
 by this module uses the strict object-id pattern. An artifact document may also
 declare an object body (for example, `type: FR; object: enumeration`); its
 artifact archetype owns and validates the typed document id such as `FR-271`,
-while this module contributes the object body contract. The rule is the object
-id rule of QSpec FR-154: QSL model intake refuses a model node whose artifact id is not an
-object id, and refuses a reference to an id no admitted node carries, so both
-the ids and the references to them are enforced at intake as well as here.
+while this module contributes the object body contract. This artifact-level
+acceptance does not establish that QSL admits the document as a type declaration.
+When lifted into the QSL domain model, the document id supplies the IR type
+identity's `<Name>` segment: `FR-271` therefore yields the name `FR-271`, which
+QSpec FR-154 refuses because it contains a hyphen. QSpec FR-154 requires that IR `<Name>` segment to satisfy the
+same object-id pattern before QSL admits a reference to it.
 
 ## Inputs
 
