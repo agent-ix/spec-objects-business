@@ -22,10 +22,13 @@ refused in object ids. A type-definition document whose frontmatter is governed
 by this module uses the strict object-id pattern. An artifact document may also
 declare an object body (for example, `type: FR; object: enumeration`); its
 artifact archetype owns and validates the typed document id such as `FR-271`,
-while this module contributes the object body contract. The rule is the object
-id rule of QSpec FR-154: QSL model intake refuses a model node whose artifact id is not an
-object id, and refuses a reference to an id no admitted node carries, so both
-the ids and the references to them are enforced at intake as well as here.
+while this module contributes the object body contract. This artifact-level
+acceptance does not establish that QSL admits the document as a type declaration.
+If lifted into the QSL domain model, the document id supplies the IR type
+identity's `<Name>` segment: `FR-271` therefore yields the name `FR-271`, which
+QSpec FR-154 refuses because it contains a hyphen. QSpec FR-154 requires that IR
+`<Name>` segment to satisfy the same object-id pattern before QSL admits a
+reference to it.
 
 ## Inputs
 
@@ -61,7 +64,7 @@ the ids and the references to them are enforced at intake as well as here.
 | ID | Criteria | Verification |
 |----|----------|--------------|
 | FR-009-AC-1 | `ObjectFrontmatter.json` requires `id`, `title` and `type` with `id` carrying `^[A-Za-z][A-Za-z0-9_]*$`; every object type references that frontmatter schema and has a required `frontmatter_field` id locator with no locator regex. | Test |
-| FR-009-AC-2 | `ObjectFrontmatter.json` accepts `order_line_001`, `nested_entity_001`, `Order` and `a1`; it refuses `FR-271`, `fr-271`, `FR-`, `FRXYZ-1`, `ENT-001`, `order-line-001`, `nested-entity_001`, `_order`, `1order` and the empty string; every skeleton and fixture frontmatter validates, and a composed `FR` artifact with `object: enumeration` accepts `FR-271`. | Test |
+| FR-009-AC-2 | `ObjectFrontmatter.json` accepts `order_line_001`, `nested_entity_001`, `Order` and `a1`; it refuses `FR-271`, `fr-271`, `FR-`, `FRXYZ-1`, `ENT-001`, `order-line-001`, `nested-entity_001`, `_order`, `1order` and the empty string; every skeleton and fixture frontmatter validates, and a composed `FR` artifact with `object: enumeration` accepts `FR-271` for Quire validation. | Test |
 | FR-009-AC-3 | Every skeleton validates through `validate_document`; changing its `id` to a hyphenated value is refused by its frontmatter schema. | Test |
 
 ## Dependencies

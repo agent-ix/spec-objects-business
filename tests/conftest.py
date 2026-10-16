@@ -119,9 +119,10 @@ SUPPORT_MODELS = (
 
 
 #: FR-009: an object id is a letter, then letters, digits and underscores.
-#: `typespec/main.tsp` states it once as `ObjectId`; object type frontmatter
-#: schemas enforce it while the shared locator preserves typed artifact ids
-#: composed through an `object:` annotation.
+#: `ObjectFrontmatter.id` applies to standalone object-type frontmatter. A composed
+#: artifact may pass its own archetype schema with a typed id such as `FR-271`,
+#: but lifting it as a QSL type uses that id as IR `<Name>` and FR-154 refuses
+#: the hyphenated name at intake.
 OBJECT_ID_PATTERN = "^[A-Za-z][A-Za-z0-9_]*$"
 
 
