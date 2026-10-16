@@ -145,8 +145,8 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | TC-098 | Per type, the same process and repository rows fail today with exactly one `semantic.record-invalid` at `relations`; flips when `agent-ix/quire-rs#435` lands | Integration | P1 | FR-007-AC-10 | ✅ |
 | TC-099 | Exactly the ten construct kinds declare `construct:`, and `population` none while filament-core-data#174 is open | Unit | P0 | FR-008-AC-1 | ✅ |
 | TC-101 | Per kind, `references` name only roles an object type of the manifest carries, never `*` or a type name | Unit | P0 | FR-008-AC-3 | ✅ |
-| TC-103 | `ObjectId.json` carries the object id pattern, `ObjectFrontmatter.json` references it, and every `id` locator carries the anchored capture of it | Unit | P0 | FR-009-AC-1 | ✅ |
-| TC-104 | `ObjectFrontmatter.json` accepts underscore ids and refuses hyphenated, leading-underscore, leading-digit and empty ids; every skeleton and fixture frontmatter validates | Unit | P0 | FR-009-AC-2 | ✅ |
+| TC-103 | `ObjectId.json` carries the strict object id pattern; `ArtifactId.json` admits object and typed artifact ids; `ObjectFrontmatter.json` references `ArtifactId.json`; and every `id` locator carries the anchored `ArtifactId` pattern | Unit | P0 | FR-009-AC-1 | ✅ |
+| TC-104 | `ObjectFrontmatter.json` accepts underscore ids and typed artifact ids such as `FR-271`, and refuses malformed object ids, leading-underscore, leading-digit and empty ids; every skeleton and fixture frontmatter validates | Unit | P0 | FR-009-AC-2 | ✅ |
 | TC-105 | Each skeleton has no missing-id error; its hyphenated form fails with only the missing-id error; flips when `agent-ix/quire-rs#451` lands | Integration | P0 | FR-009-AC-3 | ✅ |
 | TC-106 | The manifest `roles:` registry declares `aggregate-member` and `composite-owner`, each with a description, and each type carries the roles its references admit | Unit | P0 | FR-008-AC-5 | ✅ |
 | TC-107 | A hyphenated skeleton id fails with one pattern-mismatch error naming the id and the pattern — an explicit expected failure while `agent-ix/quire-rs#451` is open | Integration | P1 | FR-009-AC-4 | 🚧 blocked on quire-rs#451 |

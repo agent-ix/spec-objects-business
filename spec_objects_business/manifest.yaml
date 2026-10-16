@@ -1,6 +1,6 @@
 manifest_version: 1.0.0
 name: spec-objects-business
-version: 0.7.0
+version: 0.8.0
 description: 'Filament Module: tier-2 business ObjectTypes (DDD: domain, entity, value_object, aggregate_root, nested_entity, repository, event, state_machine, process, enumeration, population)'
 semantic:
   contract_version: 1.0.0
@@ -74,14 +74,14 @@ object_types:
   body_extraction:
     yield_pattern:
       match:
-        # FR-009: an object id uses underscores, never hyphens. The pattern
-        # equals `ObjectId` in typespec/main.tsp; a hyphenated id yields no
-        # value, so the required locator refuses it.
+        # FR-009: object ids use underscores; typed artifact ids such as
+        # FR-271 keep their document-id form when the artifact declares an
+        # object type too.
         id: &id001
           from: frontmatter_field
           path:
           - id
-          regex: ^([A-Za-z][A-Za-z0-9_]*)$
+          regex: ^((?:[A-Za-z][A-Za-z0-9_]*|[A-Z]{2,4}-[0-9]+))$
           required: true
         title: &id002
           from: frontmatter_field

@@ -16,11 +16,12 @@ relationships:
 
 ## Description
 
-The id of an artifact whose type is one of this module's object types SHALL be
-a letter followed by letters, digits and underscores, so that an object id is
-one identifier token wherever it is named. A hyphen is refused. Artifact-type
-ids such as `FR-100` are not object ids and this requirement does not govern
-them. The rule is the object id rule of QSpec FR-154: QSL model intake refuses a model node whose artifact id is not an
+An object id SHALL be a letter followed by letters, digits and underscores, so
+that an object id is one identifier token wherever it is named. A hyphen is
+refused in object ids. The document id of an artifact that also declares an
+object type may instead use its typed artifact form, such as `FR-271`; these
+are document ids, not object ids. The rule is the object id rule of QSpec
+FR-154: QSL model intake refuses a model node whose artifact id is not an
 object id, and refuses a reference to an id no admitted node carries, so both
 the ids and the references to them are enforced at intake as well as here.
 
@@ -31,19 +32,20 @@ the ids and the references to them are enforced at intake as well as here.
 
 ## Outputs
 
-- The TypeSpec scalar `ObjectId` (`@pattern("^[A-Za-z][A-Za-z0-9_]*$")`) and
-  the model `ObjectFrontmatter` (`id: ObjectId`, `title`, `type`, optional
+- The TypeSpec scalar `ObjectId` (`@pattern("^[A-Za-z][A-Za-z0-9_]*$")`),
+  the scalar `ArtifactId` (object id or typed artifact id), and the model
+  `ObjectFrontmatter` (`id: ArtifactId`, `title`, `type`, optional
   `object`, other keys admitted), emitted as `ObjectId.json` and
-  `ObjectFrontmatter.json`.
+  `ArtifactId.json` and `ObjectFrontmatter.json`.
 - The `id` locator every object type shares, carrying
-  `regex: ^([A-Za-z][A-Za-z0-9_]*)$`.
+  `regex: ^((?:[A-Za-z][A-Za-z0-9_]*|[A-Z]{2,4}-[0-9]+))$`.
 - Skeleton and fixture ids in underscore form (`entity_001`,
   `aggregate_root_001`, `nested_entity_001`, ...), and every reference to them.
 
 ## Behavior
 
-- The object id pattern SHALL be carried by `ObjectId` in `typespec/main.tsp`, and `ObjectFrontmatter.id` SHALL reference it.
-- Every object type's `id` locator SHALL be the one shared locator: `from: frontmatter_field`, `path: [id]`, `required: true`, and a `regex` that anchors and captures exactly the `ObjectId` pattern.
+- The object id pattern SHALL be carried by `ObjectId` in `typespec/main.tsp`; `ArtifactId` SHALL admit both that form and a typed artifact id, and `ObjectFrontmatter.id` SHALL reference `ArtifactId`.
+- Every object type's `id` locator SHALL be the one shared locator: `from: frontmatter_field`, `path: [id]`, `required: true`, and a `regex` that anchors and captures exactly the `ArtifactId` pattern.
 - When an object artifact's id matches the pattern, Quire SHALL extract it unchanged.
 - If an object artifact's id is present and does not match the pattern, then Quire SHALL refuse the artifact with one pattern-mismatch diagnostic that names the id value and the pattern. Known gap: today the locator yields no value and Quire reports `[<type>] required 'id' (frontmatter_field(id)) is missing`; `agent-ix/quire-rs#451` adds the pattern-mismatch diagnostic, and until it lands that criterion is an expected failure.
 - Every skeleton and every positive and negative fixture SHALL carry an underscore id, and every row, prose line or test that names one SHALL name it in that form.
@@ -52,8 +54,8 @@ the ids and the references to them are enforced at intake as well as here.
 
 | ID | Criteria | Verification |
 |----|----------|--------------|
-| FR-009-AC-1 | `ObjectId.json` is a string schema with the pattern `^[A-Za-z][A-Za-z0-9_]*$`, `ObjectFrontmatter.json` requires `id`, `title` and `type` with `id` referencing `ObjectId.json`, and every object type's `id` locator is a required `frontmatter_field` whose `regex` is `^([A-Za-z][A-Za-z0-9_]*)$`. | Test |
-| FR-009-AC-2 | `ObjectFrontmatter.json` accepts `order_line_001`, `nested_entity_001`, `Order` and `a1` and refuses `order-line-001`, `nested-entity_001`, `_order`, `1order` and the empty string; every skeleton and fixture frontmatter validates and carries no hyphen in its id. | Test |
+| FR-009-AC-1 | `ObjectId.json` is a string schema with the pattern `^[A-Za-z][A-Za-z0-9_]*$`; `ArtifactId.json` admits object ids and typed artifact ids such as `FR-271`; `ObjectFrontmatter.json` requires `id`, `title` and `type` with `id` referencing `ArtifactId.json`; and every object type's `id` locator is a required `frontmatter_field` whose `regex` matches `ArtifactId`. | Test |
+| FR-009-AC-2 | `ObjectFrontmatter.json` accepts `order_line_001`, `nested_entity_001`, `Order`, `a1` and `FR-271`; it refuses `order-line-001`, `nested-entity_001`, `_order`, `1order` and the empty string; every skeleton and fixture frontmatter validates. | Test |
 | FR-009-AC-3 | Every skeleton reports no missing-id error through `validate_document`; the same skeleton with its id hyphenated is refused, today with only the missing-id error. | Test |
 | FR-009-AC-4 | A skeleton with its id hyphenated fails with exactly one error, which names the hyphenated id and the pattern and is not the missing-id error (expected failure while `agent-ix/quire-rs#451` is open). | Test |
 

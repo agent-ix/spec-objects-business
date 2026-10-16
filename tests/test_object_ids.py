@@ -43,7 +43,7 @@ def test_the_pattern_is_stated_once_and_carried_by_every_id_locator():
     assert object_id["type"] == "string"
     assert object_id["pattern"] == OBJECT_ID_PATTERN
     base = json.loads((SCHEMAS_DIR / "ObjectFrontmatter.json").read_text())
-    assert base["properties"]["id"]["$ref"].endswith("/ObjectId.json")
+    assert base["properties"]["id"]["$ref"].endswith("/ArtifactId.json")
     assert {"id", "title", "type"} <= set(base["required"])
     assert OBJECT_ID_LOCATOR_REGEX == f"^({OBJECT_ID_PATTERN[1:-1]})$"
     for name in OBJECT_TYPES:
@@ -59,7 +59,7 @@ def test_underscore_ids_validate_and_hyphenated_ids_are_refused_by_the_schema(
 ):
     validator = schema_registry("ObjectFrontmatter")
     base = {"title": "OrderLine", "type": "nested_entity", "object": "nested_entity"}
-    for good in ("order_line_001", "nested_entity_001", "Order", "a1"):
+    for good in ("order_line_001", "nested_entity_001", "Order", "a1", "FR-271"):
         assert list(validator.iter_errors({**base, "id": good})) == [], good
     for bad in ("order-line-001", "nested-entity_001", "_order", "1order", ""):
         assert not validator.is_valid({**base, "id": bad}), bad

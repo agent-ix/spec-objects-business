@@ -32,12 +32,15 @@ namespace AgentIx.SpecObjects.Business;
 scalar ObjectId extends string;
 
 /**
- * The frontmatter every object-type artifact carries, shared by all eleven
- * object types. Keys beyond these (`relationships`, `abstract`, ...) are
- * governed elsewhere and admitted here.
+ * A document id may be an object id or a typed artifact id such as `FR-271`.
+ * Keys beyond these (`relationships`, `abstract`, ...) are governed elsewhere
+ * and admitted here.
  */
+@pattern("^(?:[A-Za-z][A-Za-z0-9_]*|[A-Z]{2,4}-[0-9]+)$")
+scalar ArtifactId extends string;
+
 model ObjectFrontmatter {
-  id: ObjectId;
+  id: ArtifactId;
   @minLength(1) title: string;
   @minLength(1) type: string;
   object?: string;
