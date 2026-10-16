@@ -4,7 +4,8 @@
   "type": "object",
   "properties": {
     "id": {
-      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/ArtifactId.json"
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9_]*$"
     },
     "title": {
       "type": "string",

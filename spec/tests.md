@@ -67,7 +67,7 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | FR-006 | FR-006-AC-1..8, FR-006-CON-1 | TC-080..TC-088 | 🚧 CON-1 (TC-088) is an expected failure blocked on filament-core-service#31; AC-8 is an Inspection |
 | FR-007 | FR-007-AC-1..10 | TC-089..TC-098 | 🚧 AC-9 (TC-097, per type) is an expected failure blocked on quire-rs#435 and AC-10 (TC-098) pins that blocker; AC-6 asserts the null line `agent-ix/quire-rs#440` fixes |
 | FR-008 | FR-008-AC-1, AC-3, AC-5..7 | TC-099, TC-101, TC-106, TC-108, TC-109 | ✅ AC-1 holds `population` without a construct while filament-core-data#174 is open |
-| FR-009 | FR-009-AC-1..4 | TC-103..TC-105, TC-107 | 🚧 AC-4 (TC-107) is an expected failure blocked on quire-rs#451 |
+| FR-009 | FR-009-AC-1..3 | TC-103..TC-105 | ✅ |
 
 ### Integration Test Coverage
 
@@ -145,11 +145,10 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | TC-098 | Per type, the same process and repository rows fail today with exactly one `semantic.record-invalid` at `relations`; flips when `agent-ix/quire-rs#435` lands | Integration | P1 | FR-007-AC-10 | ✅ |
 | TC-099 | Exactly the ten construct kinds declare `construct:`, and `population` none while filament-core-data#174 is open | Unit | P0 | FR-008-AC-1 | ✅ |
 | TC-101 | Per kind, `references` name only roles an object type of the manifest carries, never `*` or a type name | Unit | P0 | FR-008-AC-3 | ✅ |
-| TC-103 | `ObjectId.json` carries the strict object id pattern; `ArtifactId.json` admits object and typed artifact ids; `ObjectFrontmatter.json` references `ArtifactId.json`; and every `id` locator carries the anchored `ArtifactId` pattern | Unit | P0 | FR-009-AC-1 | ✅ |
-| TC-104 | `ObjectFrontmatter.json` accepts underscore ids and typed artifact ids such as `FR-271`, and refuses malformed object ids, leading-underscore, leading-digit and empty ids; every skeleton and fixture frontmatter validates | Unit | P0 | FR-009-AC-2 | ✅ |
-| TC-105 | Each skeleton has no missing-id error; its hyphenated form fails with only the missing-id error; flips when `agent-ix/quire-rs#451` lands | Integration | P0 | FR-009-AC-3 | ✅ |
+| TC-103 | `ObjectFrontmatter.json` carries the strict object id pattern; every object type references that frontmatter schema and has a required id locator without a second regex | Unit | P0 | FR-009-AC-1 | ✅ |
+| TC-104 | `ObjectFrontmatter.json` accepts underscore ids, refuses `FR-271`, `fr-271`, `FR-`, `FRXYZ-1` and `ENT-001` as object definition ids, every skeleton and fixture frontmatter validates, and a composed `FR` artifact with `object: enumeration` accepts `FR-271` | Integration | P0 | FR-009-AC-2 | ✅ |
+| TC-105 | Every skeleton validates, while a hyphenated object id is refused by its frontmatter schema | Integration | P0 | FR-009-AC-3 | ✅ |
 | TC-106 | The manifest `roles:` registry declares `aggregate-member` and `composite-owner`, each with a description, and each type carries the roles its references admit | Unit | P0 | FR-008-AC-5 | ✅ |
-| TC-107 | A hyphenated skeleton id fails with one pattern-mismatch error naming the id and the pattern — an explicit expected failure while `agent-ix/quire-rs#451` is open | Integration | P1 | FR-009-AC-4 | 🚧 blocked on quire-rs#451 |
 | TC-108 | `event`'s `construct:` declares `immutable: true`; every other of the ten kinds' `construct:` lacks the key | Unit | P0 | FR-008-AC-6 | ✅ |
 | TC-109 | Each QSpec FR-208 refusal this module's record schema can express fails validation, and the same record without the refused form passes: an operation on `ValueObject`/`Event`; a `clauses` key or a non-empty operation `pre`/`post` on `Repository`; a `fields`, `operations` or `clauses` key on `Domain`; and no `repository` or `domain` `allowed_links` admits `specializes` | Unit | P0 | FR-008-AC-7 | ✅ |
 | TC-075 | Every object type ships a typed schema a fixture reader can consume; an entity and an enumeration record are distinguishable by schema alone | Demonstration | P2 | StR-001-VC-3 | ✅ |
@@ -160,7 +159,7 @@ Every `Integration` row that names Quire runs against the Quire wheel FR-005
 Inputs pins, a dev dependency resolved from `internal-pypi` by `poetry install`.
 The suite **fails**
 rather than skips when `extract_semantic` is absent, so no row here can be
-reported green without the engine under test. The exceptions are TC-097, an explicit expected failure while `agent-ix/quire-rs#435` is open, TC-107, an explicit expected failure while `agent-ix/quire-rs#451` is open, and TC-088, an
+reported green without the engine under test. The exceptions are TC-097, an explicit expected failure while `agent-ix/quire-rs#435` is open, and TC-088, an
 explicit expected failure while `agent-ix/filament-core-service#31` is open.
 A Relationships table whose columns do not match the locator assert reports that
 assert error twice (`agent-ix/quire-rs#441`); FR-007 tests pin no such error list.
