@@ -119,7 +119,7 @@ SUPPORT_MODELS = (
 
 
 #: FR-009: an object id is a letter, then letters, digits and underscores.
-#: `ObjectId` applies to standalone object-type frontmatter. A composed
+#: `ObjectFrontmatter.id` applies to standalone object-type frontmatter. A composed
 #: artifact may pass its own archetype schema with a typed id such as `FR-271`,
 #: but lifting it as a QSL type uses that id as IR `<Name>` and FR-154 refuses
 #: the hyphenated name at intake.
