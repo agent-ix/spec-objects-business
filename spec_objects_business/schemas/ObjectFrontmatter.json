@@ -4,7 +4,8 @@
   "type": "object",
   "properties": {
     "id": {
-      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/ObjectId.json"
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9_]*$"
     },
     "title": {
       "type": "string",
@@ -23,6 +24,5 @@
     "title",
     "type"
   ],
-  "unevaluatedProperties": {},
-  "description": "The frontmatter every object-type artifact carries, shared by all eleven\nobject types. Keys beyond these (`relationships`, `abstract`, ...) are\ngoverned elsewhere and admitted here."
+  "unevaluatedProperties": {}
 }

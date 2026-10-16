@@ -1,6 +1,6 @@
 manifest_version: 1.0.0
 name: spec-objects-business
-version: 0.7.0
+version: 0.8.0
 description: 'Filament Module: tier-2 business ObjectTypes (DDD: domain, entity, value_object, aggregate_root, nested_entity, repository, event, state_machine, process, enumeration, population)'
 semantic:
   contract_version: 1.0.0
@@ -61,6 +61,7 @@ artifact_types: []
 lint_rules: []
 object_types:
 - name: domain
+  frontmatter_schema_ref: schemas/ObjectFrontmatter.json
   construct:
     identity: none
     shape: namespace
@@ -74,14 +75,13 @@ object_types:
   body_extraction:
     yield_pattern:
       match:
-        # FR-009: an object id uses underscores, never hyphens. The pattern
-        # equals `ObjectId` in typespec/main.tsp; a hyphenated id yields no
-        # value, so the required locator refuses it.
+        # FR-009: object definitions are constrained by ObjectFrontmatter's
+        # ObjectId schema. This locator preserves an annotated artifact's own
+        # typed document id when Quire composes its `object:` archetype.
         id: &id001
           from: frontmatter_field
           path:
           - id
-          regex: ^([A-Za-z][A-Za-z0-9_]*)$
           required: true
         title: &id002
           from: frontmatter_field
@@ -119,6 +119,7 @@ object_types:
             columns: [Term, Description]
             min_rows: 1
 - name: entity
+  frontmatter_schema_ref: schemas/ObjectFrontmatter.json
   roles: [domain-object, persistable, aggregate-member, composite-owner]
   construct:
     identity: identified
@@ -154,6 +155,7 @@ object_types:
           assert:
             columns: [Name, Verb, Target, Multiplicity]
 - name: value_object
+  frontmatter_schema_ref: schemas/ObjectFrontmatter.json
   roles: [domain-object, aggregate-member]
   construct:
     identity: value
@@ -186,6 +188,7 @@ object_types:
           after_heading: Fields
           required: false
 - name: aggregate_root
+  frontmatter_schema_ref: schemas/ObjectFrontmatter.json
   roles: [domain-object, persistable, composite-owner]
   construct:
     identity: identified
@@ -231,6 +234,7 @@ object_types:
           assert:
             columns: [Name, Verb, Target, Multiplicity]
 - name: nested_entity
+  frontmatter_schema_ref: schemas/ObjectFrontmatter.json
   roles: [domain-object, aggregate-member, composite-owner]
   construct:
     identity: identified
@@ -265,6 +269,7 @@ object_types:
           after_heading: Parent
           required: true
 - name: repository
+  frontmatter_schema_ref: schemas/ObjectFrontmatter.json
   construct:
     identity: none
     shape: interface
@@ -295,6 +300,7 @@ object_types:
           assert:
             columns: [Name, Verb, Target, Multiplicity]
 - name: event
+  frontmatter_schema_ref: schemas/ObjectFrontmatter.json
   roles: [event-like]
   construct:
     identity: none
@@ -329,6 +335,7 @@ object_types:
           required: true
           language: json
 - name: state_machine
+  frontmatter_schema_ref: schemas/ObjectFrontmatter.json
   construct:
     identity: none
     shape: state_machine
@@ -377,6 +384,7 @@ object_types:
             columns: [From, To, Trigger, Guard, Emits]
             min_rows: 1
 - name: process
+  frontmatter_schema_ref: schemas/ObjectFrontmatter.json
   roles: [measurable]
   construct:
     identity: identified
@@ -439,6 +447,7 @@ object_types:
           assert:
             columns: [Name, Verb, Target, Multiplicity]
 - name: enumeration
+  frontmatter_schema_ref: schemas/ObjectFrontmatter.json
   roles: [aggregate-member]
   construct:
     identity: none
@@ -470,6 +479,7 @@ object_types:
             - Description
             min_rows: 1
 - name: population
+  frontmatter_schema_ref: schemas/ObjectFrontmatter.json
   allowed_links:
     references: [entity, aggregate_root, nested_entity, value_object, event, process]
   data_schema:

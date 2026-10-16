@@ -114,16 +114,15 @@ SUPPORT_MODELS = (
     "ProcessStep",
     "StepKind",
     "PopulationMember",
-    "ObjectId",
     "ObjectFrontmatter",
 )
 
 
 #: FR-009: an object id is a letter, then letters, digits and underscores.
-#: `typespec/main.tsp` states it once as `ObjectId`; the manifest's shared `id`
-#: locator carries it as a capturing `regex`.
+#: `typespec/main.tsp` states it once as `ObjectId`; object type frontmatter
+#: schemas enforce it while the shared locator preserves typed artifact ids
+#: composed through an `object:` annotation.
 OBJECT_ID_PATTERN = "^[A-Za-z][A-Za-z0-9_]*$"
-OBJECT_ID_LOCATOR_REGEX = "^([A-Za-z][A-Za-z0-9_]*)$"
 
 
 def with_object_id(markdown: str) -> str:
