@@ -22,7 +22,7 @@ namespace AgentIx.SpecObjects.Business;
 // ---------------------------------------------------------------------------
 
 model ObjectFrontmatter {
-  @pattern("^[A-Za-z][A-Za-z0-9_]*$")
+  @pattern("^[A-Za-z][A-Za-z0-9_]*(?:-[A-Za-z0-9_]+)*$")
   id: string;
   @minLength(1) title: string;
   @minLength(1) type: string;

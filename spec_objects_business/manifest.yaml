@@ -1,6 +1,6 @@
 manifest_version: 1.0.0
 name: spec-objects-business
-version: 0.8.0
+version: 0.9.0
 description: 'Filament Module: tier-2 business ObjectTypes (DDD: domain, entity, value_object, aggregate_root, nested_entity, repository, event, state_machine, process, enumeration, population)'
 semantic:
   contract_version: 1.0.0
@@ -75,9 +75,8 @@ object_types:
   body_extraction:
     yield_pattern:
       match:
-        # FR-009: object definitions are constrained by ObjectFrontmatter's
-        # ObjectId schema. This locator preserves an annotated artifact's own
-        # typed document id when Quire composes its `object:` archetype.
+        # FR-009: the frontmatter schema admits segmented artifact ids; this
+        # locator preserves the document id when Quire composes `object:`.
         id: &id001
           from: frontmatter_field
           path:

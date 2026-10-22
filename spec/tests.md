@@ -45,19 +45,19 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 
 ### Stakeholder Requirement Coverage
 
-| Stakeholder Req | Trace to US/FR | Test/Validation | Coverage Status |
+| Stakeholder Req | Trace to US/FR | Test/Validation | Status |
 |---|---|---|---|
 | StR-001 | US-001, FR-001..FR-005 | TC-005, TC-006, TC-075 | 🚧 VC-1/VC-2 need a running filament-core |
 
 ### User Story Coverage
 
-| User Story | Acceptance Criteria | Test Cases | Coverage Status |
+| User Story | Acceptance Criteria | Test Cases | Status |
 |---|---|---|---|
 | US-001 | US-001-EX-1..3 (illustrative) implemented by FR-002..FR-005 | TC-050, TC-053, TC-070 | 🚧 TC-070 needs a Quoin with the semantic installer |
 
 ### Functional Requirement Coverage
 
-| Functional Req | Acceptance Criteria | Test Cases | Coverage Status |
+| Functional Req | Acceptance Criteria | Test Cases | Status |
 |---|---|---|---|
 | FR-001 | FR-001-AC-2..4 | TC-002..TC-004 | 🚧 AC-2..AC-4 need a running filament-core |
 | FR-002 | FR-002-AC-2..4, FR-002-AC-6, FR-002-AC-7, FR-002-AC-9, FR-002-CON-1..4 | TC-011..TC-013, TC-015..TC-019, TC-071, TC-073 | ✅ |
@@ -145,9 +145,9 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | TC-098 | Per type, the same process and repository rows fail today with exactly one `semantic.record-invalid` at `relations`; flips when `agent-ix/quire-rs#435` lands | Integration | P1 | FR-007-AC-10 | ✅ |
 | TC-099 | Exactly the ten construct kinds declare `construct:`, and `population` none while filament-core-data#174 is open | Unit | P0 | FR-008-AC-1 | ✅ |
 | TC-101 | Per kind, `references` name only roles an object type of the manifest carries, never `*` or a type name | Unit | P0 | FR-008-AC-3 | ✅ |
-| TC-103 | `ObjectFrontmatter.json` carries the strict object id pattern; every object type references that frontmatter schema and has a required id locator without a second regex | Unit | P0 | FR-009-AC-1 | ✅ |
-| TC-104 | `ObjectFrontmatter.json` accepts underscore ids, refuses `FR-271`, `fr-271`, `FR-`, `FRXYZ-1` and `ENT-001` as object definition ids, every skeleton and fixture frontmatter validates, and a composed `FR` artifact with `object: enumeration` accepts `FR-271` | Integration | P0 | FR-009-AC-2 | ✅ |
-| TC-105 | Every skeleton validates, while a hyphenated object id is refused by its frontmatter schema | Integration | P0 | FR-009-AC-3 | ✅ |
+| TC-103 | `ObjectFrontmatter.json` carries the segmented document id pattern; every object type references that frontmatter schema and has a required id locator without a second regex | Unit | P0 | FR-009-AC-1 | ✅ |
+| TC-104 | `ObjectFrontmatter.json` accepts underscore and QSpec style hyphenated ids, refuses malformed ids, every skeleton and fixture frontmatter validates, and a composed `FR` artifact with `object: enumeration` accepts `FR-271` | Integration | P0 | FR-009-AC-2 | ✅ |
+| TC-105 | Every skeleton validates with its current id and a well-formed hyphenated id, while a repeated hyphen is refused by its frontmatter schema | Integration | P0 | FR-009-AC-3 | ✅ |
 | TC-106 | The manifest `roles:` registry declares `aggregate-member` and `composite-owner`, each with a description, and each type carries the roles its references admit | Unit | P0 | FR-008-AC-5 | ✅ |
 | TC-108 | `event`'s `construct:` declares `immutable: true`; every other of the ten kinds' `construct:` lacks the key | Unit | P0 | FR-008-AC-6 | ✅ |
 | TC-109 | Each QSpec FR-208 refusal this module's record schema can express fails validation, and the same record without the refused form passes: an operation on `ValueObject`/`Event`; a `clauses` key or a non-empty operation `pre`/`post` on `Repository`; a `fields`, `operations` or `clauses` key on `Domain`; and no `repository` or `domain` `allowed_links` admits `specializes` | Unit | P0 | FR-008-AC-7 | ✅ |
