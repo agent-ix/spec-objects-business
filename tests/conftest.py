@@ -118,24 +118,9 @@ SUPPORT_MODELS = (
 )
 
 
-#: FR-009: an object id is a letter, then letters, digits and underscores.
-#: `ObjectFrontmatter.id` applies to standalone object-type frontmatter. A composed
-#: artifact may pass its own archetype schema with a typed id such as `FR-271`,
-#: but lifting it as a QSL type uses that id as IR `<Name>` and FR-154 refuses
-#: the hyphenated name at intake.
-OBJECT_ID_PATTERN = "^[A-Za-z][A-Za-z0-9_]*$"
-
-
-def with_object_id(markdown: str) -> str:
-    """The artifact with its frontmatter `id` hyphens written as underscores
-    (FR-009), every other byte unchanged."""
-    return re.sub(
-        r"^id: (\S+)$",
-        lambda m: f"id: {m.group(1).replace('-', '_')}",
-        markdown,
-        count=1,
-        flags=re.MULTILINE,
-    )
+#: FR-009: document ids may use separated hyphen segments. This is a
+#: frontmatter contract; semantic-core Identifier and TypeRef stay unchanged.
+OBJECT_ID_PATTERN = "^[A-Za-z][A-Za-z0-9_]*(?:-[A-Za-z0-9_]+)*$"
 
 
 def load_manifest() -> dict[str, Any]:

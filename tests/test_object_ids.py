@@ -1,4 +1,4 @@
-"""Object definition IDs remain strict while composed artifact IDs are typed."""
+"""Object frontmatter admits artifact IDs without relaxing semantic names."""
 
 from __future__ import annotations
 
@@ -28,7 +28,7 @@ AUTHORED = sorted(
 
 
 @pytest.mark.trace("TC-103", "FR-009-AC-1")
-def test_object_definition_schema_and_locators_preserve_strictness():
+def test_object_frontmatter_schema_and_locators_share_id_contract():
     base = json.loads((SCHEMAS_DIR / "ObjectFrontmatter.json").read_text())
     assert base["properties"]["id"]["type"] == "string"
     assert base["properties"]["id"]["pattern"] == OBJECT_ID_PATTERN
@@ -44,14 +44,34 @@ def test_object_definition_schema_and_locators_preserve_strictness():
 
 
 @pytest.mark.trace("TC-104", "FR-009-AC-2")
-def test_object_frontmatter_refuses_typed_ids_and_malformed_names(schema_registry):
+def test_object_frontmatter_accepts_artifact_ids_and_refuses_malformed_names(
+    schema_registry,
+):
     validator = schema_registry("ObjectFrontmatter")
     base = {"title": "OrderLine", "type": "entity", "object": "entity"}
-    for good in ("order_line_001", "nested_entity_001", "Order", "a1"):
+    for good in (
+        "order_line_001",
+        "nested_entity_001",
+        "Order",
+        "a1",
+        "FR-271",
+        "DOM-001",
+        "SM-001",
+        "PROC-001",
+        "VO-001",
+        "order-line-001",
+    ):
         assert list(validator.iter_errors({**base, "id": good})) == [], good
     for bad in (
-        "order-line-001", "nested-entity_001", "_order", "1order", "",
-        "FR-271", "fr-271", "FR-", "FRXYZ-1", "ENT-001",
+        "_order",
+        "1order",
+        "",
+        "FR-",
+        "FR--271",
+        "-FR-271",
+        "FR-271-",
+        "FR 271",
+        "FR/271",
     ):
         assert not validator.is_valid({**base, "id": bad}), bad
 
@@ -62,67 +82,82 @@ def test_every_skeleton_and_fixture_frontmatter_validates(schema_registry, path)
     validator = schema_registry("ObjectFrontmatter")
     front = frontmatter(path.read_text())
     assert list(validator.iter_errors(front)) == [], path.name
-    assert "-" not in front["id"], path.name
 
 
 @pytest.mark.trace("TC-105", "FR-009-AC-3")
 @pytest.mark.parametrize(
     "path", sorted(SKELETONS_DIR.glob("*.md")), ids=lambda p: p.name
 )
-def test_quire_refuses_hyphenated_object_ids(tmp_path, path):
+def test_quire_accepts_hyphenated_object_ids_and_refuses_malformed_ids(tmp_path, path):
     text = path.read_text()
     front = frontmatter(text)
     document = tmp_path / path.name
     document.write_text(text)
     arguments = [
-        "quire", "validate", str(document), "--scope", str(tmp_path),
-        "--module", str(PACKAGE_ROOT), "--pretty",
+        "quire",
+        "validate",
+        str(document),
+        "--scope",
+        str(tmp_path),
+        "--module",
+        str(PACKAGE_ROOT),
+        "--pretty",
     ]
-    baseline = subprocess.run(
-        arguments, check=False, capture_output=True, text=True
-    )
+    baseline = subprocess.run(arguments, check=False, capture_output=True, text=True)
     assert baseline.returncode == 0, baseline.stdout + baseline.stderr
 
-    malformed = text.replace(
+    hyphenated = text.replace(
         f"id: {front['id']}\n", f"id: {front['id'].replace('_', '-') }\n", 1
+    )
+    document.write_text(hyphenated)
+    result = subprocess.run(arguments, check=False, capture_output=True, text=True)
+    assert result.returncode == 0, result.stdout + result.stderr
+
+    malformed = hyphenated.replace(
+        f"id: {front['id'].replace('_', '-')}\n",
+        f"id: {front['id'].replace('_', '-')}--bad\n",
+        1,
     )
     document.write_text(malformed)
     result = subprocess.run(
         arguments,
-        check=False, capture_output=True, text=True,
+        check=False,
+        capture_output=True,
+        text=True,
     )
     assert result.returncode != 0, result.stdout + result.stderr
-    assert "ObjectId" not in result.stderr
 
 
 @pytest.mark.trace("TC-104", "FR-009-AC-2")
-def test_composed_artifact_keeps_its_typed_id(quire_engine, tmp_path):
+def test_composed_artifact_keeps_its_typed_id(tmp_path):
     """The artifact schema owns frontmatter; object validation adds its body."""
     artifact_module = tmp_path / "artifact-module"
     artifact_module.mkdir()
-    (artifact_module / "manifest.yaml").write_text(
-        """module: test-artifacts
+    (artifact_module / "manifest.yaml").write_text("""module: test-artifacts
 version: 0.1.0
 artifact_types:
   - name: FR
     frontmatter_schema_ref: schemas/FR.json
 object_types: []
-"""
-    )
+""")
     schemas = artifact_module / "schemas"
     schemas.mkdir()
-    (schemas / "FR.json").write_text(json.dumps({
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "$id": "https://schemas.example.test/FR.json",
-        "type": "object",
-        "properties": {
-            "id": {"type": "string", "pattern": "^FR-[0-9]+$"},
-            "type": {"const": "FR"},
-            "object": {"const": "enumeration"},
-            "title": {"type": "string"},
-        },
-        "required": ["id", "type", "object", "title"],
-    }))
+    (schemas / "FR.json").write_text(
+        json.dumps(
+            {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "$id": "https://schemas.example.test/FR.json",
+                "type": "object",
+                "properties": {
+                    "id": {"type": "string", "pattern": "^FR-[0-9]+$"},
+                    "type": {"const": "FR"},
+                    "object": {"const": "enumeration"},
+                    "title": {"type": "string"},
+                },
+                "required": ["id", "type", "object", "title"],
+            }
+        )
+    )
     artifact = """---
 id: FR-271
 type: FR
@@ -143,8 +178,15 @@ title: Diagnostic codes
     path.write_text(artifact)
     result = subprocess.run(
         [
-            "quire", "validate", str(path), "--scope", str(tmp_path),
-            "--module", str(PACKAGE_ROOT), "--module", str(artifact_module),
+            "quire",
+            "validate",
+            str(path),
+            "--scope",
+            str(tmp_path),
+            "--module",
+            str(PACKAGE_ROOT),
+            "--module",
+            str(artifact_module),
             "--pretty",
         ],
         check=False,
