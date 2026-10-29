@@ -26,7 +26,7 @@ installer, and leave the operator's machine exactly as it was found.
 
 ## Subtasks
 
-- [ ] **Record first.** Capture `quoin module` output, including any existing `spec-objects-business` entry (source, ref, sha).
+- [ ] **Record first.** Capture `quoin module` output, including any existing `spec-objects-business` entry (source and ref).
 - [ ] **Install.** `quoin module install path:<checkout>/spec_objects_business` — exit 0, no `semantic.*` diagnostic at error severity.
 - [ ] **List.** `quoin module` contains `spec-objects-business` sourced from the path.
 - [ ] **Inspect.** `semantic/package-manifest.json` exists with `package.identity` `agent-ix/spec-objects-business` and one export per `semantic.exports` entry. This is a contract check on quoin FR-075, not a claim this module owns.
