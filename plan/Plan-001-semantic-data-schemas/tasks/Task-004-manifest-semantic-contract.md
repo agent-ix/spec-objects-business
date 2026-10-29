@@ -34,10 +34,10 @@ a single 0.2.0 locator.
 ## Subtasks
 
 - [ ] **`semantic` block.** Exactly the nine admitted keys: `contract_version: 1.0.0`, `semantic_core: 0.1.0`, `package: agent-ix/spec-objects-business`, `exports` (the ten object-type names), `imports: {}`, `targets: [json-schema, markdown]`, `mappings: [typed-table, sysml-fence, ocl-clause]`, `compatibility_posture: additive`, `legacy_forms: warning`.
-- [ ] **Reference-form `data_schema`.** `{ schema: schemas/<Model>.json, digest: sha256:<hex> }` on every exported type, the digest written by the generator over the shipped bytes. No inline `data_schema` survives.
+- [ ] **Reference-form `data_schema`.** `{ schema: schemas/<Model>.json }` on every exported type. No inline `data_schema` survives.
 - [ ] **Version.** `version: 0.3.0`, bumped together with the `@jsonSchema` base in one commit.
 - [ ] **Locator preservation.** Every 0.2.0 locator keeps its `from`, heading, `language`, `required`, `multiple` and `assert` facets, compared structurally against the checked-in baseline from Task-007. The `properties` string locator on `entity` and `value_object` stays exactly where it is.
-- [ ] **Loader verification.** `quire.Registry.load_from([module dir])` lists all ten archetypes with no `ArchetypeLoadFailure`; a copy whose `semantic` block gains `foo` is refused naming `foo`; a copy with an altered digest is refused naming the path.
+- [ ] **Loader verification.** `quire.Registry.load_from([module dir])` lists all ten archetypes with no `ArchetypeLoadFailure`; a copy whose `semantic` block gains `foo` is refused naming `foo`.
 
 ## Deliverables
 
@@ -47,7 +47,7 @@ a single 0.2.0 locator.
 ## Notes
 
 - One refused schema fails every object type of the module (quire-rs FR-069), which is
-  why all ten digests are regenerated together and why a partial edit is never valid.
+  why a partial edit is never valid.
 - The manifest-schema revision all three consumers judge against is
   filament-core-service `a77f31e`; a consumer vendoring an older copy is that
   consumer's skew defect, not a change here.

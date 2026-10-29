@@ -11,7 +11,7 @@ okf_version: "0.1"
 * [Plan-001: semantic data schemas](./plan.md) - Plan overview, dependency graph, tracks, gate, test plan.
 * [Task-001](./tasks/Task-001-typespec-toolchain-generator.md) - TypeSpec toolchain, schema generator and drift gate.
 * [Task-002](./tasks/Task-002-role-distinct-models.md) - The ten role-distinct models and six support models.
-* [Task-003](./tasks/Task-003-emitted-set-digests-packaging.md) - Emitted set, toolchain.json, digests and packaging.
+* [Task-003](./tasks/Task-003-emitted-set-packaging.md) - Emitted set and packaging.
 * [Task-004](./tasks/Task-004-manifest-semantic-contract.md) - Manifest 0.3.0, semantic block and reference-form data_schema.
 * [Task-005](./tasks/Task-005-executable-skeletons.md) - Executable skeletons, sysml alternates and negative fixtures.
 * [Task-006](./tasks/Task-006-added-locators.md) - required:false locators for the sections the skeletons introduced.

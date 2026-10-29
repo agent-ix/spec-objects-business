@@ -30,7 +30,7 @@ skeleton carries is asserted by the manifest while every existing artifact stays
 - [ ] **Add the locators.** One per introduced section, on the object type that introduced it, every one `required: false`.
 - [ ] **Assert the rule.** Every locator absent at 0.2.0 is `required: false` (TC-023); no 0.2.0 locator is touched.
 - [ ] **Re-run the loader.** `validate_document` on every skeleton reports no `semantic.*` load failure (TC-025).
-- [ ] **Regenerate.** The manifest changed, so re-run `make schemas-check` — the digests are over the schema bytes, not the manifest, but the check must stay green.
+- [ ] **Regenerate.** The manifest changed, so re-run `make schemas-check`; the check must stay green.
 
 ## Deliverables
 

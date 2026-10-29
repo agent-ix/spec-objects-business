@@ -47,7 +47,7 @@ Issue `agent-ix/spec-objects-business#9`, relations half; the `persists`,
 
 ## Subtasks
 
-- [ ] **Mapping.** `relationships` in `semantic.mappings`; manifest and `@jsonSchema` base 0.5.0 with regenerated schemas and digests.
+- [ ] **Mapping.** `relationships` in `semantic.mappings`; manifest and `@jsonSchema` base 0.5.0 with regenerated schemas.
 - [ ] **Locators.** The `relationships` `table_row` locator on `entity` and `aggregate_root` (TC-089).
 - [ ] **Edges.** The fifteen domain verbs in `edge_types`, identical to `agent-ix/spec-artifacts-iso` (TC-089).
 - [ ] **Skeletons.** A `## Relationships` table in both `aggregate_root` skeletons (TC-090).
