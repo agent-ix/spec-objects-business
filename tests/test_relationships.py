@@ -41,7 +41,7 @@ RELATIONSHIPS_LOCATOR = {
 # The domain verbs of the manifest `edge_types`, as agent-ix/spec-artifacts-iso
 # declares them (category, inverse).
 DOMAIN_VERBS = {
-    "contains": ("structural", "part_of"),
+    "contains": ("structural", "contained_in"),
     "aggregates": ("structural", "part_of"),
     "composes": ("structural", "composed_by"),
     "triggers": ("behavioral", "triggered_by"),
@@ -74,6 +74,8 @@ def relation_vocabulary(name: str) -> dict:
         edge_types[verb] = {"category": entry["category"]}
         if entry.get("inverse"):
             edge_types[verb]["inverse"] = entry["inverse"]
+        if entry.get("composite"):
+            edge_types[verb]["composite"] = True
     return {
         "objectType": name,
         "edgeTypes": edge_types,
@@ -152,7 +154,7 @@ def expected_relations(text: str) -> list[dict]:
                 "name": name,
                 "verb": verb,
                 "category": entry["category"],
-                "composite": entry.get("inverse") == "part_of",
+                "composite": entry.get("composite", False),
                 "target": f"ix://{BUNDLE_PACKAGE}/{target}",
                 "multiplicity": bound,
             }

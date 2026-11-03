@@ -22,6 +22,7 @@ from tests.conftest import (
     frontmatter,
     locators,
     object_type,
+    semantic_target_value,
     object_types,
 )
 
@@ -120,7 +121,7 @@ def test_under_the_bundle_index_every_skeleton_extracts_clean(
             d for d in diagnostics if d.get("code") == "semantic.unresolved-type"
         ], (path.name, diagnostics)
         for decl in record.get("fields") or []:
-            target = decl["type"]["target"]
+            target = semantic_target_value(decl["type"]["target"])
             if target in KERNEL_SCALARS:
                 continue
             assert target.startswith("ix://agent-ix/spec-objects-business/type/"), (

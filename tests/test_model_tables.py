@@ -21,6 +21,7 @@ from tests.conftest import (
     locators,
     object_type,
     object_types,
+    semantic_target_value,
 )
 
 REQUIRED = {
@@ -180,7 +181,10 @@ def test_every_skeleton_extracts_its_model_tables_row_for_row(
             expected = [row[spec.index(KEY_COLUMN[feature])] for row in rows]
             if feature == "population":
                 entries = record["model"]["population"]["members"]
-                actual = [e["type"]["target"].rsplit("/", 1)[-1] for e in entries]
+                actual = [
+                    semantic_target_value(e["type"]["target"]).rsplit("/", 1)[-1]
+                    for e in entries
+                ]
             else:
                 entries = record["model"][feature]
                 actual = [e[ENTRY_KEY[feature]] for e in entries]
@@ -200,14 +204,19 @@ def test_the_declared_model_fixture_extracts_every_mapping_feature(
     assert result["is_valid"], result["errors"]
     record = extract(quire_engine, semantic_module, path)
     model = record["model"]
-    assert [s["target"] for s in model["supertypes"]] == ["OrderLifecycle"]
+    assert [semantic_target_value(s["target"]) for s in model["supertypes"]] == [
+        "OrderLifecycle"
+    ]
     assert model["abstract"]["value"] is True
     features = {f["field"]: f for f in model["fieldFeatures"]}
     assert features["order_id"]["presence"] == "required"
     assert features["reason"]["presence"] == "optional"
     assert features["returned_items"]["subsets"] == ["items"]
     assert features["current_state"]["redefines"] == "current_state"
-    types = {f["name"]: f["type"]["target"] for f in record["fields"]}
+    types = {
+        f["name"]: semantic_target_value(f["type"]["target"])
+        for f in record["fields"]
+    }
     assert types["current_state"].rsplit("/", 1)[-1] == "ReturnStatus"
     status = (POSITIVE_DIR / "enumeration-return-status.md").read_text()
     status_result = quire_engine.validate_document(
@@ -313,7 +322,10 @@ def test_the_population_fixture_extracts_one_member_per_row(
     assert record["availability"]["model"]["state"] == "available"
     members = record["model"]["population"]["members"]
     rows = table_rows(text, "Members")
-    assert [m["type"]["target"].rsplit("/", 1)[-1] for m in members] == [
+    assert [
+        semantic_target_value(m["type"]["target"]).rsplit("/", 1)[-1]
+        for m in members
+    ] == [
         row[0] for row in rows
     ]
     # Multiplicity.json requires `ordered`/`unique`.
