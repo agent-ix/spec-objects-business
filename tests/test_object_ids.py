@@ -90,21 +90,19 @@ def test_every_skeleton_and_fixture_frontmatter_validates(schema_registry, path)
 @pytest.mark.parametrize(
     "path", sorted(SKELETONS_DIR.glob("*.md")), ids=lambda p: p.name
 )
-def test_quire_accepts_hyphenated_object_ids_and_refuses_malformed_ids(
-    quire_engine, path
+def test_authored_frontmatter_accepts_hyphenated_ids_and_refuses_malformed_ids(
+    schema_registry, path
 ):
     text = path.read_text()
     front = frontmatter(text)
-    registry = quire_engine.Registry.load_from([str(PACKAGE_ROOT)])
-    baseline = registry.validate("ObjectFrontmatter", front)
-    assert baseline == [], baseline
+    validator = schema_registry("ObjectFrontmatter")
+    assert validator.is_valid(front), front
 
     hyphenated = text.replace(
         f"id: {front['id']}\n", f"id: {front['id'].replace('_', '-') }\n", 1
     )
     hyphenated_front = frontmatter(hyphenated)
-    result = registry.validate("ObjectFrontmatter", hyphenated_front)
-    assert result == [], result
+    assert validator.is_valid(hyphenated_front), hyphenated_front
 
     malformed = hyphenated.replace(
         f"id: {front['id'].replace('_', '-')}\n",
@@ -112,8 +110,7 @@ def test_quire_accepts_hyphenated_object_ids_and_refuses_malformed_ids(
         1,
     )
     malformed_front = frontmatter(malformed)
-    result = registry.validate("ObjectFrontmatter", malformed_front)
-    assert result, malformed
+    assert not validator.is_valid(malformed_front), malformed
 
 
 @pytest.mark.trace("TC-104", "FR-009-AC-2")
