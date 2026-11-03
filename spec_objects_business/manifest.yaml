@@ -4,7 +4,7 @@ version: 0.9.0
 description: 'Filament Module: tier-2 business ObjectTypes (DDD: domain, entity, value_object, aggregate_root, nested_entity, repository, event, state_machine, process, enumeration, population)'
 semantic:
   contract_version: 1.0.0
-  semantic_core: 0.3.2
+  semantic_core: 0.3.3
   package: agent-ix/spec-objects-business
   exports:
   - domain
@@ -34,8 +34,8 @@ edge_types:
   # The domain verbs the allowed_links below and the `## Relationships`
   # tables use, declared byte-identical to spec-artifacts-iso so a registry
   # that loads both modules merges them without a duplicate-edge-type finding.
-  contains: { description: "Composition; the source owns the target's lifecycle.", category: structural, inverse: part_of }
-  aggregates: { description: "Aggregate root owns member entities.", category: structural, inverse: part_of }
+  contains: { description: "Composition; the source owns the target's lifecycle.", category: structural, inverse: contained_in, composite: true }
+  aggregates: { description: "Aggregate root owns member entities.", category: structural, inverse: part_of, composite: true }
   composes: { description: "Value object composed of other value objects/enums.", category: structural, inverse: composed_by }
   triggers: { description: "Initiates a process or action.", category: behavioral, inverse: triggered_by }
   transitions_to: { description: "State-machine flow to another state.", category: behavioral }

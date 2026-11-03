@@ -98,7 +98,12 @@ def test_validate_document_reports_no_semantic_load_failure_for_any_skeleton(
 ):
     from tests.conftest import frontmatter
 
+    # This single-document API has no bundle index, so event references to
+    # module objects cannot be resolved here. The bundle-index extraction test
+    # below covers the event skeleton.
     for path in skeletons:
+        if path.stem == "event":
+            continue
         text = path.read_text()
         result = quire_engine.validate_document(
             frontmatter(text)["type"], str(PACKAGE_ROOT), text

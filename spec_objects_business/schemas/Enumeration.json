@@ -6,13 +6,13 @@
     "values": {
       "type": "array",
       "items": {
-        "$ref": "https://schemas.agent-ix.org/semantic-core/0.3.2/EnumValue.json"
+        "$ref": "https://schemas.agent-ix.org/semantic-core/0.3.3/EnumValue.json"
       }
     },
     "clauses": {
       "type": "array",
       "items": {
-        "$ref": "https://schemas.agent-ix.org/semantic-core/0.3.2/ClauseRef.json"
+        "$ref": "https://schemas.agent-ix.org/semantic-core/0.3.3/ClauseRef.json"
       }
     }
   },

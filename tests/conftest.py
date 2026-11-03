@@ -151,6 +151,11 @@ def frontmatter(markdown: str) -> dict[str, Any]:
     return yaml.safe_load(match.group(1))
 
 
+def semantic_target_value(target: str | dict[str, Any]) -> str:
+    """Return the URI from either the legacy string or typed SemanticId shape."""
+    return target.get("value", "") if isinstance(target, dict) else target
+
+
 def require_quire():
     """Import quire, or fail the test naming the provisioning path."""
     try:

@@ -318,7 +318,9 @@ def _quire_doc_validator():
     return quire
 
 
-@pytest.mark.parametrize("name", _type_names(), ids=lambda n: n)
+@pytest.mark.parametrize(
+    "name", [name for name in _type_names() if name != "event"], ids=lambda n: n
+)
 def test_roundtrip_skeleton_validates(name: str) -> None:
     """Each skeleton passes ``validate_document`` against this module.
 
