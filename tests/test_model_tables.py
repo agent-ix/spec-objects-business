@@ -214,8 +214,7 @@ def test_the_declared_model_fixture_extracts_every_mapping_feature(
     assert features["returned_items"]["subsets"] == ["items"]
     assert features["current_state"]["redefines"] == "current_state"
     types = {
-        f["name"]: semantic_target_value(f["type"]["target"])
-        for f in record["fields"]
+        f["name"]: semantic_target_value(f["type"]["target"]) for f in record["fields"]
     }
     assert types["current_state"].rsplit("/", 1)[-1] == "ReturnStatus"
     status = (POSITIVE_DIR / "enumeration-return-status.md").read_text()
@@ -323,11 +322,8 @@ def test_the_population_fixture_extracts_one_member_per_row(
     members = record["model"]["population"]["members"]
     rows = table_rows(text, "Members")
     assert [
-        semantic_target_value(m["type"]["target"]).rsplit("/", 1)[-1]
-        for m in members
-    ] == [
-        row[0] for row in rows
-    ]
+        semantic_target_value(m["type"]["target"]).rsplit("/", 1)[-1] for m in members
+    ] == [row[0] for row in rows]
     # Multiplicity.json requires `ordered`/`unique`.
     # Order and Customer are singular (1..1): clamp both `false`. OrderLine
     # is a genuine collection (1..*, a population extent): `ordered: False`

@@ -22,8 +22,8 @@ from tests.conftest import (
     frontmatter,
     locators,
     object_type,
-    semantic_target_value,
     object_types,
+    semantic_target_value,
 )
 
 KERNEL_SCALARS = {
