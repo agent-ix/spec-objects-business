@@ -95,28 +95,25 @@ def test_quire_accepts_hyphenated_object_ids_and_refuses_malformed_ids(
 ):
     text = path.read_text()
     front = frontmatter(text)
-    baseline = quire_engine.validate_document(
-        front["type"], str(PACKAGE_ROOT), text, BUNDLE_PACKAGE
-    )
-    assert baseline["is_valid"], baseline["errors"]
+    registry = quire_engine.Registry.load_from([str(PACKAGE_ROOT)])
+    baseline = registry.validate("ObjectFrontmatter", front)
+    assert baseline == [], baseline
 
     hyphenated = text.replace(
         f"id: {front['id']}\n", f"id: {front['id'].replace('_', '-') }\n", 1
     )
-    result = quire_engine.validate_document(
-        front["type"], str(PACKAGE_ROOT), hyphenated, BUNDLE_PACKAGE
-    )
-    assert result["is_valid"], result["errors"]
+    hyphenated_front = frontmatter(hyphenated)
+    result = registry.validate("ObjectFrontmatter", hyphenated_front)
+    assert result == [], result
 
     malformed = hyphenated.replace(
         f"id: {front['id'].replace('_', '-')}\n",
         f"id: {front['id'].replace('_', '-')}--bad\n",
         1,
     )
-    result = quire_engine.validate_document(
-        front["type"], str(PACKAGE_ROOT), malformed, BUNDLE_PACKAGE
-    )
-    assert not result["is_valid"], malformed
+    malformed_front = frontmatter(malformed)
+    result = registry.validate("ObjectFrontmatter", malformed_front)
+    assert result, malformed
 
 
 @pytest.mark.trace("TC-104", "FR-009-AC-2")
