@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 import json
-import subprocess
+import shutil
 
 import pytest
+import yaml
 
 from tests.conftest import (
+    BUNDLE_PACKAGE,
     NEGATIVE_DIR,
     OBJECT_ID_PATTERN,
     OBJECT_TYPES,
@@ -88,60 +90,47 @@ def test_every_skeleton_and_fixture_frontmatter_validates(schema_registry, path)
 @pytest.mark.parametrize(
     "path", sorted(SKELETONS_DIR.glob("*.md")), ids=lambda p: p.name
 )
-def test_quire_accepts_hyphenated_object_ids_and_refuses_malformed_ids(tmp_path, path):
+def test_quire_accepts_hyphenated_object_ids_and_refuses_malformed_ids(
+    quire_engine, path
+):
     text = path.read_text()
     front = frontmatter(text)
-    document = tmp_path / path.name
-    document.write_text(text)
-    arguments = [
-        "quire",
-        "validate",
-        str(document),
-        "--scope",
-        str(tmp_path),
-        "--module",
-        str(PACKAGE_ROOT),
-        "--pretty",
-    ]
-    baseline = subprocess.run(arguments, check=False, capture_output=True, text=True)
-    assert baseline.returncode == 0, baseline.stdout + baseline.stderr
+    baseline = quire_engine.validate_document(
+        front["type"], str(PACKAGE_ROOT), text, BUNDLE_PACKAGE
+    )
+    assert baseline["is_valid"], baseline["errors"]
 
     hyphenated = text.replace(
         f"id: {front['id']}\n", f"id: {front['id'].replace('_', '-') }\n", 1
     )
-    document.write_text(hyphenated)
-    result = subprocess.run(arguments, check=False, capture_output=True, text=True)
-    assert result.returncode == 0, result.stdout + result.stderr
+    result = quire_engine.validate_document(
+        front["type"], str(PACKAGE_ROOT), hyphenated, BUNDLE_PACKAGE
+    )
+    assert result["is_valid"], result["errors"]
 
     malformed = hyphenated.replace(
         f"id: {front['id'].replace('_', '-')}\n",
         f"id: {front['id'].replace('_', '-')}--bad\n",
         1,
     )
-    document.write_text(malformed)
-    result = subprocess.run(
-        arguments,
-        check=False,
-        capture_output=True,
-        text=True,
+    result = quire_engine.validate_document(
+        front["type"], str(PACKAGE_ROOT), malformed, BUNDLE_PACKAGE
     )
-    assert result.returncode != 0, result.stdout + result.stderr
+    assert not result["is_valid"], malformed
 
 
 @pytest.mark.trace("TC-104", "FR-009-AC-2")
-def test_composed_artifact_keeps_its_typed_id(tmp_path):
+def test_composed_artifact_keeps_its_typed_id(tmp_path, quire_engine):
     """The artifact schema owns frontmatter; object validation adds its body."""
-    artifact_module = tmp_path / "artifact-module"
-    artifact_module.mkdir()
-    (artifact_module / "manifest.yaml").write_text("""module: test-artifacts
-version: 0.1.0
-artifact_types:
-  - name: FR
-    frontmatter_schema_ref: schemas/FR.json
-object_types: []
-""")
-    schemas = artifact_module / "schemas"
-    schemas.mkdir()
+    combined_module = tmp_path / "combined-module"
+    shutil.copytree(PACKAGE_ROOT, combined_module)
+    manifest_path = combined_module / "manifest.yaml"
+    manifest = yaml.safe_load(manifest_path.read_text())
+    manifest.setdefault("artifact_types", []).append(
+        {"name": "FR", "frontmatter_schema_ref": "schemas/FR.json"}
+    )
+    manifest_path.write_text(yaml.safe_dump(manifest, sort_keys=False))
+    schemas = combined_module / "schemas"
     (schemas / "FR.json").write_text(
         json.dumps(
             {
@@ -172,25 +161,9 @@ title: Diagnostic codes
 |---|---|
 | Draft | Draft state |
 """
-    # With explicit roots this validates the artifact schema and the composed
-    # enumeration body extraction in one engine pass.
-    path = tmp_path / "FR-271.md"
-    path.write_text(artifact)
-    result = subprocess.run(
-        [
-            "quire",
-            "validate",
-            str(path),
-            "--scope",
-            str(tmp_path),
-            "--module",
-            str(PACKAGE_ROOT),
-            "--module",
-            str(artifact_module),
-            "--pretty",
-        ],
-        check=False,
-        capture_output=True,
-        text=True,
+    # Put both archetypes in one temporary module so the Python API validates
+    # the artifact schema and composed enumeration body in one engine pass.
+    result = quire_engine.validate_document(
+        "FR", str(combined_module), artifact, BUNDLE_PACKAGE
     )
-    assert result.returncode == 0, result.stderr or result.stdout
+    assert result["is_valid"], result["errors"]
