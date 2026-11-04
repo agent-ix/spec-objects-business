@@ -291,6 +291,9 @@ def test_no_module_schema_redeclares_a_semantic_core_model(schema_registry):
             item = prop.get("items", prop)
             if key in {"emits", "persists", "source"}:
                 continue
+            if name == "domain" and key == "ubiquitous_language":
+                # This is raw module-owned section text, not a semantic-core model.
+                continue
             assert "$ref" in item, f"{name}.{key} is not validated by $ref"
 
 
