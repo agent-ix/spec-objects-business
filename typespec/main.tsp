@@ -122,6 +122,7 @@ model ProcessStep {
 model Domain {
   members?: RelationDecl[];
   vocabulary?: Term[];
+  ubiquitous_language?: string;
   ...Record<never>;
 }
 

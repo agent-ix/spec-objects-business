@@ -191,6 +191,24 @@ def test_every_skeleton_extracts_its_model_tables_row_for_row(
             assert actual == expected, (name, feature)
 
 
+@pytest.mark.trace("TC-081", "FR-006-AC-2")
+def test_domain_ubiquitous_language_section_body_is_declared(
+    quire_engine, semantic_module, bundle_index
+):
+    path = POSITIVE_DIR / "domain-ubiquitous-language-prose.md"
+    record = extract(quire_engine, semantic_module, path, bundle_index)
+    assert locators(object_type("domain"))["ubiquitous_language"] == {
+        "from": "section_body",
+        "after_heading": "Ubiquitous Language",
+        "required": False,
+    }
+    assert not [
+        diagnostic
+        for diagnostic in record.get("diagnostics", [])
+        if diagnostic.get("code") == "semantic.feature-not-extractable"
+    ]
+
+
 DECLARED_MODEL_FIXTURE = POSITIVE_DIR / "state_machine-declared-model.md"
 
 
