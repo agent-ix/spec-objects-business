@@ -14,6 +14,9 @@
       "items": {
         "$ref": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/Term.json"
       }
+    },
+    "ubiquitous_language": {
+      "type": "string"
     }
   },
   "unevaluatedProperties": {

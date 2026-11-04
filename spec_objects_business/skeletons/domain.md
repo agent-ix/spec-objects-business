@@ -15,8 +15,9 @@ object: domain
        relationship edges; do not duplicate their definitions here.
      - "## Entity Relationship Diagram" (H2, OPTIONAL): a mermaid diagram of
        the whole domain, extracted as `erd`.
-     - "## Ubiquitous Language" (H2, optional): the shared vocabulary as a
-       `| Term | Description |` table; a list there is refused.
+     - "## Ubiquitous Language" (H2, optional): shared vocabulary prose is
+       preserved as `ubiquitous_language`; a `| Term | Description |` table
+       is also extracted as structured `vocabulary` entries.
      A domain declares a boundary, not data: it carries no "## Properties"
      and no "## Invariants" (Domain.json forbids `fields` and `operations`). -->
 # [domain_001] OrderManagement

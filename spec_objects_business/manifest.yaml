@@ -105,6 +105,10 @@ object_types:
           from: section_body
           after_heading: Entities
           required: false
+        ubiquitous_language:
+          from: section_body
+          after_heading: Ubiquitous Language
+          required: false
         erd:
           from: code_block
           after_heading: Entity Relationship Diagram
