@@ -364,45 +364,41 @@ def test_operation_expressions_validate_beside_operations_and_repository_refuses
     )
 
 
-#: Object type -> (construct-required member, locator that feeds it).
-CONSTRUCT_REQUIRED = {
-    "nested_entity": ("fields", "properties"),
-    "aggregate_root": ("fields", "properties"),
-    "event": ("fields", "properties"),
-    "process": ("fields", "properties"),
-    "state_machine": ("operations", "operations"),
-}
-
-
-def _manifest_types() -> dict:
-    manifest = yaml.safe_load(MANIFEST_PATH.read_text())
-    return {t["name"]: t for t in manifest["object_types"]}
-
-
-@pytest.mark.trace("TC-122", "FR-012-AC-1", "FR-012-AC-3", "FR-012-CON-1")
-def test_a_required_construct_member_has_a_required_schema_key_and_locator():
-    types = _manifest_types()
-    for name, (key, locator) in CONSTRUCT_REQUIRED.items():
-        match = types[name]["body_extraction"]["yield_pattern"]["match"]
-        assert match[locator]["required"] is True, (name, locator)
-        assert key in schema_registry_required(name), (name, key)
-    root = types["aggregate_root"]["body_extraction"]["yield_pattern"]["match"]
-    assert root["invariants"]["required"] is True
-    assert "clauses" in schema_registry_required("aggregate_root")
-    # Every required schema key is a member its construct requires.
-    for name, object_type in types.items():
-        required = set(schema_registry_required(name))
-        members = {
-            member
-            for member, state in object_type.get("construct", {})
-            .get("members", {})
-            .items()
-            if state == "required"
-        }
-        assert required <= members, (name, required - members)
-
-
-def schema_registry_required(name: str) -> list:
-    return json.loads((SCHEMAS_DIR / f"{MODEL_OF[name]}.json").read_text()).get(
-        "required", []
+def _required_keys(name: str) -> set:
+    return set(
+        json.loads((SCHEMAS_DIR / f"{MODEL_OF[name]}.json").read_text()).get(
+            "required", []
+        )
     )
+
+
+@pytest.mark.trace("TC-122", "FR-012-AC-1", "FR-012-CON-1")
+def test_a_schema_requires_a_key_exactly_when_its_construct_requires_the_member():
+    manifest = yaml.safe_load(MANIFEST_PATH.read_text())
+    seen = set()
+    for object_type in manifest["object_types"]:
+        name = object_type["name"]
+        members = object_type.get("construct", {}).get("members")
+        if members is None or name not in MODEL_OF:
+            continue
+        declared = set(
+            json.loads((SCHEMAS_DIR / f"{MODEL_OF[name]}.json").read_text())[
+                "properties"
+            ]
+        )
+        for key in ("fields", "clauses", "operations"):
+            if key in declared:
+                seen.add((name, key))
+                assert (key in _required_keys(name)) == (
+                    members.get(key) == "required"
+                ), (name, key)
+    for pair in (
+        ("nested_entity", "fields"),
+        ("aggregate_root", "fields"),
+        ("aggregate_root", "clauses"),
+        ("event", "fields"),
+        ("process", "fields"),
+        ("state_machine", "operations"),
+    ):
+        assert pair in seen, pair
+        assert pair[1] in _required_keys(pair[0]), pair

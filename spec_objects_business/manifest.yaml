@@ -226,11 +226,11 @@ object_types:
         properties:
           from: section_body
           after_heading: Properties
-          required: true
+          required: false
         invariants:
           from: section_body
           after_heading: Invariants
-          required: true
+          required: false
         members:
           from: table_row
           under_section: Members
@@ -270,7 +270,7 @@ object_types:
         properties:
           from: section_body
           after_heading: Properties
-          required: true
+          required: false
         invariants:
           from: section_body
           after_heading: Invariants
@@ -335,7 +335,7 @@ object_types:
         properties:
           from: section_body
           after_heading: Properties
-          required: true
+          required: false
         invariants:
           from: section_body
           after_heading: Invariants
@@ -383,7 +383,7 @@ object_types:
         operations:
           from: section_body
           after_heading: Operations
-          required: true
+          required: false
         states:
           from: table_row
           under_section: States
@@ -428,7 +428,7 @@ object_types:
         properties:
           from: section_body
           after_heading: Properties
-          required: true
+          required: false
         invariants:
           from: section_body
           after_heading: Invariants

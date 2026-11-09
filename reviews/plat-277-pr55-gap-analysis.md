@@ -42,3 +42,18 @@ between FR-012's document-level purpose and its record-level tests.
 
 - `quire matrix --scope .`: FR-012-AC-1..3 tagged; FR-012-CON-1 untagged.
 - `pytest tests/` (quire 0.54.0): 270 passed, 7 skipped, 2 xfailed.
+
+## New findings (disposition pass 1)
+
+| ID | Severity | Summary | Refs | Escape Cause |
+|---|---|---|---|---|
+| FND-003 | low | TC-123 covers FR-012-AC-2 ("each of those skeletons with the required section removed is refused"), but it removes only `Properties` (or `Operations`). It never removes `aggregate_root` `## Invariants`, which FR-012-AC-1 makes required. No test covers a required section that is present but holds only `### ` subsections. That is the case SR-023 FND-003 shows is now refused, and such a test would have exposed it. | tests/test_skeletons_semantic.py:324-347, spec/functional/FR-012-optional-sections-optional-keys.md:60 | correct-requirement-no-evidence |
+
+## Dispositions
+
+Round 1, checked against fix commit baff077.
+
+| FND | outcome | reason |
+|---|---|---|
+| FND-001 | fixed | TC-122 is now tagged `TC-122, FR-012-AC-1, FR-012-AC-3, FR-012-CON-1`. `quire matrix` reports FR-012-CON-1 as tagged. |
+| FND-002 | fixed | Fixed by the change of direction. TC-123 now runs `validate_document` on each skeleton with its required section removed and asserts a refusal that names the missing section. |

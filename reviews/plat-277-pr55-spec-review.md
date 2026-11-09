@@ -67,3 +67,19 @@ direction. FND-002 is low.
 
 - `quoin validate` (quoin 0.29.1): repository QA gates, no findings.
 - `quire validate --scope .` on FR-004, FR-012 and tests.md: FR-004 and FR-012 are clean. tests.md fails at line 140 (TC-085). That row is unchanged by this PR and fails identically on `origin/main`, so it is out of scope here.
+
+## New findings (disposition pass 1)
+
+| ID | Severity | Summary | Refs | Escape Cause |
+|---|---|---|---|---|
+| FND-003 | high | A required `section_body` locator reads only the text directly under its heading, so `required: true` refuses a section that holds only `### ` subsections as "required '<key>' (section_body(<H>)) is empty", even when it declares the very member the construct requires. FR-012 Behavior turns this quirk into an authoring rule ("a required section SHALL carry at least one line of prose before its first subsection"), and the PR edits a positive fixture to comply. Under quire 0.54.0, measured against main's manifest and then this branch's manifest, these documents validate on main and are refused on the branch: quire-specification FR-231 and FR-234 (`state_machine` Operations), filament-core-data's own extraction-frontend fixture SM_001 (Operations), and the `aggregate_root` and `state_machine` skeletons with only the intro line removed. filament-core-data's AR_001 also hits the new Invariants refusal. This refuses valid declarations, which is the opposite of what F1 is for. The intended contract (the schema requires the key wherever the construct requires the member) already held on main: the schemas there require `fields`, `clauses` and `operations` for these types, and FR-012-CON-1/AC-3 with TC-122 now pin that. Keep FR-012's construct rule and TC-122, revert the five locator flips and the fixture line, and drop the prose-line Behavior. A document that really lacks the member is then still refused, as `semantic.record-invalid ... is a required property`. | spec_objects_business/manifest.yaml:229-233, spec_objects_business/manifest.yaml:273, spec_objects_business/manifest.yaml:338, spec_objects_business/manifest.yaml:386, spec_objects_business/manifest.yaml:431, spec/functional/FR-012-optional-sections-optional-keys.md:43-45, tests/fixtures/positive/state_machine-declared-model.md:44 | wrong-requirement |
+| FND-004 | low | The FR-012 rewrite left stale text. spec/functional/index.md still titles FR-012 "Require a declaration key only when its source section is required", and spec.md says "FR-012 keeps a declaration key optional where its source section is"; both contradict the new FR-012. The file slug `optional-sections-optional-keys` now names the reverse rule. `quire validate` also reports EARS warnings on FR-012's statement (more than one `shall`, no subject) and on CON-1 (two `shall`s). | spec/functional/index.md:21, spec/spec.md:120, spec/functional/FR-012-optional-sections-optional-keys.md:19-26, spec/functional/FR-012-optional-sections-optional-keys.md:53 | wrong-requirement |
+
+## Dispositions
+
+Round 1, checked against fix commit baff077.
+
+| FND | outcome | reason |
+|---|---|---|
+| FND-001 | fixed | Fixed by the change of direction. typespec/main.tsp and the schemas are byte-equal to main, so the schemas again require what the FR-008 construct requires. FR-012 now states that the record layer follows the construct, and the "stay as they are" bullet is gone. The new locator approach is a separate defect, recorded as FND-003. |
+| FND-002 | fixed | Fixed by the change of direction. StateMachine.json requires `operations` again, and the `state_machine` `operations` locator is `required: true`. |

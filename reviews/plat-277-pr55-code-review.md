@@ -69,3 +69,11 @@ in SR-023 FND-001.
 - `node scripts/generate-schemas.mjs --check`: 27 schemas match.
 - `pytest tests/` (venv spec-objects-business-Dc60l5v7, quire 0.54.0): 270 passed, 7 skipped, 2 xfailed, coverage 100%.
 - Skeleton probe via `quire.validate_document`, with the optional section removed, as listed above.
+
+## Dispositions
+
+Round 1, checked against fix commit baff077.
+
+| FND | outcome | reason |
+|---|---|---|
+| FND-001 | fixed | The skeleton is back to main. The comment again reads "## Invariants (H2, required by AggregateRoot.json's `clauses`): the root exists to enforce invariants, so it declares at least one", which agrees with the reverted schema. |
