@@ -51,3 +51,15 @@ low.
 
 `quoin validate --strict` (quoin 0.29.1; quire 0.36.2, engine 0.50.2): no
 findings.
+
+## Dispositions
+
+Round 1, checked against fix commit e6834e9.
+
+| FND | outcome | reason |
+|---|---|---|
+| FND-001 | fixed | FR-010 now lists `population` `members` and `extent` as unmapped (declared for hand-built records only), makes frontmatter `extent` the only authored form, forbids an `## Extent` section (AC-4, TC-114), and the statement says an unmapped key is stated as such and never filled by a second form. |
+| FND-002 | fixed | FR-010 Inputs, Behavior and AC-3 now require exactly one inline-code id in backticks, the FR-121 scalar form. |
+| FND-003 | fixed | FR-010 Dependencies now cites quire-rs FR-081 (PLAT-1370, merged on quire-rs main) and names the installed 0.54.0 wheel as the gap. |
+| FND-004 | fixed | The intro range now reads "the functional requirements", and the FR-010 coverage row with its AC and TC ranges and the Inspection-only TC-117 row are removed. |
+| FND-005 | fixed | FR-005's typed/kernel bullet no longer lists `## Parent`. |

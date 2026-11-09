@@ -55,3 +55,11 @@ schemas match), `pytest` with the existing quire 0.54.0 venv (242 passed,
 7 skipped, 2 xfailed), and `quoin validate --strict` (quoin 0.29.1: no
 findings). FND-001 was traced in quire-rs `origin/main` source and its
 golden case; no quire-rs build was run.
+
+## Dispositions
+
+Round 1, checked against fix commit e6834e9 (schemas-check 24/24, pytest 242 passed, quoin validate --strict clean).
+
+| FND | outcome | reason |
+|---|---|---|
+| FND-001 | fixed | `skeletons/event.md` `## Source` is now `` `aggregate_root_001` `` and its comment says one inline-code id; TC-113 parses it with `` re.fullmatch(r"\s*`([^`\s]+)`\s*", body) ``, so a bare id now fails the test. |

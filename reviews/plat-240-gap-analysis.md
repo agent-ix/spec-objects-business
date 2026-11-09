@@ -38,3 +38,12 @@ SR-015 FND-001.
 
 `quoin matrix --json`, and `pytest` with the existing quire 0.54.0 venv
 (242 passed, 7 skipped, 2 xfailed).
+
+## Dispositions
+
+Round 1, checked against fix commit e6834e9.
+
+| FND | outcome | reason |
+|---|---|---|
+| FND-001 | fixed | `KEY_OWNERS` and its unused owner strings are gone; TC-111 asserts `keys <= ALLOWED_KEYS[name]` per object type, with `members` only on `aggregate_root` and `population`. |
+| FND-002 | fixed | TC-116 is renamed `test_domain_skeleton_validates_and_authors_contains_relationships`, matching what it asserts. |
