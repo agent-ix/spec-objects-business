@@ -99,7 +99,7 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | TC-017 | The build uses the official `@typespec/json-schema` emitter only and no emitted file is hand-edited | Inspection | P2 | FR-002-CON-1 | ✅ |
 | TC-018 | No `.npmrc`, no `file:`/`link:` dependency | Inspection | P2 | FR-002-CON-2 | ✅ |
 | TC-019 | `package-lock.json` resolves every package from npmjs except `@agent-ix/semantic-core` (GitHub Packages) | Unit | P2 | FR-002-CON-4 | ✅ |
-| TC-020 | The `semantic` block equals the nine admitted keys and `exports` equals every object type | Unit | P0 | FR-003-AC-1, FR-003-CON-1 | ✅ |
+| TC-020 | The `semantic` block equals the eight admitted keys and `exports` equals every object type | Unit | P0 | FR-003-AC-1, FR-003-CON-1 | ✅ |
 | TC-021 | Every exported type's `data_schema` is the reference form | Unit | P0 | FR-003-AC-2 | ✅ |
 | TC-024 | `quire.Registry.load_from` lists every archetype | Integration | P0 | FR-003-AC-4 | ✅ |
 | TC-025 | `validate_document` on every skeleton reports no `semantic.*` load failure | Integration | P0 | FR-003-AC-4 | ✅ |

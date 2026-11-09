@@ -35,7 +35,7 @@ Quire validates every declaration record against them.
 
 ## Behavior
 
-- The manifest `semantic` block SHALL carry exactly these keys and values: `contract_version: 1.0.0`, `semantic_core` (the declared semantic-core bundle this module extends), `package: agent-ix/spec-objects-business`, `exports` listing every object type that ships a schema, `imports: {}`, `targets: [json-schema, markdown]`, `mappings: [typed-table, sysml-fence, generalization, abstract-types, presence, subsetting, redefinition, effect-frames, relationships, record-sections]`, `compatibility_posture: strict`, `legacy_forms: warning`.
+- The manifest `semantic` block SHALL carry exactly these keys and values: `contract_version: 1.0.0`, `package: agent-ix/spec-objects-business`, `exports` listing every object type that ships a schema, `imports: {}`, `targets: [json-schema, markdown]`, `mappings: [typed-table, sysml-fence, generalization, abstract-types, presence, subsetting, redefinition, effect-frames, relationships, record-sections]`, `compatibility_posture: strict`, `legacy_forms: warning`.
 - `semantic.exports` SHALL name every object type: `domain`, `entity`, `value_object`, `aggregate_root`, `nested_entity`, `repository`, `event`, `state_machine`, `process`, `enumeration`, `population`, `variant_set`, `graph`.
 - `compatibility_posture` SHALL be `strict`, because the declared model-table sections refuse every form the manifest does not declare, which is a breaking change for an artifact authoring one of those sections in another form; `additive` would misstate that, and `declared-lossy` names lossy mappings, which this module declares none of.
 - No exported object type SHALL carry an inline `data_schema`.
@@ -57,7 +57,7 @@ Quire validates every declaration record against them.
 
 | ID | Criteria | Verification |
 |----|----------|--------------|
-| FR-003-AC-1 | The loaded `semantic` block equals the nine admitted keys with the values above, and `exports` equals the object-type names. | Test |
+| FR-003-AC-1 | The loaded `semantic` block equals the eight admitted keys with the values above, and `exports` equals the object-type names. | Test |
 | FR-003-AC-2 | For every exported type, `data_schema` is the reference form, and the referenced file exists. | Test |
 | FR-003-AC-4 | `quire.Registry.load_from([module dir])` lists every archetype and `validate_document` on each skeleton reports no `semantic.*` load failure. | Test |
 | FR-003-AC-5 | `quoin module install path:<module dir>` exits zero and `quoin module` lists `spec-objects-business`; the previously installed entry is restored afterwards. | Demonstration |

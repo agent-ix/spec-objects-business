@@ -28,15 +28,6 @@ import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const MIN_NODE_MAJOR = 20;
-// The base is derived from the manifest's `semantic.semantic_core` declaration
-// (the one declared pin), never typed here.
-function semanticCoreBase() {
-  const manifest = readFileSync(resolve(packageDir, "manifest.yaml"), "utf8");
-  return `https://schemas.agent-ix.org/semantic-core/${
-    manifest.match(/^\s+semantic_core:\s*(\S+)\s*$/m)[1]
-  }/`;
-}
-
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const sourceDir = resolve(repoRoot, "typespec");
 const packageDir = resolve(repoRoot, "spec_objects_business");
@@ -55,6 +46,17 @@ function requireNode() {
       `Node ${MIN_NODE_MAJOR} or later is required; this is Node ${process.versions.node}.`,
     );
   }
+}
+
+/**
+ * The semantic-core base this module extends: the exact `@agent-ix/semantic-core`
+ * version pinned in `package.json`, the version the schemas are compiled against.
+ */
+function semanticCoreBase() {
+  const pkg = JSON.parse(readFileSync(resolve(repoRoot, "package.json"), "utf8"));
+  const declared = pkg.devDependencies?.["@agent-ix/semantic-core"];
+  if (!declared) fail("package.json pins no @agent-ix/semantic-core devDependency");
+  return `https://schemas.agent-ix.org/semantic-core/${declared}/`;
 }
 
 /** The `@jsonSchema` base declared by the source. */
