@@ -45,3 +45,9 @@ one finding is that the new test asserts only list membership.
 | ID | Severity | Summary | Refs | Escape Cause |
 |---|---|---|---|---|
 | FND-001 | low | TC-110 asserts only that the manifest lists contain the new tokens. Nothing in the suite exercises either new link through Quire: no fixture row `references value_object_*` on an entity (the probe above shows it works, but no test pins it), and no test authors a `state_machine` `references` edge at all. A cheap fix is a `references value_object_001` row in `tests/fixtures/positive/entity-relationships.md` (TC-091's composite list then gains one `False`). | tests/test_manifest.py:40-44 | correct-requirement-no-evidence |
+
+## Dispositions
+
+| FND | Outcome | Reason |
+| --- | --- | --- |
+| FND-001 | fixed | Round 1 (be03995): `tests/fixtures/positive/entity-relationships.md` gains the row `shared_terms \| references \| value_object_001 \| 0..*`, and TC-091's composite list becomes `[True, False, False, False, False]`. With only the manifest reverted to `origin/main`, TC-091 and TC-110 both fail, so the entity half is now pinned through Quire extraction. Full suite at be03995: 235 passed, 7 skipped, 4 xfailed, coverage 100%. The state_machine half has no Quire surface this module's tests can drive. FR-007 Behavior now states that the edge lives in frontmatter, where bundle-level checking is quire's concern. |
