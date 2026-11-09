@@ -35,3 +35,10 @@ def test_object_type_has_name_and_data_schema(ot: dict) -> None:
 def test_no_duplicate_object_type_names() -> None:
     names = [ot["name"] for ot in _object_types()]
     assert len(names) == len(set(names)), f"duplicate names: {names}"
+
+
+@pytest.mark.trace("TC-110", "FR-007-AC-11")
+def test_entity_refers_to_value_objects_and_state_machine_names_its_subject() -> None:
+    links = {ot["name"]: ot["allowed_links"] for ot in _object_types()}
+    assert "value_object" in links["entity"]["references"]
+    assert {"entity", "aggregate_root"} <= set(links["state_machine"]["references"])

@@ -61,6 +61,9 @@ not admit.
 - The manifest `edge_types` SHALL declare every verb an `allowed_links` entry names, each with the description, category, and inverse `agent-ix/spec-artifacts-iso` declares, so a registry that loads both modules merges identical entries.
 - Each row's `Verb` SHALL be an `edge_types` verb the artifact's object type admits in `allowed_links`; its `Target` SHALL be an artifact id whose object type satisfies that verb's `allowed_links` targets; its `Multiplicity` SHALL be a multiplicity (`1..1`, `0..*`).
 - `specializes` SHALL stay a frontmatter relationship only; a `specializes` row is refused (quire-rs FR-076 `generalization`).
+- `entity.allowed_links.references` SHALL admit `value_object`, because `contains` asserts ownership and an entity can refer to a value object it does not own.
+- `state_machine.allowed_links.references` SHALL admit `entity` and `aggregate_root`, naming the subject whose lifecycle it is.
+- A `state_machine` declares no `relationships` locator, so it writes that edge in frontmatter `references` (the artifact-graph surface), never in a `## Relationships` table.
 - The `## Relationships` table SHALL be the one authority for an artifact's domain relationships; frontmatter `relationships` is the artifact-graph surface, and no skeleton declares a domain relationship there.
 - The `aggregate_root` skeletons SHALL author a `## Relationships` table whose targets are skeleton artifact ids.
 - `validate_document` passes a bundle package but no bundle index, so it checks a row's target against `allowed_links` only when the target is the artifact's own id; a target in another artifact lowers with the advisory `semantic.unresolved-target` (`no-bundle-index`) and is not checked. Checking such targets in `quoin validate` is `agent-ix/quoin#557`; `extract_semantic` with a bundle index checks them today.
@@ -80,6 +83,7 @@ not admit.
 | FR-007-AC-8 | Through `validate_document`, the entity fixture whose row targets `aggregate_root_999` validates with one `semantic.unresolved-target` advisory at that row naming the missing bundle index. | Test |
 | FR-007-AC-9 | A `process` artifact with the row `done emits event_001 0..1` and a `repository` artifact with the row `orders persists aggregate_root_001 0..*` each validate, and extract `emits` and `persists` respectively holding the qualified target, no `relations`, one `relationSources` entry carrying the row's `Name`, `Verb`, `Target`, and `Multiplicity` cells and its line, and `availability.relations` `available` and not lossy; the same artifacts with a header-only table validate and extract `available` with the typed key present and empty. Each type is an explicit expected failure until `agent-ix/quire-rs#435`. | Test |
 | FR-007-AC-10 | Until `agent-ix/quire-rs#435` lands, each of those `process` and `repository` artifacts fails `validate_document` with exactly one `semantic.record-invalid` error at `relations`; this criterion is removed when AC-9 passes. | Test |
+| FR-007-AC-11 | `entity.allowed_links.references` admits `value_object`, so an entity can refer to a value object it does not own; `state_machine.allowed_links.references` admits `entity` and `aggregate_root`, so a lifecycle can name its subject. | Test |
 
 ## Dependencies
 

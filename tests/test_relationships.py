@@ -243,7 +243,7 @@ def test_the_relationships_fixture_lowers_every_entity_verb(
     assert {r["verb"] for r in relations} == set(
         object_type("entity")["allowed_links"]
     ) - {"specializes"}
-    assert [r["composite"] for r in relations] == [True, False, False, False]
+    assert [r["composite"] for r in relations] == [True, False, False, False, False]
 
 
 # The line of the one row every relationships negative refuses.

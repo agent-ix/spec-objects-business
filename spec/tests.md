@@ -65,7 +65,7 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | FR-004 | FR-004-AC-1..11, FR-004-CON-1..2 | TC-030..TC-041 | ✅ |
 | FR-005 | FR-005-AC-1..8, FR-005-CON-1..2 | TC-050..TC-059 | ✅ |
 | FR-006 | FR-006-AC-1..8, FR-006-CON-1 | TC-080..TC-088 | 🚧 CON-1 (TC-088) is an expected failure blocked on filament-core-service#31; AC-8 is an Inspection |
-| FR-007 | FR-007-AC-1..10 | TC-089..TC-098 | 🚧 AC-9 (TC-097, per type) is an expected failure blocked on quire-rs#435 and AC-10 (TC-098) pins that blocker; AC-6 asserts the null line `agent-ix/quire-rs#440` fixes |
+| FR-007 | | | 🚧 AC-9 (TC-097, per type) is an expected failure blocked on quire-rs#435 and AC-10 (TC-098) pins that blocker; AC-6 asserts the null line `agent-ix/quire-rs#440` fixes |
 | FR-008 | FR-008-AC-1, AC-3, AC-5..7 | TC-099, TC-101, TC-106, TC-108, TC-109 | ✅ AC-1 holds `population` without a construct while filament-core-data#174 is open |
 | FR-009 | FR-009-AC-1..3 | TC-103..TC-105 | ✅ |
 
@@ -151,6 +151,7 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | TC-106 | The manifest `roles:` registry declares `aggregate-member` and `composite-owner`, each with a description, and each type carries the roles its references admit | Unit | P0 | FR-008-AC-5 | ✅ |
 | TC-108 | `event`'s `construct:` declares `immutable: true`; every other of the ten kinds' `construct:` lacks the key | Unit | P0 | FR-008-AC-6 | ✅ |
 | TC-109 | Each QSpec FR-208 refusal this module's record schema can express fails validation, and the same record without the refused form passes: an operation on `ValueObject`/`Event`; a `clauses` key or a non-empty operation `pre`/`post` on `Repository`; a `fields`, `operations` or `clauses` key on `Domain`; and no `repository` or `domain` `allowed_links` admits `specializes` | Unit | P0 | FR-008-AC-7 | ✅ |
+| TC-110 | `entity` `references` admits `value_object`; `state_machine` `references` admits `entity` and `aggregate_root` | Unit | P0 | FR-007-AC-11 | ✅ |
 | TC-075 | Every object type ships a typed schema a fixture reader can consume; an entity and an enumeration record are distinguishable by schema alone | Demonstration | P2 | StR-001-VC-3 | ✅ |
 
 ## Test Environment
