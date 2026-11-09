@@ -116,7 +116,7 @@ dependency" skip that FR-005 replaces with a hard failure.
 - [ ] **TC-011** (FR-002-AC-2): every shipped schema declares the 2020-12 `$schema` and an `$id` under the base whose version segment is read from `manifest.yaml`.
 - [ ] **TC-012** (FR-002-AC-3): every `$ref` resolves to a shipped sibling or to semantic-core 0.2.0.
 - [ ] **TC-019** (FR-002-CON-4): `package-lock.json` resolves every package from npmjs except `@agent-ix/semantic-core`.
-- [ ] **TC-020** (FR-003-AC-1, FR-003-CON-1): the `semantic` block equals the nine admitted keys and `exports` equals the eleven object-type names.
+- [ ] **TC-020** (FR-003-AC-1, FR-003-CON-1): the `semantic` block equals the eight admitted keys and `exports` equals the eleven object-type names.
 - [ ] **TC-021** (FR-003-AC-2): every exported type's `data_schema` is the reference form and the referenced file hashes to the recorded digest.
 - [ ] **TC-022** (FR-003-AC-3): every 0.2.0 locator is unchanged against the checked-in baseline.
 - [ ] **TC-023** (FR-003-AC-3, FR-003-CON-2): every locator added after 0.2.0 is `required: false`.

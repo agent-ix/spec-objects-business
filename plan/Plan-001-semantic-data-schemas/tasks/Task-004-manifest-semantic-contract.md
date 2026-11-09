@@ -33,7 +33,7 @@ a single 0.2.0 locator.
 
 ## Subtasks
 
-- [ ] **`semantic` block.** Exactly the nine admitted keys: `contract_version: 1.0.0`, `semantic_core: 0.1.0`, `package: agent-ix/spec-objects-business`, `exports` (the ten object-type names), `imports: {}`, `targets: [json-schema, markdown]`, `mappings: [typed-table, sysml-fence, ocl-clause]`, `compatibility_posture: additive`, `legacy_forms: warning`.
+- [ ] **`semantic` block.** Exactly the eight admitted keys: `contract_version: 1.0.0`, `package: agent-ix/spec-objects-business`, `exports` (the ten object-type names), `imports: {}`, `targets: [json-schema, markdown]`, `mappings: [typed-table, sysml-fence, ocl-clause]`, `compatibility_posture: additive`, `legacy_forms: warning`.
 - [ ] **Reference-form `data_schema`.** `{ schema: schemas/<Model>.json, digest: sha256:<hex> }` on every exported type, the digest written by the generator over the shipped bytes. No inline `data_schema` survives.
 - [ ] **Version.** `version: 0.3.0`, bumped together with the `@jsonSchema` base in one commit.
 - [ ] **Locator preservation.** Every 0.2.0 locator keeps its `from`, heading, `language`, `required`, `multiple` and `assert` facets, compared structurally against the checked-in baseline from Task-007. The `properties` string locator on `entity` and `value_object` stays exactly where it is.
