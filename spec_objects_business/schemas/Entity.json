@@ -30,6 +30,12 @@
       "items": {
         "$ref": "https://schemas.agent-ix.org/semantic-core/0.3.3/OperationDecl.json"
       }
+    },
+    "operationExpressions": {
+      "type": "array",
+      "items": {
+        "$ref": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/OperationExpression.json"
+      }
     }
   },
   "required": [

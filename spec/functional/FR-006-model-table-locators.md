@@ -27,7 +27,7 @@ form the manifest does not declare.
 ## Inputs
 
 - The quire-rs FR-075 model-table column sets, each first column the entry
-  key: `Type | Extent`, `Value | Description`, `State | Description`,
+  key: `Type`, `Value | Description`, `State | Description`,
   `From | To | Trigger | Guard | Emits`,
   `Step | Kind | Consumes | Emits | Description`, `Member | Multiplicity`,
   `Term | Description`.
@@ -51,7 +51,7 @@ form the manifest does not declare.
 
   | Object type | Locator | Section | Columns | Optional columns | Required |
   |---|---|---|---|---|---|
-  | `population` | `population` | `Members` | `Type, Extent` | none | true |
+  | `population` | `population` | `Members` | `Type` | none | true |
   | `enumeration` | `values` | `Values` | `Value, Description` | `Description` | true |
   | `domain` | `vocabulary` | `Ubiquitous Language` | `Term, Description` | `Description` | false |
   | `aggregate_root` | `members` | `Members` | `Member, Multiplicity` | none | true |
@@ -62,15 +62,15 @@ form the manifest does not declare.
 
 - Until the FR-035 module-manifest schema admits `assert.optional_columns` (`agent-ix/filament-core-service#31`), the manifest SHALL list every column in `assert.columns` and declare no `optional_columns`; an author leaves an optional value unset with an empty cell.
 - Each model table SHALL own its own `##` section.
-- A `population` member's `Type` SHALL name a declaration, its `Extent` SHALL be a multiplicity (`0..*`, `1..1`), and each `Type` SHALL appear once; a repeated `Type` is refused with `semantic.duplicate-model-entry`.
-- A `state_machine` transition's `From` and `To` SHALL name rows of its `## States` table, its `Trigger` SHALL name an operation of the same artifact, and its `Guard`, when present, SHALL name an invariant clause of the same artifact.
+- A `population` member's `Type` SHALL name a declaration, and each `Type` SHALL appear once; a repeated `Type` is refused with `semantic.duplicate-model-entry`. The population's single `extent`, `closed` or `open`, is authored as the required frontmatter field `extent`; the engine reads it with the `population` table locator and refuses a missing or invalid value with `semantic.invalid-model-cell`. A `Type | Extent` table is refused with `semantic.feature-not-extractable`.
+- A `state_machine` transition's `From` and `To` SHALL name rows of its `## States` table, its `Trigger` SHALL name an operation of the same artifact, and its `Guard`, when present, SHALL name an invariant clause of the same artifact or hold an inline Quire expression.
 - A `process` step's `Kind` SHALL be one of `command`, `event`, `decision`, `compensation`, `wait`.
 - An `aggregate_root` member's `Member` SHALL name a declaration by its title, and its `Multiplicity` SHALL be a multiplicity (`1..*`, `3..3`).
 - Every name in an `Emits` or `Consumes` cell and on a `Creates:` line SHALL name a declaration of the skeleton bundle, and a `Deletes:` line SHALL name the declaration whose instance is deleted, never a field.
 - A section that owns a model table SHALL hold only that table and prose; a diagram, fence, or list there is refused with `semantic.feature-not-extractable`.
 - If a table with a model-table header appears under a section this manifest does not declare for the artifact's type, then Quire SHALL refuse it with `semantic.feature-not-extractable`.
 - Every skeleton and fixture clause SHALL be a valid Quire expression: an enumeration value is written in its qualified form `Model::Enum::Variant` (the model alias is `OrderManagement`, pending `agent-ix/quire-specification#84`), `present()` applies only to a `0..1` field, every field a clause reads is declared in the same artifact, and each clause name states exactly what its expression checks.
-- An invariant SHALL hold in every state the model allows. A condition that holds only on some transitions belongs to that transition's `Guard` or its operation's `Pre:`; stating it there as an inline Quire expression is `agent-ix/quire-rs#433`. Until then, a `Guard` or `Pre:` line that names an invariant is always true, and the declared-model positive fixture uses one only to exercise extraction.
+- An invariant SHALL hold in every state the model allows. A condition that holds only on some transitions belongs to that transition's `Guard` or its operation's `Pre:`; stating it there as an inline Quire expression is carried opaquely (`guardExpression`, `operationExpressions`). A `Guard` or `Pre:` line that names an invariant is always true, and the declared-model positive fixture uses one only to exercise extraction.
 - The declared-model positive fixture SHALL exercise every FR-003 mapping token beyond the Properties forms: a `specializes` relationship, `abstract: true`, `Presence`, `Subsets`, and `Redefines` columns, and `Pre:`, `Post:`, `Modifies:`, `Creates:`, and `Deletes:` operation lines.
 - The manifest SHALL declare `specializes` in its `edge_types` with category `structural` and inverse `generalizes`, and every object type that carries fields SHALL admit a `specializes` link to its own type in `allowed_links`, so a declared generalization is a known, allowed edge.
 - Each negative fixture SHALL name its `expect:` code and fail for that reason: an enumeration `## Values` list, a state-machine `## States` diagram, a process `## States` list, a transition naming an unknown state, a transition naming an unknown trigger, a transition guard naming no clause, a step with an unknown kind, an aggregate `## Members` list, a duplicate vocabulary term, a duplicate population member type, a model table under a section the type does not declare, and a `Presence` cell that is neither `required` nor `optional`.
@@ -90,7 +90,7 @@ form the manifest does not declare.
 | FR-006-AC-3 | The declared-model positive fixture validates, and its record carries the `specializes` target, `abstract: true`, the `Presence`, `Subsets`, and `Redefines` cells, one operation frame with its `Pre:`, `Post:`, `Modifies:`, `Creates:`, and `Deletes:` lines, and the transition guard and emitted event; its `current_state` is typed by the `ReturnStatus` enumeration fixture whose values equal its `## States` rows. | Test |
 | FR-006-AC-4 | Each of the twelve negative fixtures in Behavior fails `validate_document` with an error carrying its `expect:` code, and every model table has at least one. | Test |
 | FR-006-AC-5 | No skeleton carries an `ocl` fence or a `mermaid` fence outside the domain ERD, and every operation contract line is a `Pre:` or `Post:` line; every extracted skeleton clause has language `quire` and no `semantic.clause-language-unchecked` advisory. | Test |
-| FR-006-AC-6 | The population positive fixture validates and extracts one population member per `## Members` row, in row order, with its type and extent. | Test |
+| FR-006-AC-6 | The population positive fixture validates and extracts one population member per `## Members` row, in row order, with its type, and the population's one frontmatter `extent`; the duplicate-type negative fixture is refused with `semantic.duplicate-model-entry`, and a `Type | Extent` population table is refused with `semantic.feature-not-extractable`. | Test |
 | FR-006-AC-7 | The manifest `edge_types` declares `specializes` with category `structural` and inverse `generalizes`, and every field-bearing object type admits `specializes` in `allowed_links`. | Test |
 | FR-006-AC-8 | Every skeleton and fixture `quire` fence is a valid Quire expression by the rules in Behavior, and every `Emits`, `Consumes`, `Creates:`, and `Deletes:` name resolves. | Inspection |
 

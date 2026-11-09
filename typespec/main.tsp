@@ -71,23 +71,58 @@ model Term {
  * refusal; both are stated for the extractor that first populates `states`
  * and `transitions`.
  */
+@extension("not", #{ required: #["guard", "guardExpression"] })
 model Transition {
   from: Identifier;
   to: Identifier;
   trigger: Identifier;
   guard?: ClauseRef;
+  guardExpression?: Expression;
   emits?: SemanticId;
   ...Record<never>;
 }
 
 /**
- * One member of a population: a declared type and the extent of its
- * instances (quire-rs FR-075 `Type | Extent` row).
+ * An inline Quire expression carried opaquely: the authored text and the span
+ * of that text. A `Guard` cell or a `Pre:`/`Post:` line holding an expression
+ * rather than a clause id is carried this way (quire-rs FR-071, FR-075).
  */
+model Expression {
+  kind: "expression";
+  @minLength(1) text: string;
+  sourceSpan: SourceLocus;
+  ...Record<never>;
+}
+
+/** Which contract line of an operation an expression was authored on. */
+enum ExpressionSlot {
+  pre,
+  post,
+}
+
+/**
+ * The inline expression of one operation `Pre:` or `Post:` line. It sits
+ * beside `operations` because `OperationDecl.pre` and `post` carry clause
+ * references only. `operation` names an `operations[].name` of the same
+ * record, a reader rule JSON Schema does not express.
+ */
+model OperationExpression {
+  operation: Identifier;
+  slot: ExpressionSlot;
+  expression: Expression;
+  ...Record<never>;
+}
+
+/** One member of a population: a declared type. */
 model PopulationMember {
   type: TypeRef;
-  extent: Multiplicity;
   ...Record<never>;
+}
+
+/** Whether a population's membership is fixed (`closed`) or may grow (`open`). */
+enum PopulationExtent {
+  closed,
+  open,
 }
 
 /** Closed set of process step kinds. */
@@ -135,6 +170,7 @@ model Entity {
   relations?: RelationDecl[];
   clauses?: ClauseRef[];
   operations?: OperationDecl[];
+  operationExpressions?: OperationExpression[];
   ...Record<never>;
 }
 
@@ -151,6 +187,7 @@ model NestedEntity {
   owner?: RelationDecl;
   clauses?: ClauseRef[];
   operations?: OperationDecl[];
+  operationExpressions?: OperationExpression[];
   ...Record<never>;
 }
 
@@ -181,6 +218,7 @@ model AggregateRoot {
 
   relations?: RelationDecl[];
   operations?: OperationDecl[];
+  operationExpressions?: OperationExpression[];
   members?: RelationDecl[];
   emits?: SemanticId[];
   ...Record<never>;
@@ -250,6 +288,7 @@ model StateMachine {
   @minItems(1)
   operations: OperationDecl[];
 
+  operationExpressions?: OperationExpression[];
   fields?: FieldDecl[];
   states?: EnumValue[];
   transitions?: Transition[];
@@ -269,16 +308,18 @@ model Process {
   steps?: ProcessStep[];
   clauses?: ClauseRef[];
   operations?: OperationDecl[];
+  operationExpressions?: OperationExpression[];
   emits?: SemanticId[];
   ...Record<never>;
 }
 
 /**
- * A population: the closed set of declared types whose instances a model
- * ranges over, each with its extent. A population declares membership, not
- * data: `fields` and `operations` are forbidden by the seal.
+ * A population: the declared types whose instances a model ranges over, with
+ * one `extent` for the whole population. A population declares membership,
+ * not data: `fields` and `operations` are forbidden by the seal.
  */
 model Population {
+  extent?: PopulationExtent;
   members?: PopulationMember[];
   clauses?: ClauseRef[];
   ...Record<never>;

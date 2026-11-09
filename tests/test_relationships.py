@@ -6,6 +6,7 @@ registry or `allowed_links` does not admit.
 
 from __future__ import annotations
 
+import json
 import re
 
 import pytest
@@ -102,7 +103,15 @@ def relationship_bundle(semantic_module) -> dict:
     }
 
 
+def data_schema(name: str) -> dict:
+    """The object type's declaration-record schema, as the engine takes it."""
+    path = PACKAGE_ROOT / object_type(name)["data_schema"]["schema"]
+    return json.loads(path.read_text())
+
+
 def extract_relations(quire_engine, semantic_module, path, bundle):
+    # No `dataSchema`: with one, the engine lowers `emits` and `persists` rows
+    # into their typed keys and leaves them out of `relations`.
     text = path.read_text()
     front = frontmatter(text)
     return quire_engine.extract_semantic(
@@ -325,9 +334,11 @@ def test_a_relationships_table_on_a_type_without_relations_fails_its_record_sche
         assert not result["is_valid"]
         (error,) = result["errors"]
         assert error["message"].startswith("semantic.record-invalid:"), error
-        assert "at relations:" in error["message"], error
-        # agent-ix/quire-rs#440: the finding names no line today.
-        assert error["line"] is None, error
+        assert "'relations' was unexpected" in error["message"], error
+        # agent-ix/quire-rs#440: the finding falls back to the first line;
+        # it will name the Relationships table line. Only that a line is
+        # reported is stable.
+        assert isinstance(error["line"], int) and error["line"] >= 1, error
 
 
 @pytest.mark.trace("TC-095", "FR-007-AC-7")
@@ -409,6 +420,7 @@ def extract_document(quire_engine, semantic_module, name: str, text: str) -> dic
             "path": f"{name}.md",
             "sourceIdentity": f"ix://{BUNDLE_PACKAGE}/{frontmatter(text)['id']}",
             "bodyExtraction": object_type(name)["body_extraction"],
+            "dataSchema": data_schema(name),
             "bundle": relationship_bundle(semantic_module),
             "relationVocabulary": relation_vocabulary(name),
         }
@@ -416,16 +428,6 @@ def extract_document(quire_engine, semantic_module, name: str, text: str) -> dic
 
 
 @pytest.mark.trace("TC-097", "FR-007-AC-9")
-@pytest.mark.xfail(
-    strict=True,
-    reason=(
-        "FR-007-AC-9: process `emits` and repository `persists` rows lower into "
-        "the typed record keys, never `relations`. agent-ix/quire-rs#435 builds "
-        "that lowering; today the rows lower into `relations` and the record "
-        "fails `semantic.record-invalid` (TC-098 pins that). An expected "
-        "failure, never a skip."
-    ),
-)
 @pytest.mark.parametrize(
     ("name", "row", "key", "target"), TYPED_KEY_ROWS, ids=[r[0] for r in TYPED_KEY_ROWS]
 )
@@ -464,22 +466,3 @@ def test_process_emits_and_repository_persists_rows_lower_into_typed_keys(
     assert record[key] == [], record
     assert record.get("relationSources", []) == []
     assert not record.get("relations"), record
-
-
-@pytest.mark.trace("TC-098", "FR-007-AC-10")
-@pytest.mark.parametrize(
-    ("name", "row", "key", "target"), TYPED_KEY_ROWS, ids=[r[0] for r in TYPED_KEY_ROWS]
-)
-def test_process_and_repository_rows_are_refused_until_typed_key_lowering_lands(
-    quire_engine, name, row, key, target
-):
-    # agent-ix/quire-rs#435: this pins today's blocker and flips when it lands,
-    # at which point TC-097 passes and this test is removed.
-    text = typed_key_document(name, row + "\n")
-    result = quire_engine.validate_document(
-        name, str(PACKAGE_ROOT), text, bundle_package=BUNDLE_PACKAGE
-    )
-    assert not result["is_valid"]
-    (error,) = result["errors"]
-    assert error["message"].startswith("semantic.record-invalid:"), error
-    assert "at relations:" in error["message"], error

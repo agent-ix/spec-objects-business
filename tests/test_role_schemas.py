@@ -43,6 +43,15 @@ def field(name: str, target: str = "String", *, identity: bool = False) -> dict:
 
 CLAUSE = {"language": "quire", "clauseId": "SomeInvariant"}
 OPERATION = {"name": "get", "params": [field("order_id", "UUID")]}
+SPAN = {
+    "sourceIdentity": "ix://local/spec/spec",
+    "path": "order.md",
+    "startLine": 12,
+    "startColumn": 1,
+    "endLine": 12,
+    "endColumn": 24,
+}
+EXPRESSION = {"kind": "expression", "text": "total > 0 and open()", "sourceSpan": SPAN}
 RELATION = {
     "verb": "contains",
     "category": "structural",
@@ -171,6 +180,18 @@ def test_state_machine_admits_states_and_transitions_and_refuses_a_triggerless_o
     )
     assert not ok(machine, {"operations": []})
 
+    both = {**transition, "guard": CLAUSE, "guardExpression": EXPRESSION}
+    assert not ok(machine, {"operations": [OPERATION], "transitions": [both]})
+    guarded = {**transition, "guardExpression": EXPRESSION}
+    assert ok(machine, {"operations": [OPERATION], "transitions": [guarded]})
+    for bad in (
+        {key: value for key, value in EXPRESSION.items() if key != "text"},
+        {**EXPRESSION, "kind": "clause"},
+        {**EXPRESSION, "text": ""},
+    ):
+        broken = {**transition, "guardExpression": bad}
+        assert not ok(machine, {"operations": [OPERATION], "transitions": [broken]})
+
 
 @pytest.mark.trace("TC-037", "FR-004-AC-8")
 def test_process_requires_a_correlation_identity_and_admits_typed_steps(
@@ -212,17 +233,16 @@ def test_the_empty_record_passes_only_domain_enumeration_and_population(
     )
     assert ok(schema_registry("Enumeration"), {"values": [{"value": "Draft"}]})
     assert not ok(schema_registry("Domain"), {"values": [{"value": "Draft"}]})
-    # `extent` is unbounded (`lower: 0`, no `upper`): a real population
-    # extent, not a singular field. A population's membership has no
-    # positional order (`ordered: False`); an instance is identified, so it
-    # is either a member once or not a member at all — the extent counts
-    # distinct-by-identity instances, never a repeatable value
-    # (`unique: True`).
-    member = {
-        "type": {"target": "ix://agent-ix/spec-objects-business/type/Order"},
-        "extent": {"lower": 0, "ordered": False, "unique": True},
-    }
-    assert ok(schema_registry("Population"), {"members": [member]})
+    member = {"type": {"target": "ix://agent-ix/spec-objects-business/type/Order"}}
+    population = schema_registry("Population")
+    assert ok(population, {"extent": "closed", "members": [member]})
+    assert ok(population, {"extent": "open"})
+    assert ok(population, {"members": [member]})
+    assert not ok(population, {"extent": "sometimes", "members": [member]})
+    assert not ok(
+        population,
+        {"extent": "open", "members": [{**member, "extent": {"lower": 0}}]},
+    )
     assert not ok(schema_registry("Domain"), {"members": [member]})
     assert not ok(schema_registry("Enumeration"), {"members": [member]})
 
@@ -309,3 +329,37 @@ def test_nested_entity_admits_a_local_identity_and_an_owner_and_refuses_relation
     assert ok(nested, {**record, "owner": RELATION})
     assert not ok(nested, {**record, "relations": [RELATION]})
     assert not ok(nested, {"fields": [field("quantity", "Integer")]})
+
+
+@pytest.mark.trace("TC-042", "FR-004-AC-12")
+def test_operation_expressions_validate_beside_operations_and_repository_refuses_them(
+    schema_registry,
+):
+    """`operationExpressions` is hand-built: it is the record key quire-rs
+    emits beside `operations` for an inline `Pre:`/`Post:` expression."""
+    identity_fields = [field("order_id", "UUID", identity=True)]
+    entry = {"operation": "get", "slot": "pre", "expression": EXPRESSION}
+    bases = {
+        "Entity": {"fields": identity_fields},
+        "NestedEntity": {"fields": identity_fields},
+        "AggregateRoot": {"fields": identity_fields, "clauses": [CLAUSE]},
+        "StateMachine": {},
+        "Process": {"fields": identity_fields},
+    }
+    for name, base in bases.items():
+        validator = schema_registry(name)
+        record = {
+            **base,
+            "operations": [OPERATION],
+            "operationExpressions": [entry, {**entry, "slot": "post"}],
+        }
+        assert ok(validator, record), name
+        for bad in (
+            {**entry, "slot": "during"},
+            {key: value for key, value in entry.items() if key != "expression"},
+        ):
+            assert not ok(validator, {**record, "operationExpressions": [bad]}), name
+    assert not ok(
+        schema_registry("Repository"),
+        {"operations": [OPERATION], "operationExpressions": [entry]},
+    )

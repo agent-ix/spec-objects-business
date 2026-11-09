@@ -90,7 +90,7 @@ TABLE_SPECS = {
     "steps": ["Step", "Kind", "Consumes", "Emits", "Description"],
     "members": ["Member", "Multiplicity"],
     "vocabulary": ["Term", "Description"],
-    "population": ["Type", "Extent"],
+    "population": ["Type"],
 }
 
 MODEL_TABLES = {
@@ -204,11 +204,24 @@ def skeletons() -> list[pathlib.Path]:
     return sorted(SKELETONS_DIR.glob("*.md"))
 
 
+def operation_names(text: str) -> list[str]:
+    """The `### <name>` headings under a document's `## Operations` section."""
+    names: list[str] = []
+    in_operations = False
+    for line in text.splitlines():
+        if line.startswith("## "):
+            in_operations = line[3:].strip() == "Operations"
+        elif in_operations and line.startswith("### "):
+            names.append(line[4:].strip())
+    return names
+
+
 @pytest.fixture(scope="session")
 def bundle_index(semantic_block: dict[str, Any]) -> dict[str, Any]:
     """A bundle index built from the skeleton frontmatter (FR-005-AC-3)."""
     objects: list[dict[str, Any]] = []
     enumerations: list[dict[str, Any]] = []
+    artifacts: list[dict[str, Any]] = []
     seen: set[str] = set()
     for path in sorted(SKELETONS_DIR.glob("*.md")):
         front = frontmatter(path.read_text())
@@ -219,10 +232,18 @@ def bundle_index(semantic_block: dict[str, Any]) -> dict[str, Any]:
         objects.append(entry)
         if front["object"] == "enumeration":
             enumerations.append(entry)
+        artifacts.append(
+            {
+                "id": front["id"],
+                "object": front["object"],
+                "operations": operation_names(path.read_text()),
+            }
+        )
     return {
         "package": semantic_block["package"],
         "objects": objects,
         "enumerations": enumerations,
+        "artifacts": artifacts,
         "imports": {},
     }
 
