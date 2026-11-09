@@ -23,3 +23,4 @@ A customer account with one relationship row per verb an entity admits.
 | lifecycle | owns | state_machine_001 | 1..1 |
 | last_order | references | aggregate_root_001 | 0..1 |
 | referrer | references | positive_004 | 0..1 |
+| shared_terms | references | value_object_001 | 0..* |
