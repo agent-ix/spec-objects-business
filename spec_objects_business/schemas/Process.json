@@ -19,6 +19,12 @@
         "$ref": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/ProcessStep.json"
       }
     },
+    "states": {
+      "type": "array",
+      "items": {
+        "$ref": "https://schemas.agent-ix.org/semantic-core/0.3.3/EnumValue.json"
+      }
+    },
     "clauses": {
       "type": "array",
       "items": {

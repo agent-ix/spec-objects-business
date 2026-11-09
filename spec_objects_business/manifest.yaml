@@ -1,6 +1,6 @@
 manifest_version: 1.0.0
 name: spec-objects-business
-version: 0.9.0
+version: 0.10.0
 description: 'Filament Module: tier-2 business ObjectTypes (DDD: domain, entity, value_object, aggregate_root, nested_entity, repository, event, state_machine, process, enumeration, population, variant_set, graph)'
 semantic:
   contract_version: 1.0.0
@@ -22,7 +22,7 @@ semantic:
   - graph
   imports: {}
   targets: [json-schema, markdown]
-  mappings: [typed-table, sysml-fence, generalization, abstract-types, presence, subsetting, redefinition, effect-frames, relationships]
+  mappings: [typed-table, sysml-fence, generalization, abstract-types, presence, subsetting, redefinition, effect-frames, relationships, record-sections]
   compatibility_posture: strict
   legacy_forms: warning
 nav:
@@ -123,6 +123,12 @@ object_types:
           assert:
             columns: [Term, Description]
             min_rows: 1
+        relationships:
+          from: table_row
+          under_section: Relationships
+          required: false
+          assert:
+            columns: [Name, Verb, Target, Multiplicity]
 - name: entity
   frontmatter_schema_ref: schemas/ObjectFrontmatter.json
   roles: [domain-object, persistable, aggregate-member, composite-owner]
@@ -333,6 +339,10 @@ object_types:
         invariants:
           from: section_body
           after_heading: Invariants
+          required: false
+        source:
+          from: section_body
+          after_heading: Source
           required: false
         schema_json:
           from: code_block

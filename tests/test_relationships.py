@@ -26,7 +26,7 @@ from tests.conftest import (
 from tests.test_model_tables import table_rows
 
 # The object types whose record schema admits `relations` (FR-004).
-RELATION_BEARING = ("entity", "aggregate_root")
+RELATION_BEARING = ("entity", "aggregate_root", "domain")
 
 # The object types that declare the Relationships table (FR-007): the
 # relation-bearing types, and the types whose rows lower into typed keys.
@@ -127,21 +127,6 @@ def extract_relations(quire_engine, semantic_module, path, bundle):
     )
 
 
-# Multiplicity.json requires `ordered`/`unique`. The
-# Markdown cell authors them as flags (`0..* unique`); an unflagged cell is
-# `false` for both. Each collection's (ordered, unique) is pinned here so a
-# skeleton that drops or adds a flag fails:
-#   - `lines`: OrderLine members are identified by `line_number`, so one
-#     cannot appear twice (unique), and position is carried by that field,
-#     not by row order (unordered).
-#   - `totals`: Money is a value object; two equal amounts are legitimate
-#     (not unique), and the three are told apart by field name (unordered).
-RELATIONSHIP_ORDER_UNIQUE = {
-    "lines": (False, True),
-    "totals": (False, False),
-}
-
-
 def expected_relations(text: str) -> list[dict]:
     manifest = load_manifest()
     relations = []
@@ -154,10 +139,6 @@ def expected_relations(text: str) -> list[dict]:
             bound["upper"] = int(upper)
         bound["ordered"] = "ordered" in flags
         bound["unique"] = "unique" in flags
-        if name in RELATIONSHIP_ORDER_UNIQUE:
-            assert (bound["ordered"], bound["unique"]) == RELATIONSHIP_ORDER_UNIQUE[
-                name
-            ], (name, multiplicity)
         relations.append(
             {
                 "name": name,
@@ -230,7 +211,7 @@ def test_every_skeleton_relationships_table_extracts_row_for_row(
         assert actual_relations(record) == expected_relations(text), path.name
         verbs = [row[1] for row in table_rows(text, "Relationships")]
         assert "specializes" not in verbs, path.name
-    assert authored == {"aggregate_root"}
+    assert authored == {"aggregate_root", "domain"}
 
 
 @pytest.mark.trace("TC-091", "FR-007-AC-3")

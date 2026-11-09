@@ -11,7 +11,9 @@ object: nested_entity
        express and the reader does not check.
      - "## Invariants" (H2): one `### <clauseId>` per clause.
      - "## Parent" (H2, required): the owning aggregate root and how it
-       mediates every mutation. Derived view; `owner` is the typed key. -->
+       mediates every mutation. Prose only: the owner is a bundle fact, the
+       single inbound `aggregates` or `contains` edge the bundle declares for
+       this artifact, and no section fills a typed `owner` key. -->
 # [nested_entity_001] OrderLine
 
 ## Properties

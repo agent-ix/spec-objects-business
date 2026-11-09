@@ -3,12 +3,12 @@ the records its role
 admits and refuses the records its role forbids.
 
 Every record here is hand-built JSON validated against the shipped schema
-files. The keys the extractor does not populate today (`relations`, `owner`,
+files. The keys the installed engine does not populate yet (`relations`,
 `members`, `states`, `transitions`, `steps`, `values`, `emits`, `persists`,
 `source`, `vocabulary`) can be exercised no other way, so these are **schema
-evidence, not extraction evidence** — the extraction path for them is
-`agent-ix/quoin#335` and its quire-rs successor. Tests that depend on it say
-so in their docstring.
+evidence, not extraction evidence** — the extraction path for them is quoin
+FR-123 and its quire-rs successor. Tests that depend on it say so in their
+docstring.
 """
 
 from __future__ import annotations
@@ -311,22 +311,19 @@ def test_no_module_schema_redeclares_a_semantic_core_model(schema_registry):
             item = prop.get("items", prop)
             if key in {"emits", "persists", "source"}:
                 continue
-            if name == "domain" and key == "ubiquitous_language":
-                # This is raw module-owned section text, not a semantic-core model.
-                continue
             assert "$ref" in item, f"{name}.{key} is not validated by $ref"
 
 
 @pytest.mark.trace("TC-041", "FR-004-AC-11")
-def test_nested_entity_admits_a_local_identity_and_an_owner_and_refuses_relations(
+def test_nested_entity_admits_a_local_identity_and_refuses_an_owner_and_relations(
     schema_registry,
 ):
-    """`owner` and `relations` are hand-built: the extractor populates neither
-    (agent-ix/quoin#335)."""
+    """The owner is a bundle fact (quoin FR-123), so the record carries no
+    `owner` key; `relations` is refused as well."""
     nested = schema_registry("NestedEntity")
     record = {"fields": [field("line_number", "Integer", identity=True)]}
     assert ok(nested, record)
-    assert ok(nested, {**record, "owner": RELATION})
+    assert not ok(nested, {**record, "owner": RELATION})
     assert not ok(nested, {**record, "relations": [RELATION]})
     assert not ok(nested, {"fields": [field("quantity", "Integer")]})
 

@@ -16,8 +16,11 @@ object: domain
      - "## Entity Relationship Diagram" (H2, OPTIONAL): a mermaid diagram of
        the whole domain, extracted as `erd`.
      - "## Ubiquitous Language" (H2, optional): shared vocabulary prose is
-       preserved as `ubiquitous_language`; a `| Term | Description |` table
-       is also extracted as structured `vocabulary` entries.
+       preserved by body extraction as `ubiquitous_language` (display only,
+       no record key); a `| Term | Description |` table is extracted as
+       structured `vocabulary` entries.
+     - "## Relationships" (H2, optional): a `| Name | Verb | Target | Multiplicity |`
+       table of `contains` rows naming the declarations the domain owns.
      A domain declares a boundary, not data: it carries no "## Properties"
      and no "## Invariants" (Domain.json forbids `fields` and `operations`). -->
 # [domain_001] OrderManagement
@@ -69,3 +72,10 @@ erDiagram
 | Capture | Confirm payment for a placed order at the authorised amount |
 | Fulfilment | The pick, pack, and ship work that completes a paid order |
 | Cancellation window | The period during which a placed order may still be cancelled without compensation steps |
+
+## Relationships
+
+| Name | Verb | Target | Multiplicity |
+|---|---|---|---|
+| orders | contains | aggregate_root_001 | 0..* |
+| customers | contains | entity_001 | 0..* |
