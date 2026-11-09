@@ -5,17 +5,13 @@
   "properties": {
     "type": {
       "$ref": "https://schemas.agent-ix.org/semantic-core/0.3.3/TypeRef.json"
-    },
-    "extent": {
-      "$ref": "https://schemas.agent-ix.org/semantic-core/0.3.3/Multiplicity.json"
     }
   },
   "required": [
-    "type",
-    "extent"
+    "type"
   ],
   "unevaluatedProperties": {
     "not": {}
   },
-  "description": "One member of a population: a declared type and the extent of its\ninstances (quire-rs FR-075 `Type | Extent` row)."
+  "description": "One member of a population: a declared type."
 }

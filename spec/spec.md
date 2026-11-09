@@ -75,9 +75,9 @@ module activates against `filament-core`.
   module's locators and skeleton sections for them are
   `agent-ix/spec-objects-business#9`. `relations` are extracted from the
   FR-007 `## Relationships` table.
-- Inline Quire expressions in a transition `Guard` or an operation's
-  `Pre:`/`Post:` lines (`agent-ix/quire-rs#433`); today those name
-  clause ids only.
+- Extraction of inline Quire expressions in a transition `Guard` or an
+  operation's `Pre:`/`Post:` lines (quire-rs FR-071, FR-075); the schemas admit
+  the records it emits (`guardExpression`, `operationExpressions`).
 - Checking `quire` fence expressions mechanically: `agent-ix/quire-spec-language#133`.
   Clause validity is an Inspection (FR-006-AC-8) until that checker exists.
 - Naming what a module load refused: `agent-ix/quire-rs#221` (an unknown

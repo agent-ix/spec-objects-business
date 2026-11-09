@@ -214,13 +214,13 @@ DECLARED_MODEL_FIXTURE = POSITIVE_DIR / "state_machine-declared-model.md"
 
 @pytest.mark.trace("TC-082", "FR-006-AC-3")
 def test_the_declared_model_fixture_extracts_every_mapping_feature(
-    quire_engine, semantic_module
+    quire_engine, semantic_module, bundle_index
 ):
     path = DECLARED_MODEL_FIXTURE
     text = path.read_text()
     result = quire_engine.validate_document("state_machine", str(PACKAGE_ROOT), text)
     assert result["is_valid"], result["errors"]
-    record = extract(quire_engine, semantic_module, path)
+    record = extract(quire_engine, semantic_module, path, bundle_index)
     model = record["model"]
     assert [semantic_target_value(s["target"]) for s in model["supertypes"]] == [
         "OrderLifecycle"
@@ -255,7 +255,9 @@ def test_the_declared_model_fixture_extracts_every_mapping_feature(
     assert [t["guard"] for t in model["transitions"]] == [
         "ReturnedItemsAreAtMostTheItems"
     ]
-    assert [t["emits"] for t in model["transitions"]] == [["OrderPlaced"]]
+    assert [t["emits"] for t in model["transitions"]] == [
+        "ix://agent-ix/spec-objects-business/event_001"
+    ]
     assert not [
         d
         for d in record.get("diagnostics", [])
@@ -265,9 +267,11 @@ def test_the_declared_model_fixture_extracts_every_mapping_feature(
 
 @pytest.mark.trace("TC-082", "FR-006-AC-3")
 def test_the_declared_model_frame_carries_its_pre_and_post_lines(
-    quire_engine, semantic_module
+    quire_engine, semantic_module, bundle_index
 ):
-    record = extract(quire_engine, semantic_module, DECLARED_MODEL_FIXTURE)
+    record = extract(
+        quire_engine, semantic_module, DECLARED_MODEL_FIXTURE, bundle_index
+    )
     (frame,) = record["model"]["operationFrames"]
     assert frame["pre"] == ["ReturnedItemsAreAtMostTheItems"]
     assert frame["post"] == ["ExchangedReturnHasReturnedItems"]
@@ -342,18 +346,24 @@ def test_the_population_fixture_extracts_one_member_per_row(
     assert [
         semantic_target_value(m["type"]["target"]).rsplit("/", 1)[-1] for m in members
     ] == [row[0] for row in rows]
-    # Multiplicity.json requires `ordered`/`unique`.
-    # Order and Customer are singular (1..1): clamp both `false`. OrderLine
-    # is a genuine collection (1..*, a population extent): `ordered: False`
-    # (population membership has no positional order) and `unique: True`
-    # (an identified instance is either a member once or not at all — the
-    # extent counts distinct-by-identity instances, never a repeatable
-    # value).
-    assert [m["extent"] for m in members] == [
-        {"lower": 1, "upper": 1, "ordered": False, "unique": False},
-        {"lower": 1, "upper": 1, "ordered": False, "unique": False},
-        {"lower": 1, "ordered": False, "unique": True},
-    ]
+    assert record["model"]["population"]["extent"] == "open"
+    assert all("extent" not in m for m in members)
+
+    duplicate = (NEGATIVE_DIR / "population-members-duplicate-type.md").read_text()
+    refused = quire_engine.validate_document("population", str(PACKAGE_ROOT), duplicate)
+    assert any(
+        "semantic.duplicate-model-entry" in e["message"] for e in refused["errors"]
+    ), refused["errors"]
+
+    retired = text.replace("| Type |\n|---|", "| Type | Extent |\n|---|---|")
+    retired = "\n".join(
+        f"{line} 0..* |" if line.startswith("| ") and "Type" not in line else line
+        for line in retired.splitlines()
+    )
+    refused = quire_engine.validate_document("population", str(PACKAGE_ROOT), retired)
+    assert any(
+        "semantic.feature-not-extractable" in e["message"] for e in refused["errors"]
+    ), refused["errors"]
 
 
 FIELD_BEARING = (

@@ -10,6 +10,12 @@
       },
       "minItems": 1
     },
+    "operationExpressions": {
+      "type": "array",
+      "items": {
+        "$ref": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/OperationExpression.json"
+      }
+    },
     "fields": {
       "type": "array",
       "items": {

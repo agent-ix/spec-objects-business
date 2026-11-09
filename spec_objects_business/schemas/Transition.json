@@ -15,6 +15,9 @@
     "guard": {
       "$ref": "https://schemas.agent-ix.org/semantic-core/0.3.3/ClauseRef.json"
     },
+    "guardExpression": {
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/Expression.json"
+    },
     "emits": {
       "$ref": "https://schemas.agent-ix.org/semantic-core/0.3.3/SemanticId.json"
     }
@@ -27,5 +30,11 @@
   "unevaluatedProperties": {
     "not": {}
   },
-  "description": "One state-machine transition.\n\nReader rules JSON Schema cannot express (FR-004): `from` and `to` name a\n`states[].value` of the same record, and `trigger` names an\n`operations[].name` of the same record. Neither is claimed as a schema\nrefusal; both are stated for the extractor that first populates `states`\nand `transitions`."
+  "description": "One state-machine transition.\n\nReader rules JSON Schema cannot express (FR-004): `from` and `to` name a\n`states[].value` of the same record, and `trigger` names an\n`operations[].name` of the same record. Neither is claimed as a schema\nrefusal; both are stated for the extractor that first populates `states`\nand `transitions`.",
+  "not": {
+    "required": [
+      "guard",
+      "guardExpression"
+    ]
+  }
 }

@@ -62,10 +62,10 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | FR-001 | FR-001-AC-2..4 | TC-002..TC-004 | 🚧 AC-2..AC-4 need a running filament-core |
 | FR-002 | FR-002-AC-2..4, FR-002-AC-6, FR-002-AC-7, FR-002-AC-9, FR-002-CON-1..4 | TC-011..TC-013, TC-015..TC-019, TC-071, TC-073 | ✅ |
 | FR-003 | FR-003-AC-1..2, FR-003-AC-4..6, FR-003-CON-1 | TC-020, TC-021, TC-024..TC-027 | ✅ AC-5 is a Demonstration; AC-6's naming half is an expected failure |
-| FR-004 | FR-004-AC-1..11, FR-004-CON-1..2 | TC-030..TC-041 | ✅ |
+| FR-004 | FR-004-AC-1..12, FR-004-CON-1..2 | TC-030..TC-041, TC-042 | ✅ |
 | FR-005 | FR-005-AC-1..8, FR-005-CON-1..2 | TC-050..TC-059 | ✅ |
 | FR-006 | FR-006-AC-1..8, FR-006-CON-1 | TC-080..TC-088 | 🚧 CON-1 (TC-088) is an expected failure blocked on filament-core-service#31; AC-8 is an Inspection |
-| FR-007 | | | 🚧 AC-9 (TC-097, per type) is an expected failure blocked on quire-rs#435 and AC-10 (TC-098) pins that blocker; AC-6 asserts the null line `agent-ix/quire-rs#440` fixes |
+| FR-007 | FR-007-AC-1..9, AC-11 | TC-089..TC-097, TC-110 | ✅ AC-6 asserts that a line is reported; the table line is `agent-ix/quire-rs#440` |
 | FR-008 | FR-008-AC-1, AC-3, AC-5..7 | TC-099, TC-101, TC-106, TC-108, TC-109 | ✅ AC-1 holds `population` without a construct while filament-core-data#174 is open |
 | FR-009 | FR-009-AC-1..3 | TC-103..TC-105 | ✅ |
 
@@ -105,12 +105,13 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | TC-033 | Aggregate root: identity plus one clause validates; no `clauses` fails | Integration | P0 | FR-004-AC-4 | ✅ |
 | TC-034 | Event: `Timestamp` field and no identity validates; no `Timestamp` fails; identity fails; `operations` fails | Integration | P0 | FR-004-AC-5 | ✅ |
 | TC-035 | Repository: one operation validates; `fields` fails; empty `operations` fails | Integration | P0 | FR-004-AC-6 | ✅ |
-| TC-036 | State machine: one operation validates with `states` and `transitions`; a transition without `trigger` fails | Integration | P1 | FR-004-AC-7 | ✅ |
+| TC-036 | State machine: one operation validates with `states` and `transitions`; a transition without `trigger` fails; a transition `guardExpression` validates, a malformed one fails, and `guard` with `guardExpression` fails | Integration | P1 | FR-004-AC-7 | ✅ |
 | TC-037 | Process: identity record validates with `steps` and `emits`; a step outside `StepKind` fails | Integration | P1 | FR-004-AC-8 | ✅ |
-| TC-038 | Empty record validates for Domain, Enumeration, and Population only; `fields` on any of them fails; population `members` validate only against Population | Integration | P0 | FR-004-AC-9, FR-004-CON-2 | ✅ |
+| TC-038 | Empty record validates for Domain, Enumeration, and Population only; `fields` on any of them fails; a population `extent` outside `closed`/`open` fails; population `members` (type only) validate only against Population | Integration | P0 | FR-004-AC-9, FR-004-CON-2 | ✅ |
 | TC-039 | Placeholder `unresolved` target is accepted by the schema and reported by the extractor; a bare token is refused | Integration | P1 | FR-004-AC-10 | ✅ |
 | TC-040 | No module schema redeclares a semantic-core model; every grammar item is a `$ref` to semantic-core | Unit | P1 | FR-004-CON-1 | ✅ |
 | TC-041 | Nested entity: local identity validates; `relations` fails; `owner` accepted | Integration | P1 | FR-004-AC-11 | ✅ |
+| TC-042 | Each of the five operation-bearing role schemas validates `operationExpressions` entries; a bad `slot` or a missing `expression` fails; `Repository` refuses the key | Integration | P1 | FR-004-AC-12 | ✅ |
 | TC-050 | Every skeleton (eleven plus three alternates) validates with no error | Integration | P0 | FR-005-AC-1 | ✅ |
 | TC-051 | Table and `sysml` skeletons extract to identical normalized fields with the recorded forms | Integration | P0 | FR-005-AC-2, FR-005-CON-2 | ✅ |
 | TC-052 | Under the skeleton bundle index every skeleton extracts with zero errors and zero unresolved tokens | Integration | P0 | FR-005-AC-3 | ✅ |
@@ -130,7 +131,7 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | TC-082 | The declared-model fixture extracts supertypes, `abstract`, field presence, subsets, redefines, one operation frame with its `Modifies:`, `Creates:` and `Deletes:` lines, its `pre`/`post` lines, and the transition guard and emits | Integration | P0 | FR-006-AC-3 | ✅ |
 | TC-083 | Each model-table negative fixture fails with its `expect:` code and every declared model-table locator has one | Integration | P0 | FR-006-AC-4 | ✅ |
 | TC-084 | Every skeleton and fixture `quire` fence is valid Quire (qualified enum values, `present()` on `0..1` fields only, declared fields, names that state the check, invariants that hold in every state) and every `Emits`/`Consumes`/`Creates:`/`Deletes:` name resolves; mechanical check is `agent-ix/quire-spec-language#133` | Inspection | P1 | FR-006-AC-8 | ✅ |
-| TC-085 | The population fixture validates and extracts one member per `## Members` row with its type and extent | Integration | P0 | FR-006-AC-6 | ✅ |
+| TC-085 | The population fixture validates and extracts one member per `## Members` row with its type, plus the population's frontmatter `extent`; a repeated `Type` and a retired `Type | Extent` table are refused | Integration | P0 | FR-006-AC-6 | ✅ |
 | TC-086 | The manifest declares `specializes` as a structural edge with inverse `generalizes`, admitted by every field-bearing type | Unit | P1 | FR-006-AC-7 | ✅ |
 | TC-087 | Skeleton clauses are `quire` with no advisory; no skeleton carries `ocl` or a model-section diagram, and its operation contract lines are `Pre:`/`Post:` (the `state_machine` skeleton writes a `Post:` line) | Integration | P1 | FR-006-AC-5 | ✅ |
 | TC-089 | `semantic.mappings` includes `relationships`; only `entity`, `aggregate_root`, `process` and `repository` declare the `relationships` locator, with no `min_rows`; `edge_types` declares `specializes` and the fifteen domain verbs with their spec-artifacts-iso category and inverse, covering every `allowed_links` verb | Unit | P0 | FR-007-AC-1 | ✅ |
@@ -138,11 +139,10 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | TC-091 | The entity relationships fixture validates and lowers every non-`specializes` entity verb, `composite` only for `contains` | Integration | P0 | FR-007-AC-3 | ✅ |
 | TC-092 | The unknown-verb, inverse-verb, target-not-allowed and bad-multiplicity fixtures each fail with exactly one `semantic.invalid-model-cell` at line 21 on both surfaces, their reason, `availability.relations` `unavailable` with `entry-errors: lines 21`, and no relation; the inverse-verb message names `aggregates` and `aggregate_root_001` | Integration | P0 | FR-007-AC-4 | ✅ |
 | TC-093 | A header-only Relationships table validates and extracts `available` with empty `relations` | Integration | P0 | FR-007-AC-5 | ✅ |
-| TC-094 | Only `Entity` and `AggregateRoot` declare `relations`; a Relationships table on `value_object`, populated or header-only, fails with one `semantic.record-invalid` at `relations` (line null until `agent-ix/quire-rs#440`) | Integration | P0 | FR-007-AC-6 | ✅ |
+| TC-094 | Only `Entity` and `AggregateRoot` declare `relations`; a Relationships table on `value_object`, populated or header-only, fails with one `semantic.record-invalid` naming `relations` as unexpected (a line is reported; the table line is `agent-ix/quire-rs#440`) | Integration | P0 | FR-007-AC-6 | ✅ |
 | TC-095 | A list-form Relationships section fails with `semantic.feature-not-extractable` at the list line; a prose-only section warns `semantic.relationships-no-block` at the heading | Integration | P0 | FR-007-AC-7 | ✅ |
 | TC-096 | Through `validate_document`, a row targeting another artifact (`aggregate_root_999`) validates with one `semantic.unresolved-target` advisory at the row (`agent-ix/quoin#557`) | Integration | P1 | FR-007-AC-8 | ✅ |
-| TC-097 | Per type, a process `emits` row and a repository `persists` row validate and lower into `emits` and `persists` with the qualified target, not `relations`, with every row in `relationSources` and non-lossy availability; header-only extracts the typed key empty — an explicit expected failure while `agent-ix/quire-rs#435` is open | Integration | P1 | FR-007-AC-9 | 🚧 blocked on quire-rs#435 |
-| TC-098 | Per type, the same process and repository rows fail today with exactly one `semantic.record-invalid` at `relations`; flips when `agent-ix/quire-rs#435` lands | Integration | P1 | FR-007-AC-10 | ✅ |
+| TC-097 | Per type, a process `emits` row and a repository `persists` row validate and lower into `emits` and `persists` with the qualified target, not `relations`, with every row in `relationSources` and non-lossy availability; header-only extracts the typed key empty, with the object type's data schema on the extraction request | Integration | P1 | FR-007-AC-9 | ✅ |
 | TC-099 | Exactly the ten construct kinds declare `construct:`, and `population` none while filament-core-data#174 is open | Unit | P0 | FR-008-AC-1 | ✅ |
 | TC-101 | Per kind, `references` name only roles an object type of the manifest carries, never `*` or a type name | Unit | P0 | FR-008-AC-3 | ✅ |
 | TC-103 | `ObjectFrontmatter.json` carries the segmented document id pattern; every object type references that frontmatter schema and has a required id locator without a second regex | Unit | P0 | FR-009-AC-1 | ✅ |
@@ -160,7 +160,7 @@ Every `Integration` row that names Quire runs against the Quire wheel FR-005
 Inputs pins, a dev dependency resolved from `internal-pypi` by `poetry install`.
 The suite **fails**
 rather than skips when `extract_semantic` is absent, so no row here can be
-reported green without the engine under test. The exceptions are TC-097, an explicit expected failure while `agent-ix/quire-rs#435` is open, and TC-088, an
+reported green without the engine under test. The exception is TC-088, an
 explicit expected failure while `agent-ix/filament-core-service#31` is open.
 A Relationships table whose columns do not match the locator assert reports that
 assert error twice (`agent-ix/quire-rs#441`); FR-007 tests pin no such error list.
