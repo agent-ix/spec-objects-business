@@ -23,23 +23,25 @@ from tests.conftest import (
 from tests.test_model_tables import table_rows
 from tests.test_role_schemas import RELATION, ok
 
-# The owner of every top-level key a record schema of this module declares.
-KEY_OWNERS = {
-    "fields": "quoin FR-071",
-    "clauses": "quoin FR-072",
-    "operations": "quoin FR-072",
-    "operationExpressions": "quoin FR-072",
-    "relations": "quoin FR-104",
-    "emits": "quire-rs FR-076, from `## Relationships` rows",
-    "persists": "quire-rs FR-076, from `## Relationships` rows",
-    "source": "quoin FR-121, from `## Source`",
-    "extent": "quire-rs FR-075, from frontmatter",
-    "values": "quoin FR-123",
-    "states": "quoin FR-123",
-    "transitions": "quoin FR-123",
-    "steps": "quoin FR-123",
-    "members": "quoin FR-123 (aggregate_root) and quire-rs FR-075 (population)",
-    "vocabulary": "quoin FR-123",
+COMMON = {"fields", "clauses", "operations", "operationExpressions"}
+
+# The keys each object type's record schema may declare (FR-010). `members` is
+# allowed only on `aggregate_root` (FR-123) and, unmapped, on `population`,
+# whose `extent` is unmapped too.
+ALLOWED_KEYS = {
+    "domain": {"relations", "vocabulary"},
+    "entity": {"fields", "relations", "clauses", "operations", "operationExpressions"},
+    "value_object": {"fields", "clauses"},
+    "aggregate_root": COMMON | {"relations", "members", "emits"},
+    "nested_entity": {"fields", "clauses", "operations", "operationExpressions"},
+    "repository": {"operations", "persists"},
+    "event": {"fields", "clauses", "source"},
+    "state_machine": COMMON | {"states", "transitions"},
+    "process": COMMON | {"steps", "states", "emits"},
+    "enumeration": {"values", "clauses"},
+    "population": {"extent", "members", "clauses"},
+    "variant_set": {"variants", "clauses"},
+    "graph": {"clauses"},
 }
 
 # Keys quoin FR-123 leaves unmapped: no schema declares them.
@@ -55,7 +57,7 @@ def declared_keys(name: str) -> set[str]:
 def test_every_declared_record_key_has_one_owner_and_the_unmapped_keys_are_absent():
     for name in OBJECT_TYPES:
         keys = declared_keys(name)
-        assert keys <= set(KEY_OWNERS), (name, keys - set(KEY_OWNERS))
+        assert keys <= ALLOWED_KEYS[name], (name, keys - ALLOWED_KEYS[name])
         assert not keys & set(UNMAPPED), (name, keys & set(UNMAPPED))
     assert "members" not in declared_keys("domain")
     assert "relations" in declared_keys("domain")
@@ -95,7 +97,7 @@ def test_record_sections_is_named_and_event_source_is_one_inline_id_section():
     }
     text = (SKELETONS_DIR / "event.md").read_text()
     body = re.search(r"^## Source\s*$(.*?)(?=^## |\Z)", text, re.S | re.M).group(1)
-    (inline_id,) = body.split()
+    (inline_id,) = re.fullmatch(r"\s*`([^`\s]+)`\s*", body).groups()
     published_by = {
         frontmatter(p.read_text())["id"]: frontmatter(p.read_text())["object"]
         for p in SKELETONS_DIR.glob("*.md")
@@ -112,7 +114,9 @@ def test_nested_entity_parent_is_prose_and_no_skeleton_authors_an_owner_section(
         "required": True,
     }
     for path in SKELETONS_DIR.glob("*.md"):
-        assert not re.search(r"^## (Owner|Emits|Persists)\s*$", path.read_text(), re.M)
+        assert not re.search(
+            r"^## (Owner|Extent|Emits|Persists)\s*$", path.read_text(), re.M
+        )
 
 
 @pytest.mark.trace("TC-115", "FR-010-AC-5")
@@ -124,7 +128,7 @@ def test_aggregate_membership_is_authored_once_in_the_members_table():
 
 
 @pytest.mark.trace("TC-116", "FR-010-AC-6")
-def test_domain_relationships_skeleton_extracts_its_contains_rows(
+def test_domain_skeleton_validates_and_authors_contains_relationships(
     quire_engine,
 ):
     text = (SKELETONS_DIR / "domain.md").read_text()
