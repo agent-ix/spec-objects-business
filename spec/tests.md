@@ -30,7 +30,7 @@ relationships:
 
 This matrix is the verification contract for the module: the manifest
 activation requirement (FR-001, issue #1 era) and the issue #4 semantic data
-schemas, model tables, relationships, construct declarations and object ids (US-001, FR-002..FR-010, IT-002). Coverage is complete when
+schemas, model tables, relationships, construct declarations and object ids (US-001, the functional requirements, IT-002). Coverage is complete when
 every acceptance criterion and named constraint maps to at least
 one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate --strict` reports no findings on this branch, and the rows still `🚧` are the ones whose evidence needs an environment this repository cannot provision (a running `filament-core-service`, a Quoin with the semantic installer).
 
@@ -70,7 +70,6 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | FR-007 | FR-007-AC-1..9, AC-11 | TC-089..TC-097, TC-110 | ✅ AC-6 asserts that a line is reported; the table line is `agent-ix/quire-rs#440` |
 | FR-008 | FR-008-AC-1, AC-3, AC-5..7 | TC-099, TC-101, TC-106, TC-108, TC-109 | ✅ AC-1 holds `population` without a construct while filament-core-data#174 is open |
 | FR-009 | FR-009-AC-1..3 | TC-103..TC-105 | ✅ |
-| FR-010 | FR-010-AC-1..6, FR-010-CON-1 | TC-111..TC-117 | ✅ CON-1 is an Inspection; the engine's record-key extraction is quire-rs's to prove |
 
 ### Integration Test Coverage
 
@@ -151,13 +150,12 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | TC-103 | `ObjectFrontmatter.json` carries the segmented document id pattern; every object type references that frontmatter schema and has a required id locator without a second regex | Unit | P0 | FR-009-AC-1 | ✅ |
 | TC-104 | `ObjectFrontmatter.json` accepts underscore and QSpec style hyphenated ids, refuses malformed ids, every skeleton and fixture frontmatter validates, and a composed `FR` artifact with `object: enumeration` accepts `FR-271` | Integration | P0 | FR-009-AC-2 | ✅ |
 | TC-105 | Every skeleton validates with its current id and a well-formed hyphenated id, while a repeated hyphen is refused by its frontmatter schema | Integration | P0 | FR-009-AC-3 | ✅ |
-| TC-111 | Every top-level key of every record schema has an owner, none declares `owner` or `ubiquitous_language`, `Domain` declares `relations` and no `members`, `Process` declares `states` | Unit | P0 | FR-010-AC-1 | ✅ |
+| TC-111 | Every top-level key of every record schema is allowed for its own object type (`members` only on `aggregate_root` and `population`), none declares `owner` or `ubiquitous_language`, `Domain` declares `relations` and no `members`, `Process` declares `states` | Unit | P0 | FR-010-AC-1 | ✅ |
 | TC-112 | `Process` `states` validate and a value-less entry fails; `Domain` `relations` validate and `members` or `ubiquitous_language` fail | Unit | P0 | FR-010-AC-2 | ✅ |
-| TC-113 | The manifest names `record-sections`, `event` declares the optional `source` locator, and the event skeleton `## Source` holds one inline id of an `aggregate_root` skeleton | Unit | P0 | FR-010-AC-3 | ✅ |
-| TC-114 | `nested_entity` `## Parent` stays a required prose locator and no skeleton authors `## Owner`, `## Emits` or `## Persists` | Unit | P0 | FR-010-AC-4 | ✅ |
+| TC-113 | The manifest names `record-sections`, `event` declares the optional `source` locator, and the event skeleton `## Source` holds exactly one inline-code id of an `aggregate_root` skeleton | Unit | P0 | FR-010-AC-3 | ✅ |
+| TC-114 | `nested_entity` `## Parent` stays a required prose locator and no skeleton authors `## Owner`, `## Extent`, `## Emits` or `## Persists` | Unit | P0 | FR-010-AC-4 | ✅ |
 | TC-115 | The `aggregate_root` skeleton has a `## Members` table and no `aggregates` or `contains` Relationships row | Unit | P0 | FR-010-AC-5 | ✅ |
-| TC-116 | The `domain` skeleton validates under the bundle package with `contains` Relationships rows | Integration | P0 | FR-010-AC-6 | ✅ |
-| TC-117 | FR-010-CON-1: no quire-rs or quoin fixture is copied into the repository | Inspection | P1 | FR-010-CON-1 | ✅ |
+| TC-116 | The `domain` skeleton validates under the bundle package and authors `contains` Relationships rows | Integration | P0 | FR-010-AC-6 | ✅ |
 | TC-106 | The manifest `roles:` registry declares `aggregate-member` and `composite-owner`, each with a description, and each type carries the roles its references admit | Unit | P0 | FR-008-AC-5 | ✅ |
 | TC-108 | `event`'s `construct:` declares `immutable: true`; every other of the ten kinds' `construct:` lacks the key | Unit | P0 | FR-008-AC-6 | ✅ |
 | TC-109 | Each QSpec FR-208 refusal this module's record schema can express fails validation, and the same record without the refused form passes: an operation on `ValueObject`/`Event`; a `clauses` key or a non-empty operation `pre`/`post` on `Repository`; a `fields`, `operations` or `clauses` key on `Domain`; and no `repository` or `domain` `allowed_links` admits `specializes` | Unit | P0 | FR-008-AC-7 | ✅ |
