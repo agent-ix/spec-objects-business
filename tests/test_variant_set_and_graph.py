@@ -40,7 +40,15 @@ def test_the_manifest_declares_variant_set_and_graph_with_their_links():
     }
     graph_links = object_type("graph")["allowed_links"]
     assert set(graph_links) == {"references"}
-    assert {"event", "process", "entity", "graph"} <= set(graph_links["references"])
+    assert graph_links["references"] == [
+        "entity",
+        "aggregate_root",
+        "value_object",
+        "enumeration",
+        "event",
+        "process",
+        "graph",
+    ]
     for name, schema in (("variant_set", "VariantSet"), ("graph", "Graph")):
         assert object_type(name)["data_schema"] == {"schema": f"schemas/{schema}.json"}
 
@@ -50,7 +58,7 @@ def test_a_variant_set_authors_a_variants_table_and_refuses_a_list(quire_engine)
     variants = locators(object_type("variant_set"))["variants"]
     assert variants["required"] is True
     assert variants["assert"] == {
-        "columns": ["Variant", "Payload", "Description"],
+        "columns": ["Name", "Payload", "Description"],
         "min_rows": 1,
     }
     result = validate(quire_engine, POSITIVE_DIR / "variant_set-diagnostic-cause.md")
@@ -84,11 +92,17 @@ def test_variant_set_and_graph_schemas_are_sealed_against_lifecycle_and_data(
     graph = schema_registry("Graph")
     assert ok(variant_set, {}) and ok(graph, {})
     assert ok(variant_set, {"clauses": [CLAUSE]}) and ok(graph, {"clauses": [CLAUSE]})
-    payload = {"target": "ix://agent-ix/spec-objects-business/type/DigestPair"}
-    variants = [{"name": "digest_mismatch", "payload": {"target": payload["target"]}}]
+    payload = "ix://agent-ix/spec-objects-business/value_object_001"
+    variants = [
+        {"name": "digest_mismatch", "payload": payload, "description": "differs"}
+    ]
     assert ok(variant_set, {"variants": variants})
     assert ok(variant_set, {"variants": [{"name": "unavailable"}]})
     assert not ok(variant_set, {"variants": [{"payload": payload}]})
+    assert not ok(variant_set, {"variants": [{"name": "digest-mismatch"}]})
+    assert not ok(
+        variant_set, {"variants": [{"name": "a", "payload": {"target": "X"}}]}
+    )
     assert not ok(graph, {"variants": variants})
     forbidden = (
         {"fields": [field("anything")]},

@@ -335,12 +335,15 @@ model Enumeration {
 }
 
 /**
- * One variant of a closed union. `payload` is the type the selected variant
- * carries; a variant with no payload omits it.
+ * One variant of a closed union, one row of the `## Variants` table. `payload`
+ * is the artifact id of the type the selected variant carries (a table cell
+ * reads a `SemanticId`, not a `TypeRef` object); a variant with no payload
+ * leaves the cell empty and omits the key.
  */
 model VariantDecl {
   name: Identifier;
-  payload?: TypeRef;
+  payload?: SemanticId;
+  description?: string;
   ...Record<never>;
 }
 

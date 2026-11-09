@@ -7,7 +7,10 @@
       "$ref": "https://schemas.agent-ix.org/semantic-core/0.3.3/Identifier.json"
     },
     "payload": {
-      "$ref": "https://schemas.agent-ix.org/semantic-core/0.3.3/TypeRef.json"
+      "$ref": "https://schemas.agent-ix.org/semantic-core/0.3.3/SemanticId.json"
+    },
+    "description": {
+      "type": "string"
     }
   },
   "required": [
@@ -16,5 +19,5 @@
   "unevaluatedProperties": {
     "not": {}
   },
-  "description": "One variant of a closed union. `payload` is the type the selected variant\ncarries; a variant with no payload omits it."
+  "description": "One variant of a closed union, one row of the `## Variants` table. `payload`\nis the artifact id of the type the selected variant carries (a table cell\nreads a `SemanticId`, not a `TypeRef` object); a variant with no payload\nleaves the cell empty and omits the key."
 }

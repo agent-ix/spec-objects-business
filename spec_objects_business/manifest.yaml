@@ -528,16 +528,12 @@ object_types:
         id: *id001
         title: *id002
         type: *id003
-        invariants:
-          from: section_body
-          after_heading: Invariants
-          required: false
         variants:
           from: table_row
           under_section: Variants
           required: true
           assert:
-            columns: [Variant, Payload, Description]
+            columns: [Name, Payload, Description]
             min_rows: 1
 - name: graph
   frontmatter_schema_ref: schemas/ObjectFrontmatter.json

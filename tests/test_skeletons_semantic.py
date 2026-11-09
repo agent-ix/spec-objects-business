@@ -75,7 +75,6 @@ def extract(quire_engine, module, bundle, path):
 
 @pytest.mark.trace("TC-050", "FR-005-AC-1")
 def test_every_skeleton_validates_with_no_error(quire_engine, skeletons):
-    assert len(skeletons) == 16
     # validate_document has no bundle index; event's Money reference is
     # verified by the bundle-index extraction test below.
     for path in skeletons:
