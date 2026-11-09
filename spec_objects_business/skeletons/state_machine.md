@@ -10,7 +10,7 @@ object: state_machine
        table form every other type uses.
      - "## Invariants" (H2): one `### <clauseId>` per clause, each owning one
        `quire` fence that holds a Quire expression.
-     - "## Operations" (H2, optional; Transitions triggers must name its operations): one `### <name>`
+     - "## Operations" (H2, required by StateMachine.json): one `### <name>`
        per transition command, with `Pre:`/`Post:` lines naming
        clause ids declared in this artifact.
      - "## States" (H2, required): a `| State | Description |` table.

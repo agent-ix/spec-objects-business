@@ -41,6 +41,8 @@ self.exchanged implies size(self.returned_items) >= 1
 
 ## Operations
 
+The operations the ReturnLifecycle declaration exposes.
+
 ### exchange
 
 Replace the returned lines with a new order.

@@ -41,6 +41,9 @@
       }
     }
   },
+  "required": [
+    "operations"
+  ],
   "unevaluatedProperties": {
     "not": {}
   },

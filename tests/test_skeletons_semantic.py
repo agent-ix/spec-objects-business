@@ -318,3 +318,30 @@ def test_skeleton_titles_are_distinct_identifiers_and_object_equals_type():
         assert owner == stem, f"{title} is used by both {owner} and {stem}"
     declared = {ot["name"] for ot in object_types()}
     assert set(titles.values()) == declared
+
+
+#: Skeleton -> the required section whose removal must be refused (FR-012).
+REQUIRED_SECTION_REMOVED = {
+    "nested_entity": "Properties",
+    "aggregate_root": "Properties",
+    "event": "Properties",
+    "process": "Properties",
+    "state_machine": "Operations",
+}
+
+
+@pytest.mark.trace("TC-123", "FR-012-AC-2")
+@pytest.mark.parametrize("name", sorted(REQUIRED_SECTION_REMOVED))
+def test_a_skeleton_missing_its_required_section_is_refused_as_missing(
+    quire_engine, name
+):
+    text = (SKELETONS_DIR / f"{name}.md").read_text()
+    heading = REQUIRED_SECTION_REMOVED[name]
+    cut = re.sub(rf"(?ms)^## {heading}\n.*?(?=^## |\Z)", "", text)
+    assert cut != text
+    result = quire_engine.validate_document(
+        name, str(PACKAGE_ROOT), cut, bundle_package=BUNDLE_PACKAGE
+    )
+    messages = [e["message"] for e in result["errors"]]
+    assert not result["is_valid"], name
+    assert any(heading in m and "missing" in m for m in messages), messages

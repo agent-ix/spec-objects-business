@@ -50,6 +50,9 @@
       }
     }
   },
+  "required": [
+    "fields"
+  ],
   "unevaluatedProperties": {
     "not": {}
   },

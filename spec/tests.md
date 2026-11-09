@@ -66,7 +66,7 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | FR-001 | FR-001-AC-2..4 | TC-002..TC-004 | 🚧 AC-2..AC-4 need a running filament-core |
 | FR-002 | FR-002-AC-2..4, FR-002-AC-6, FR-002-AC-7, FR-002-AC-9, FR-002-CON-1..4 | TC-011..TC-013, TC-015..TC-019, TC-071, TC-073 | ✅ |
 | FR-003 | FR-003-AC-1..2, FR-003-AC-4..6, FR-003-CON-1 | TC-020, TC-021, TC-024..TC-027 | ✅ AC-5 is a Demonstration; AC-6's naming half is an expected failure |
-| FR-004 | FR-004-AC-1..12, FR-004-CON-1 | TC-030..TC-041, TC-042 | ✅ |
+| FR-004 | FR-004-AC-1..12, FR-004-CON-1..2 | TC-030..TC-041, TC-042 | ✅ |
 | FR-005 | FR-005-AC-1..8, FR-005-CON-1..2 | TC-050..TC-059 | ✅ |
 | FR-006 | FR-006-AC-1..8, FR-006-CON-1 | TC-080..TC-088 | 🚧 CON-1 (TC-088) is an expected failure blocked on filament-core-service#31; AC-8 is an Inspection |
 | FR-007 | FR-007-AC-1..9, AC-11 | TC-089..TC-097, TC-110 | ✅ AC-6 asserts that a line is reported; the table line is `agent-ix/quire-rs#440` |
@@ -108,12 +108,12 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | TC-030 | Each schema differs from every other in a required, forbidden, or item rule; none is `type: object` only | Unit | P0 | FR-004-AC-1 | ✅ |
 | TC-031 | Entity: identity record validates; identity flag removed fails; no `fields` fails | Integration | P0 | FR-004-AC-2 | ✅ |
 | TC-032 | Value object: no-identity record validates; one identity fails; `relations` fails | Integration | P0 | FR-004-AC-3 | ✅ |
-| TC-033 | Aggregate root: identity plus one clause validates; no `clauses` validates (FR-012); an empty `clauses` fails | Integration | P0 | FR-004-AC-4 | ✅ |
+| TC-033 | Aggregate root: identity plus one clause validates; no `clauses` fails | Integration | P0 | FR-004-AC-4 | ✅ |
 | TC-034 | Event: `Timestamp` field and no identity validates; no `Timestamp` fails; identity fails; `operations` fails | Integration | P0 | FR-004-AC-5 | ✅ |
 | TC-035 | Repository: one operation validates; `fields` fails; empty `operations` fails | Integration | P0 | FR-004-AC-6 | ✅ |
 | TC-036 | State machine: one operation validates with `states` and `transitions`; a transition without `trigger` fails; a transition `guardExpression` validates, a malformed one fails, and `guard` with `guardExpression` fails | Integration | P1 | FR-004-AC-7 | ✅ |
 | TC-037 | Process: identity record validates with `steps` and `emits`; a step outside `StepKind` fails | Integration | P1 | FR-004-AC-8 | ✅ |
-| TC-038 | Empty record fails Entity, ValueObject and Repository and validates for every other type (FR-012); `fields` on any of them fails; a population `extent` outside `closed`/`open` fails; population `members` (type only) validate only against Population | Integration | P0 | FR-004-AC-9 | ✅ |
+| TC-038 | Empty record validates for Domain, Enumeration, Population, VariantSet, and Graph only; `fields` on any of them fails; a population `extent` outside `closed`/`open` fails; population `members` (type only) validate only against Population | Integration | P0 | FR-004-AC-9, FR-004-CON-2 | ✅ |
 | TC-039 | Placeholder `unresolved` target is accepted by the schema and reported by the extractor; a bare token is refused | Integration | P1 | FR-004-AC-10 | ✅ |
 | TC-040 | No module schema redeclares a semantic-core model; every grammar item is a `$ref` to semantic-core | Unit | P1 | FR-004-CON-1 | ✅ |
 | TC-041 | Nested entity: local identity validates; `relations` and `owner` fail | Integration | P1 | FR-004-AC-11 | ✅ |
@@ -168,8 +168,8 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | TC-119 | The `variants` locator declares the `Name`, `Payload`, `Description` table; the skeleton and fixture validate and the list form is refused | Integration | P0 | FR-011-AC-2 | ✅ |
 | TC-120 | The `graph` locator is a required mermaid block; the skeleton and fixture validate and prose alone is refused | Integration | P0 | FR-011-AC-3 | ✅ |
 | TC-121 | `VariantSet.json` and `Graph.json` accept the empty record, `clauses`, and (VariantSet) `variants`; both refuse `fields`, `operations`, `states` and `transitions` | Unit | P1 | FR-011-AC-4 | ✅ |
-| TC-122 | A record lacking the optional section key validates against `NestedEntity`, `AggregateRoot`, `Event`, `StateMachine` and `Process`; a present key is still checked by its item rules | Unit | P0 | FR-012-AC-1, FR-012-AC-2 | ✅ |
-| TC-123 | Exactly `Entity`, `ValueObject` and `Repository` still require a key, each fed by a required locator | Unit | P0 | FR-012-AC-3, FR-012-CON-1 | ✅ |
+| TC-122 | For `nested_entity`, `aggregate_root`, `event`, `process` and `state_machine` the schema requires the key its construct requires and the source locator is `required: true` | Unit | P0 | FR-012-AC-1, FR-012-AC-3, FR-012-CON-1 | ✅ |
+| TC-123 | Each skeleton with the required source section removed is refused with a message naming the missing section | Integration | P0 | FR-012-AC-2 | ✅ |
 | TC-075 | Every object type ships a typed schema a fixture reader can consume; an entity and an enumeration record are distinguishable by schema alone | Demonstration | P2 | StR-001-VC-3 | ✅ |
 
 ## Test Environment
