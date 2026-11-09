@@ -32,8 +32,7 @@ member, because the downstream lowering to IR enforces the construct.
 
 - The record validator SHALL refuse a document that lacks a member its construct
   requires, as `semantic.record-invalid ... is a required property`.
-- The extractor SHALL count a section that holds only `###` subsections as present,
-  because the locator stays optional and the record key comes from the subsections.
+- A document whose `###`-only section holds subsections but no prose under the heading validates, because the locator stays optional and the record key comes from the subsections.
 
 ## Constraints
 
@@ -45,7 +44,7 @@ member, because the downstream lowering to IR enforces the construct.
 
 | ID | Criteria | Verification |
 |----|----------|--------------|
-| FR-012-AC-1 | Every schema key that a record schema requires is a member its construct requires, and `NestedEntity`, `AggregateRoot`, `Event`, `Process` and `StateMachine` still require `fields`, `clauses` and `operations` respectively. | Test |
+| FR-012-AC-1 | Every key a record schema requires is a member its construct requires, and each of these keys stays required: `fields` in `NestedEntity`, `AggregateRoot`, `Event` and `Process`, `clauses` in `AggregateRoot`, and `operations` in `StateMachine`. | Test |
 | FR-012-AC-2 | The `nested_entity`, `aggregate_root` and `event` skeletons without `## Properties`, and the `aggregate_root` skeleton without `## Invariants`, are refused with a `semantic.record-invalid` message naming the required property. | Test |
 | FR-012-AC-3 | A `state_machine` whose `## Operations` section holds only `###` subsections, with no prose under the heading, validates. | Test |
 

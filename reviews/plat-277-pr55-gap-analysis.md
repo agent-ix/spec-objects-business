@@ -57,3 +57,4 @@ Round 1, checked against fix commit baff077.
 |---|---|---|
 | FND-001 | fixed | TC-122 is now tagged `TC-122, FR-012-AC-1, FR-012-AC-3, FR-012-CON-1`. `quire matrix` reports FR-012-CON-1 as tagged. |
 | FND-002 | fixed | Fixed by the change of direction. TC-123 now runs `validate_document` on each skeleton with its required section removed and asserts a refusal that names the missing section. |
+| FND-003 | fixed | Round 2, fix commit f763ce3. TC-123 now removes `aggregate_root` `## Invariants` as well as Properties, and a new TC-123 case (FR-012-AC-3) validates a `state_machine` whose `## Operations` holds only `###` subsections. |
