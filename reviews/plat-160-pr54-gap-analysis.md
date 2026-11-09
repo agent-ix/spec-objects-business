@@ -38,3 +38,12 @@ the FR-010 owner list it traces to (FND-002).
 ## Gates Run
 
 `quoin validate --strict` (quoin 0.29.1; quire 0.36.2, engine 0.50.2): no findings.
+
+## Dispositions
+
+Round 1, checked against fix commit c12d7d8 (head 715eb3e).
+
+| FND | outcome | reason |
+|---|---|---|
+| FND-001 | fixed | TC-118 now asserts `graph` `references` equals the seven-type list. |
+| FND-002 | fixed | FR-010 Behavior's owner list now names `variants` of `variant_set` (FR-011, read by FR-081), so TC-111's `ALLOWED_KEYS` matches the AC. |

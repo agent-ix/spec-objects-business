@@ -47,3 +47,15 @@ key. FR-011 also declares a record key that FR-010's owner list forbids
 
 `quire validate --scope .` on the changed spec files (quire 0.36.2, engine
 0.50.2): FR-011 clean. `quoin validate --strict` (quoin 0.29.1): no findings.
+
+## Dispositions
+
+Round 1, checked against fix commit c12d7d8 (head 715eb3e).
+
+| FND | outcome | reason |
+|---|---|---|
+| FND-001 | fixed | FR-011 now states that `record-sections` fills `variants` from the `## Variants` table, with headers equal to the `VariantDecl` property names, and that `Graph` has no graph-valued key. FR-010's owner list names `variants`. The FR-081 trace is in SR-018 FND-001. |
+| FND-002 | fixed | FR-011-AC-1 now names exactly the seven `graph` reference targets. |
+| FND-003 | fixed | FR-007's list of types with no `relationships` locator now includes `variant_set` and `graph`. |
+| FND-004 | fixed | The `variant_set` `invariants` locator is removed. FR-011 states that neither skeleton authors `## Invariants` and that `clauses` is a key for hand-built records only. |
+| FND-005 | fixed | FR-011 now requires exactly one `flowchart` or `graph` mermaid fence and lists the one-fence and diagram-kind rules among the unchecked author rules. |

@@ -56,3 +56,17 @@ release carries FR-081. FND-002 is medium; the rest are low.
 
 - `pytest` (venv `spec-objects-business-Dc60l5v7`, quire 0.54.0): 268 passed, 7 skipped, 2 xfailed, coverage 100%.
 - `node scripts/generate-schemas.mjs --check`: 27 schemas match.
+
+## Dispositions
+
+Round 1, checked against fix commit c12d7d8 (head 715eb3e).
+
+| FND | outcome | reason |
+|---|---|---|
+| FND-001 | fixed | `VariantDecl` is now `{ name: Identifier, payload?: SemanticId, description?: string }` and the table is `Name \| Payload \| Description`. Traced in quire-rs main `record.rs`: the headers normalize to `name`, `payload` and `description` (no `column-unknown`). `Identifier.json` resolves through the embedded semantic-core bundle to a text scalar, `SemanticId.json` is special-cased to `Scalar::SemanticId` (no `nested-object-cell`), and `description` is a text scalar. An empty cell is skipped before typing (`row()` line 932). A payload id resolves through `resolve_id`; with no bundle package or no bundle index it gives an advisory only. |
+| FND-002 | fixed | Skeleton and fixture names are now `revision_mismatch` and similar; TC-121 refuses `digest-mismatch`. |
+| FND-003 | fixed | The `none` sentinel is gone; a variant with no payload now has an empty `Payload` cell. |
+| FND-004 | fixed | `expect:` and `because:` are removed from both refused fixtures. |
+| FND-005 | fixed | The fixture ids are now `positive_variant_set_001` and `positive_graph_001`; no fixture id is duplicated. |
+| FND-006 | fixed | The `len(skeletons) == 16` assertion is removed. |
+| FND-007 | fixed | The PR description now says FR-011 / TC-118..TC-121 and attributes FR-010 / TC-111..TC-117 to PLAT-240 (#53). |
