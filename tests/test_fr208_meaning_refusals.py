@@ -70,7 +70,7 @@ def test_domain_refuses_a_field_an_operation_and_a_clause(schema_registry):
     refuses as `invalid_model_binding`; a `quire` clause refuses the form
     FR-208 refuses as `unsupported_construct`."""
     domain = schema_registry("Domain")
-    record = {"members": [RELATION], "vocabulary": [{"term": "Order", "doc": "…"}]}
+    record = {"relations": [RELATION], "vocabulary": [{"term": "Order", "doc": "…"}]}
     assert ok(domain, record)
     assert not ok(domain, {**record, "fields": [field("anything")]})
     assert not ok(domain, {**record, "operations": [OPERATION]})

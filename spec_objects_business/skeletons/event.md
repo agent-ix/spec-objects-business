@@ -11,6 +11,8 @@ object: event
        the runtime record) and at least one `Timestamp` occurrence field —
        Event.json refuses a record that breaks either rule.
      - "## Invariants" (H2): one `### <clauseId>` per clause.
+     - "## Source" (H2, optional): one inline artifact id, the aggregate root
+       that publishes the event; it is the typed key `source`.
      - "## Schema" (H2, required) holds a fenced `json` block. It is a
        derived, human-facing view of the declared payload; the typed table
        above is the authority. -->
@@ -48,6 +50,10 @@ self.grand_total.amount_minor = self.subtotal.amount_minor + self.shipping_fee.a
 ```quire
 self.subtotal.currency = self.grand_total.currency and self.shipping_fee.currency = self.grand_total.currency
 ```
+
+## Source
+
+aggregate_root_001
 
 ## Schema
 

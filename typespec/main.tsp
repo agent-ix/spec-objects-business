@@ -155,9 +155,8 @@ model ProcessStep {
  * is `unsupported_construct`/`declaration-form`).
  */
 model Domain {
-  members?: RelationDecl[];
+  relations?: RelationDecl[];
   vocabulary?: Term[];
-  ubiquitous_language?: string;
   ...Record<never>;
 }
 
@@ -176,15 +175,17 @@ model Entity {
 
 /**
  * An entity whose identity is local to its owner. `relations` is forbidden by
- * the seal: a nested entity is reached through its owner. Identity locality is
- * prose the schema does not express.
+ * the seal: a nested entity is reached through its owner. It carries no
+ * `owner` key: the owner is the single inbound composite edge a bundle
+ * declares for the artifact (a bundle rule, quoin FR-123), so no per-artifact
+ * extraction can fill it. Identity locality is prose the schema does not
+ * express.
  */
 model NestedEntity {
   @minItems(1)
   @contains(IdentityField)
   fields: FieldDecl[];
 
-  owner?: RelationDecl;
   clauses?: ClauseRef[];
   operations?: OperationDecl[];
   operationExpressions?: OperationExpression[];
@@ -306,6 +307,7 @@ model Process {
   fields: FieldDecl[];
 
   steps?: ProcessStep[];
+  states?: EnumValue[];
   clauses?: ClauseRef[];
   operations?: OperationDecl[];
   operationExpressions?: OperationExpression[];
