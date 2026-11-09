@@ -23,6 +23,8 @@ relationships:
     type: covers
   - target: "ix://agent-ix/spec-objects-business/FR-010"
     type: covers
+  - target: "ix://agent-ix/spec-objects-business/FR-011"
+    type: covers
 ---
 # Test Matrix
 
@@ -70,6 +72,7 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | FR-007 | FR-007-AC-1..9, AC-11 | TC-089..TC-097, TC-110 | ✅ AC-6 asserts that a line is reported; the table line is `agent-ix/quire-rs#440` |
 | FR-008 | FR-008-AC-1, AC-3, AC-5..7 | TC-099, TC-101, TC-106, TC-108, TC-109 | ✅ AC-1 holds `population` without a construct while filament-core-data#174 is open |
 | FR-009 | FR-009-AC-1..3 | TC-103..TC-105 | ✅ |
+| FR-011 | FR-011-AC-1, FR-011-AC-2, FR-011-AC-3, FR-011-AC-4 | TC-118, TC-119, TC-120, TC-121 | ✅ |
 
 ### Integration Test Coverage
 
@@ -95,13 +98,13 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | TC-017 | The build uses the official `@typespec/json-schema` emitter only and no emitted file is hand-edited | Inspection | P2 | FR-002-CON-1 | ✅ |
 | TC-018 | No `.npmrc`, no `file:`/`link:` dependency | Inspection | P2 | FR-002-CON-2 | ✅ |
 | TC-019 | `package-lock.json` resolves every package from npmjs except `@agent-ix/semantic-core` (GitHub Packages) | Unit | P2 | FR-002-CON-4 | ✅ |
-| TC-020 | The `semantic` block equals the nine admitted keys and `exports` equals the eleven types | Unit | P0 | FR-003-AC-1, FR-003-CON-1 | ✅ |
+| TC-020 | The `semantic` block equals the nine admitted keys and `exports` equals every object type | Unit | P0 | FR-003-AC-1, FR-003-CON-1 | ✅ |
 | TC-021 | Every exported type's `data_schema` is the reference form | Unit | P0 | FR-003-AC-2 | ✅ |
-| TC-024 | `quire.Registry.load_from` lists all eleven archetypes | Integration | P0 | FR-003-AC-4 | ✅ |
+| TC-024 | `quire.Registry.load_from` lists every archetype | Integration | P0 | FR-003-AC-4 | ✅ |
 | TC-025 | `validate_document` on every skeleton reports no `semantic.*` load failure | Integration | P0 | FR-003-AC-4 | ✅ |
 | TC-026 | An unknown `semantic` key is refused by the loader; the refusal names the key or path | Integration | P1 | FR-003-AC-6 | ✅ refusal verified; the naming half is an expected failure blocked on quire-rs#221 |
 | TC-027 | `quoin module install path:` succeeds, lists the module, and the prior entry is restored | Manual | P1 | FR-003-AC-5 | 🚧 |
-| TC-030 | Each of the eleven schemas differs from every other in a required, forbidden, or item rule; none is `type: object` only | Unit | P0 | FR-004-AC-1 | ✅ |
+| TC-030 | Each schema differs from every other in a required, forbidden, or item rule; none is `type: object` only | Unit | P0 | FR-004-AC-1 | ✅ |
 | TC-031 | Entity: identity record validates; identity flag removed fails; no `fields` fails | Integration | P0 | FR-004-AC-2 | ✅ |
 | TC-032 | Value object: no-identity record validates; one identity fails; `relations` fails | Integration | P0 | FR-004-AC-3 | ✅ |
 | TC-033 | Aggregate root: identity plus one clause validates; no `clauses` fails | Integration | P0 | FR-004-AC-4 | ✅ |
@@ -109,12 +112,12 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | TC-035 | Repository: one operation validates; `fields` fails; empty `operations` fails | Integration | P0 | FR-004-AC-6 | ✅ |
 | TC-036 | State machine: one operation validates with `states` and `transitions`; a transition without `trigger` fails; a transition `guardExpression` validates, a malformed one fails, and `guard` with `guardExpression` fails | Integration | P1 | FR-004-AC-7 | ✅ |
 | TC-037 | Process: identity record validates with `steps` and `emits`; a step outside `StepKind` fails | Integration | P1 | FR-004-AC-8 | ✅ |
-| TC-038 | Empty record validates for Domain, Enumeration, and Population only; `fields` on any of them fails; a population `extent` outside `closed`/`open` fails; population `members` (type only) validate only against Population | Integration | P0 | FR-004-AC-9, FR-004-CON-2 | ✅ |
+| TC-038 | Empty record validates for Domain, Enumeration, Population, VariantSet, and Graph only; `fields` on any of them fails; a population `extent` outside `closed`/`open` fails; population `members` (type only) validate only against Population | Integration | P0 | FR-004-AC-9, FR-004-CON-2 | ✅ |
 | TC-039 | Placeholder `unresolved` target is accepted by the schema and reported by the extractor; a bare token is refused | Integration | P1 | FR-004-AC-10 | ✅ |
 | TC-040 | No module schema redeclares a semantic-core model; every grammar item is a `$ref` to semantic-core | Unit | P1 | FR-004-CON-1 | ✅ |
 | TC-041 | Nested entity: local identity validates; `relations` and `owner` fail | Integration | P1 | FR-004-AC-11 | ✅ |
 | TC-042 | Each of the five operation-bearing role schemas validates `operationExpressions` entries; a bad `slot` or a missing `expression` fails; `Repository` refuses the key | Integration | P1 | FR-004-AC-12 | ✅ |
-| TC-050 | Every skeleton (eleven plus three alternates) validates with no error | Integration | P0 | FR-005-AC-1 | ✅ |
+| TC-050 | Every skeleton (every type plus three alternates) validates with no error | Integration | P0 | FR-005-AC-1 | ✅ |
 | TC-051 | Table and `sysml` skeletons extract to identical normalized fields with the recorded forms | Integration | P0 | FR-005-AC-2, FR-005-CON-2 | ✅ |
 | TC-052 | Under the skeleton bundle index every skeleton extracts with zero errors and zero unresolved tokens | Integration | P0 | FR-005-AC-3 | ✅ |
 | TC-053 | Availability states per skeleton (fields, clauses, operations) match the type's declared set | Integration | P1 | FR-005-AC-4 | ✅ |
@@ -160,6 +163,10 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | TC-108 | `event`'s `construct:` declares `immutable: true`; every other of the ten kinds' `construct:` lacks the key | Unit | P0 | FR-008-AC-6 | ✅ |
 | TC-109 | Each QSpec FR-208 refusal this module's record schema can express fails validation, and the same record without the refused form passes: an operation on `ValueObject`/`Event`; a `clauses` key or a non-empty operation `pre`/`post` on `Repository`; a `fields`, `operations` or `clauses` key on `Domain`; and no `repository` or `domain` `allowed_links` admits `specializes` | Unit | P0 | FR-008-AC-7 | ✅ |
 | TC-110 | `entity` `references` admits `value_object`; `state_machine` `references` admits `entity` and `aggregate_root` | Unit | P0 | FR-007-AC-11 | ✅ |
+| TC-118 | The manifest exports `variant_set` and `graph` with their `allowed_links` and reference-form `data_schema` | Unit | P0 | FR-011-AC-1 | ✅ |
+| TC-119 | The `variants` locator declares the `Name`, `Payload`, `Description` table; the skeleton and fixture validate and the list form is refused | Integration | P0 | FR-011-AC-2 | ✅ |
+| TC-120 | The `graph` locator is a required mermaid block; the skeleton and fixture validate and prose alone is refused | Integration | P0 | FR-011-AC-3 | ✅ |
+| TC-121 | `VariantSet.json` and `Graph.json` accept the empty record, `clauses`, and (VariantSet) `variants`; both refuse `fields`, `operations`, `states` and `transitions` | Unit | P1 | FR-011-AC-4 | ✅ |
 | TC-075 | Every object type ships a typed schema a fixture reader can consume; an entity and an enumeration record are distinguishable by schema alone | Demonstration | P2 | StR-001-VC-3 | ✅ |
 
 ## Test Environment

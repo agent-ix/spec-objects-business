@@ -17,3 +17,4 @@ description: "Index of artifacts in this directory."
 * [FR-008: Declare the semantic IR construct of each object type](./FR-008-construct-declarations.md)
 * [FR-009: Admit segmented document ids in object frontmatter](./FR-009-object-ids.md)
 * [FR-010: Give every record key one owner and one authored form](./FR-010-record-key-owners.md)
+* [FR-011: Declare closed unions and partial-order graphs as object types](./FR-011-variant-set-and-graph.md)

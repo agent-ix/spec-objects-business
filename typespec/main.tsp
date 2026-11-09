@@ -333,3 +333,40 @@ model Enumeration {
   clauses?: ClauseRef[];
   ...Record<never>;
 }
+
+/**
+ * One variant of a closed union, one row of the `## Variants` table. `payload`
+ * is the artifact id of the type the selected variant carries (a table cell
+ * reads a `SemanticId`, not a `TypeRef` object); a variant with no payload
+ * leaves the cell empty and omits the key.
+ */
+model VariantDecl {
+  name: Identifier;
+  payload?: SemanticId;
+  description?: string;
+  ...Record<never>;
+}
+
+/**
+ * A closed discriminated union: a closed set of variants, each carrying the
+ * payload its selection requires. The `## Variants` table is read by the
+ * module's body extraction; the declaration record carries no fields or
+ * operations, which the seal forbids.
+ */
+model VariantSet {
+  variants?: VariantDecl[];
+  clauses?: ClauseRef[];
+  ...Record<never>;
+}
+
+/**
+ * An acyclic partial order: nodes, edges, and the concurrent branches the
+ * edges leave unordered. It has no current state, so it declares no `states`,
+ * `transitions`, `fields` or `operations`; the seal forbids them. The
+ * graph itself is the required `## Graph` mermaid block, which the module's
+ * body extraction reads.
+ */
+model Graph {
+  clauses?: ClauseRef[];
+  ...Record<never>;
+}

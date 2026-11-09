@@ -16,7 +16,8 @@ import pytest
 
 from tests.conftest import OBJECT_TYPES, load_manifest, object_type
 
-CONSTRUCT_KINDS = tuple(name for name in OBJECT_TYPES if name != "population")
+NO_CONSTRUCT = {"population", "variant_set", "graph"}
+CONSTRUCT_KINDS = tuple(name for name in OBJECT_TYPES if name not in NO_CONSTRUCT)
 
 # The roles each construct's references admit, carried by the named types.
 ADDED_ROLES = {
@@ -35,7 +36,8 @@ def test_exactly_the_ten_construct_kinds_declare_a_construct():
     }
     assert declared == set(CONSTRUCT_KINDS)
     assert len(CONSTRUCT_KINDS) == 10
-    assert "construct" not in object_type("population")
+    for name in NO_CONSTRUCT:
+        assert "construct" not in object_type(name)
 
 
 @pytest.mark.trace("TC-108", "FR-008-AC-6")

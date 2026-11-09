@@ -65,6 +65,8 @@ OBJECT_TYPES = (
     "process",
     "enumeration",
     "population",
+    "variant_set",
+    "graph",
 )
 
 MODEL_OF = {
@@ -79,6 +81,8 @@ MODEL_OF = {
     "process": "Process",
     "enumeration": "Enumeration",
     "population": "Population",
+    "variant_set": "VariantSet",
+    "graph": "Graph",
 }
 
 # FR-006: the model tables quire-rs extracts (its TABLE_SPECS column sets),
@@ -114,6 +118,7 @@ SUPPORT_MODELS = (
     "ProcessStep",
     "StepKind",
     "PopulationMember",
+    "VariantDecl",
     "ObjectFrontmatter",
 )
 

@@ -85,7 +85,7 @@ def test_every_object_type_schema_differs_from_every_other_and_none_is_bare(
         assert schema["unevaluatedProperties"] == {"not": {}}, f"{name} is not sealed"
         fingerprints[name] = (
             tuple(sorted(schema.get("required", []))),
-            tuple(sorted(schema["properties"])),
+            tuple(sorted(schema.get("properties", {}))),
             json.dumps(
                 {k: v for k, v in schema["properties"].items() if "contains" in v},
                 sort_keys=True,
@@ -216,7 +216,7 @@ def test_process_requires_a_correlation_identity_and_admits_typed_steps(
 def test_the_empty_record_passes_only_domain_enumeration_and_population(
     schema_registry,
 ):
-    open_required = {"domain", "enumeration", "population"}
+    open_required = {"domain", "enumeration", "population", "variant_set", "graph"}
     for name in OBJECT_TYPES:
         validator = schema_registry(MODEL_OF[name])
         assert ok(validator, {}) is (name in open_required), name

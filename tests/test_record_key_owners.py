@@ -40,6 +40,8 @@ ALLOWED_KEYS = {
     "process": COMMON | {"steps", "states", "emits"},
     "enumeration": {"values", "clauses"},
     "population": {"extent", "members", "clauses"},
+    "variant_set": {"variants", "clauses"},
+    "graph": {"clauses"},
 }
 
 # Keys quoin FR-123 leaves unmapped: no schema declares them.
