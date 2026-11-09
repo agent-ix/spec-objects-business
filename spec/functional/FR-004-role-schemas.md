@@ -65,8 +65,8 @@ admitted: a composite key is a legitimate declaration and no rule forbids it.
 | process | `Process` | `fields` | `steps: ProcessStep[]`, `clauses`, `operations`, `emits: SemanticId[]` | `fields` has ≥ 1 item and ≥ 1 identity field (the correlation key); `relations` forbidden |
 | enumeration | `Enumeration` | none | `values: EnumValue[]`, `clauses` | `fields` and `operations` forbidden |
 | population | `Population` | none | `members: PopulationMember[]`, `extent`, `clauses` | `extent`, when present, is `closed` or `open`; `fields` and `operations` forbidden: a population declares which instances exist together, not data |
-| variant_set | `VariantSet` | none | `variants: VariantDecl[]`, `clauses` | `fields` and `operations` forbidden; see [FR-010](./FR-010-variant-set-and-graph.md) |
-| graph | `Graph` | none | `clauses` | `fields`, `operations`, `states` and `transitions` forbidden; see [FR-010](./FR-010-variant-set-and-graph.md) |
+| variant_set | `VariantSet` | none | `variants: VariantDecl[]`, `clauses` | `fields` and `operations` forbidden; see [FR-011](./FR-011-variant-set-and-graph.md) |
+| graph | `Graph` | none | `clauses` | `fields`, `operations`, `states` and `transitions` forbidden; see [FR-011](./FR-011-variant-set-and-graph.md) |
 
 - `Term` SHALL be `{ term: string (minLength 1), doc: string }`.
 - `Transition` SHALL be `{ from: Identifier, to: Identifier, trigger: Identifier, guard?: ClauseRef, guardExpression?: Expression, emits?: SemanticId }`, with `guard` and `guardExpression` mutually exclusive (a not-both-present constraint in `Transition.json`).

@@ -1,5 +1,5 @@
 ---
-id: FR-010
+id: FR-011
 title: "Declare closed unions and partial-order graphs as object types"
 type: FR
 relationships:
@@ -10,7 +10,7 @@ relationships:
   - target: "ix://agent-ix/spec-objects-business/FR-006"
     type: "depends_on"
 ---
-# FR-010: Declare closed unions and partial-order graphs as object types
+# FR-011: Declare closed unions and partial-order graphs as object types
 
 ## Description
 
@@ -48,10 +48,10 @@ declares a union or a graph type.
 
 | ID | Criteria | Verification |
 |----|----------|--------------|
-| FR-010-AC-1 | `semantic.exports` names `variant_set` and `graph`; `variant_set` admits `references` to exactly `enumeration`, `value_object`, `variant_set`; `graph` admits `references` and no other verb, including `event`, `process`, `entity` and `graph`; each has a reference-form `data_schema`. | Test |
-| FR-010-AC-2 | The `variants` locator is required with the columns `Variant`, `Payload`, `Description` and `min_rows: 1`; the `variant_set` skeleton and positive fixture validate; the list-form fixture is refused as a missing `variants`. | Test |
-| FR-010-AC-3 | The `graph` locator is a required `code_block` with language `mermaid` and the `graph` type declares no `states` locator; the `graph` skeleton and positive fixture validate; the prose-only fixture is refused as a missing `graph`. | Test |
-| FR-010-AC-4 | `VariantSet.json` and `Graph.json` accept the empty record and a `clauses` list; `VariantSet.json` accepts `variants` with and without a `payload` and refuses a variant without a `name`; both refuse `fields`, `operations`, `states` and `transitions`; `Graph.json` refuses `variants`. | Test |
+| FR-011-AC-1 | `semantic.exports` names `variant_set` and `graph`; `variant_set` admits `references` to exactly `enumeration`, `value_object`, `variant_set`; `graph` admits `references` and no other verb, including `event`, `process`, `entity` and `graph`; each has a reference-form `data_schema`. | Test |
+| FR-011-AC-2 | The `variants` locator is required with the columns `Variant`, `Payload`, `Description` and `min_rows: 1`; the `variant_set` skeleton and positive fixture validate; the list-form fixture is refused as a missing `variants`. | Test |
+| FR-011-AC-3 | The `graph` locator is a required `code_block` with language `mermaid` and the `graph` type declares no `states` locator; the `graph` skeleton and positive fixture validate; the prose-only fixture is refused as a missing `graph`. | Test |
+| FR-011-AC-4 | `VariantSet.json` and `Graph.json` accept the empty record and a `clauses` list; `VariantSet.json` accepts `variants` with and without a `payload` and refuses a variant without a `name`; both refuse `fields`, `operations`, `states` and `transitions`; `Graph.json` refuses `variants`. | Test |
 
 ## Dependencies
 

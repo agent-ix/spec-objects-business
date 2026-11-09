@@ -1,4 +1,4 @@
-"""Closed-union and graph object types (FR-010, PLAT-160).
+"""Closed-union and graph object types (FR-011, PLAT-160).
 
 `variant_set` declares a closed discriminated union (a variant set with a
 payload per variant); `graph` declares an acyclic partial order. Neither is a
@@ -31,7 +31,7 @@ def validate(quire_engine, path):
     )
 
 
-@pytest.mark.trace("TC-111", "FR-010-AC-1")
+@pytest.mark.trace("TC-118", "FR-011-AC-1")
 def test_the_manifest_declares_variant_set_and_graph_with_their_links():
     manifest = load_manifest()
     assert {"variant_set", "graph"} <= set(manifest["semantic"]["exports"])
@@ -45,7 +45,7 @@ def test_the_manifest_declares_variant_set_and_graph_with_their_links():
         assert object_type(name)["data_schema"] == {"schema": f"schemas/{schema}.json"}
 
 
-@pytest.mark.trace("TC-112", "FR-010-AC-2")
+@pytest.mark.trace("TC-119", "FR-011-AC-2")
 def test_a_variant_set_authors_a_variants_table_and_refuses_a_list(quire_engine):
     variants = locators(object_type("variant_set"))["variants"]
     assert variants["required"] is True
@@ -62,7 +62,7 @@ def test_a_variant_set_authors_a_variants_table_and_refuses_a_list(quire_engine)
     assert "'variants'" in refused["errors"][0]["message"]
 
 
-@pytest.mark.trace("TC-113", "FR-010-AC-3")
+@pytest.mark.trace("TC-120", "FR-011-AC-3")
 def test_a_graph_authors_a_mermaid_block_and_refuses_prose_alone(quire_engine):
     graph = locators(object_type("graph"))["graph"]
     assert graph["required"] is True
@@ -76,7 +76,7 @@ def test_a_graph_authors_a_mermaid_block_and_refuses_prose_alone(quire_engine):
     assert "'graph'" in refused["errors"][0]["message"]
 
 
-@pytest.mark.trace("TC-114", "FR-010-AC-4")
+@pytest.mark.trace("TC-121", "FR-011-AC-4")
 def test_variant_set_and_graph_schemas_are_sealed_against_lifecycle_and_data(
     schema_registry,
 ):

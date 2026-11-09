@@ -21,7 +21,7 @@ relationships:
     type: covers
   - target: "ix://agent-ix/spec-objects-business/FR-009"
     type: covers
-  - target: "ix://agent-ix/spec-objects-business/FR-010"
+  - target: "ix://agent-ix/spec-objects-business/FR-011"
     type: covers
 ---
 # Test Matrix
@@ -70,7 +70,7 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | FR-007 | FR-007-AC-1..9, AC-11 | TC-089..TC-097, TC-110 | ✅ AC-6 asserts that a line is reported; the table line is `agent-ix/quire-rs#440` |
 | FR-008 | FR-008-AC-1, AC-3, AC-5..7 | TC-099, TC-101, TC-106, TC-108, TC-109 | ✅ AC-1 holds `population` without a construct while filament-core-data#174 is open |
 | FR-009 | FR-009-AC-1..3 | TC-103..TC-105 | ✅ |
-| FR-010 | FR-010-AC-1..4 | TC-111..TC-114 | ✅ |
+| FR-011 | FR-011-AC-1..4 | TC-118..TC-121 | ✅ |
 
 ### Integration Test Coverage
 
@@ -155,10 +155,10 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | TC-108 | `event`'s `construct:` declares `immutable: true`; every other of the ten kinds' `construct:` lacks the key | Unit | P0 | FR-008-AC-6 | ✅ |
 | TC-109 | Each QSpec FR-208 refusal this module's record schema can express fails validation, and the same record without the refused form passes: an operation on `ValueObject`/`Event`; a `clauses` key or a non-empty operation `pre`/`post` on `Repository`; a `fields`, `operations` or `clauses` key on `Domain`; and no `repository` or `domain` `allowed_links` admits `specializes` | Unit | P0 | FR-008-AC-7 | ✅ |
 | TC-110 | `entity` `references` admits `value_object`; `state_machine` `references` admits `entity` and `aggregate_root` | Unit | P0 | FR-007-AC-11 | ✅ |
-| TC-111 | The manifest exports `variant_set` and `graph` with their `allowed_links` and reference-form `data_schema` | Unit | P0 | FR-010-AC-1 | ✅ |
-| TC-112 | The `variants` locator declares the `Variant`, `Payload`, `Description` table; the skeleton and fixture validate and the list form is refused | Integration | P0 | FR-010-AC-2 | ✅ |
-| TC-113 | The `graph` locator is a required mermaid block; the skeleton and fixture validate and prose alone is refused | Integration | P0 | FR-010-AC-3 | ✅ |
-| TC-114 | `VariantSet.json` and `Graph.json` accept the empty record, `clauses`, and (VariantSet) `variants`; both refuse `fields`, `operations`, `states` and `transitions` | Unit | P1 | FR-010-AC-4 | ✅ |
+| TC-118 | The manifest exports `variant_set` and `graph` with their `allowed_links` and reference-form `data_schema` | Unit | P0 | FR-011-AC-1 | ✅ |
+| TC-119 | The `variants` locator declares the `Variant`, `Payload`, `Description` table; the skeleton and fixture validate and the list form is refused | Integration | P0 | FR-011-AC-2 | ✅ |
+| TC-120 | The `graph` locator is a required mermaid block; the skeleton and fixture validate and prose alone is refused | Integration | P0 | FR-011-AC-3 | ✅ |
+| TC-121 | `VariantSet.json` and `Graph.json` accept the empty record, `clauses`, and (VariantSet) `variants`; both refuse `fields`, `operations`, `states` and `transitions` | Unit | P1 | FR-011-AC-4 | ✅ |
 | TC-075 | Every object type ships a typed schema a fixture reader can consume; an entity and an enumeration record are distinguishable by schema alone | Demonstration | P2 | StR-001-VC-3 | ✅ |
 
 ## Test Environment
