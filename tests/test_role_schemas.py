@@ -16,8 +16,10 @@ from __future__ import annotations
 import json
 
 import pytest
+import yaml
 
 from tests.conftest import (
+    MANIFEST_PATH,
     MODEL_OF,
     OBJECT_TYPES,
     SCHEMAS_DIR,
@@ -121,13 +123,14 @@ def test_value_object_refuses_identity_and_relations(schema_registry):
 
 
 @pytest.mark.trace("TC-033", "FR-004-AC-4")
-def test_aggregate_root_requires_an_identity_field_and_at_least_one_clause(
+def test_aggregate_root_checks_an_identity_field_and_at_least_one_clause(
     schema_registry,
 ):
     root = schema_registry("AggregateRoot")
     record = {"fields": [field("order_id", "UUID", identity=True)], "clauses": [CLAUSE]}
     assert ok(root, record)
-    assert not ok(root, {"fields": record["fields"]})
+    # FR-012: the clause set is optional; a present one is still checked.
+    assert ok(root, {"fields": record["fields"]})
     assert not ok(root, {"fields": record["fields"], "clauses": []})
     assert not ok(root, {"fields": [field("total", "Decimal")], "clauses": [CLAUSE]})
 
@@ -212,14 +215,22 @@ def test_process_requires_a_correlation_identity_and_admits_typed_steps(
     assert not ok(process, {"fields": [field("order_id", "UUID")]})
 
 
-@pytest.mark.trace("TC-038", "FR-004-AC-9", "FR-004-CON-2")
-def test_the_empty_record_passes_only_domain_enumeration_and_population(
+@pytest.mark.trace("TC-038", "FR-004-AC-9")
+def test_the_empty_record_fails_only_the_types_whose_section_is_required(
     schema_registry,
 ):
     open_required = {"domain", "enumeration", "population", "variant_set", "graph"}
+    # FR-012: these types' source sections are optional, so they require no key.
+    optional_section = {
+        "nested_entity",
+        "aggregate_root",
+        "event",
+        "state_machine",
+        "process",
+    }
     for name in OBJECT_TYPES:
         validator = schema_registry(MODEL_OF[name])
-        assert ok(validator, {}) is (name in open_required), name
+        assert ok(validator, {}) is (name in open_required | optional_section), name
     for name in open_required:
         validator = schema_registry(MODEL_OF[name])
         assert not ok(validator, {"fields": [field("anything")]}), name
@@ -360,3 +371,52 @@ def test_operation_expressions_validate_beside_operations_and_repository_refuses
         schema_registry("Repository"),
         {"operations": [OPERATION], "operationExpressions": [entry]},
     )
+
+
+@pytest.mark.trace("TC-122", "FR-012-AC-1", "FR-012-AC-2")
+def test_a_record_lacking_an_optional_section_key_validates_and_the_key_stays_checked(
+    schema_registry,
+):
+    """Hand-built: the record a document without the optional section yields."""
+    for name, key in (
+        ("NestedEntity", "fields"),
+        ("AggregateRoot", "fields"),
+        ("AggregateRoot", "clauses"),
+        ("Event", "fields"),
+        ("Process", "fields"),
+        ("StateMachine", "operations"),
+    ):
+        assert key not in json.loads((SCHEMAS_DIR / f"{name}.json").read_text()).get(
+            "required", []
+        ), (name, key)
+        assert ok(schema_registry(name), {}), name
+    # A key still present is still checked: the item rules stand.
+    assert not ok(schema_registry("AggregateRoot"), {"clauses": []})
+    assert not ok(schema_registry("NestedEntity"), {"fields": []})
+    assert not ok(schema_registry("Event"), {"fields": [field("order_id", "UUID")]})
+    assert not ok(schema_registry("StateMachine"), {"operations": []})
+    assert not ok(schema_registry("Process"), {"fields": [field("total", "Decimal")]})
+
+
+@pytest.mark.trace("TC-123", "FR-012-AC-3")
+def test_only_types_with_a_required_source_section_still_require_a_key():
+    required = {
+        name: json.loads((SCHEMAS_DIR / f"{MODEL_OF[name]}.json").read_text()).get(
+            "required", []
+        )
+        for name in OBJECT_TYPES
+    }
+    assert {name for name, keys in required.items() if keys} == {
+        "entity",
+        "value_object",
+        "repository",
+    }
+    # Each of those three has a required locator that feeds its key.
+    manifest = yaml.safe_load(MANIFEST_PATH.read_text())
+    locators = {
+        t["name"]: t["body_extraction"]["yield_pattern"]["match"]
+        for t in manifest["object_types"]
+    }
+    assert locators["entity"]["properties"]["required"] is True
+    assert locators["value_object"]["properties"]["required"] is True
+    assert locators["repository"]["operations"]["required"] is True

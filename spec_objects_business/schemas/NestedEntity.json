@@ -32,9 +32,6 @@
       }
     }
   },
-  "required": [
-    "fields"
-  ],
   "unevaluatedProperties": {
     "not": {}
   },

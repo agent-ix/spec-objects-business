@@ -18,3 +18,4 @@ description: "Index of artifacts in this directory."
 * [FR-009: Admit segmented document ids in object frontmatter](./FR-009-object-ids.md)
 * [FR-010: Give every record key one owner and one authored form](./FR-010-record-key-owners.md)
 * [FR-011: Declare closed unions and partial-order graphs as object types](./FR-011-variant-set-and-graph.md)
+* [FR-012: Require a declaration key only when its source section is required](./FR-012-optional-sections-optional-keys.md)

@@ -41,7 +41,7 @@ by the extractor.
 
 ## Behavior
 
-Each model SHALL enforce its row of the following table. "Identity field"
+Each model SHALL enforce its row of the following table; a key is required only where the type's manifest locator for it is required ([FR-012](./FR-012-optional-sections-optional-keys.md)), and an item rule applies to a key whenever it is present. "Identity field"
 means a `FieldDecl` with `identity: true`; "occurrence field" a `FieldDecl`
 whose `type.target` is `Timestamp`. Both readings are semantic-core
 reader conventions (the flag is set only by a bare `identity` keyword in a
@@ -56,13 +56,13 @@ admitted: a composite key is a legitimate declaration and no rule forbids it.
 |---|---|---|---|---|
 | domain | `Domain` | none | `relations: RelationDecl[]`, `vocabulary: Term[]` | `fields` and `operations` are forbidden: a domain declares a boundary, not data |
 | entity | `Entity` | `fields` | `relations`, `clauses`, `operations` | `fields` has ≥ 1 item and ≥ 1 identity field |
-| nested_entity | `NestedEntity` | `fields` | `clauses`, `operations` | `fields` has ≥ 1 item and ≥ 1 identity field (local to the owner); `relations` and `owner` forbidden |
+| nested_entity | `NestedEntity` | none (FR-012) | `clauses`, `operations` | `fields` has ≥ 1 item and ≥ 1 identity field (local to the owner); `relations` and `owner` forbidden |
 | value_object | `ValueObject` | `fields` | `clauses`, `operations` | `fields` has ≥ 1 item and 0 identity fields; `relations` forbidden |
-| aggregate_root | `AggregateRoot` | `fields`, `clauses` | `relations`, `operations`, `members: RelationDecl[]`, `emits: SemanticId[]` | `fields` has ≥ 1 identity field; `clauses` has ≥ 1 item (the root exists to enforce invariants) |
+| aggregate_root | `AggregateRoot` | none (FR-012) | `relations`, `operations`, `members: RelationDecl[]`, `emits: SemanticId[]` | `fields` has ≥ 1 identity field; `clauses` has ≥ 1 item (the root exists to enforce invariants) |
 | repository | `Repository` | `operations` | `clauses`, `persists: SemanticId[]` | `operations` has ≥ 1 item; `fields` forbidden |
-| event | `Event` | `fields` | `clauses`, `source: SemanticId` | `fields` has ≥ 1 item, 0 identity fields, and ≥ 1 occurrence field; `operations` forbidden |
-| state_machine | `StateMachine` | `operations` | `fields`, `states: EnumValue[]`, `transitions: Transition[]`, `clauses` | `operations` has ≥ 1 item (each transition command) |
-| process | `Process` | `fields` | `steps: ProcessStep[]`, `clauses`, `operations`, `emits: SemanticId[]` | `fields` has ≥ 1 item and ≥ 1 identity field (the correlation key); `relations` forbidden |
+| event | `Event` | none (FR-012) | `clauses`, `source: SemanticId` | `fields` has ≥ 1 item, 0 identity fields, and ≥ 1 occurrence field; `operations` forbidden |
+| state_machine | `StateMachine` | none (FR-012) | `fields`, `states: EnumValue[]`, `transitions: Transition[]`, `clauses` | `operations` has ≥ 1 item (each transition command) |
+| process | `Process` | none (FR-012) | `steps: ProcessStep[]`, `clauses`, `operations`, `emits: SemanticId[]` | `fields` has ≥ 1 item and ≥ 1 identity field (the correlation key); `relations` forbidden |
 | enumeration | `Enumeration` | none | `values: EnumValue[]`, `clauses` | `fields` and `operations` forbidden |
 | population | `Population` | none | `members: PopulationMember[]`, `extent`, `clauses` | `extent`, when present, is `closed` or `open`; `fields` and `operations` forbidden: a population declares which instances exist together, not data |
 | variant_set | `VariantSet` | none | `variants: VariantDecl[]` (`name`, `payload`, `description`), `clauses` | `fields` and `operations` forbidden; see [FR-011](./FR-011-variant-set-and-graph.md) |
@@ -87,7 +87,6 @@ admitted: a composite key is a legitimate declaration and no rule forbids it.
 | ID | Constraint | Type | Validation |
 |----|------------|------|------------|
 | FR-004-CON-1 | No model SHALL redeclare a semantic-core model or scalar; the module namespace contributes archetype shapes only (semantic-core NFR-014 kernel discipline). | Architecture | Test |
-| FR-004-CON-2 | The empty record `{}` SHALL fail every type whose required set is non-empty and pass only `Domain`, `Enumeration`, and `Population`, which are distinguished from each other by their optional keys alone. | Integrity | Test |
 
 ## Acceptance Criteria
 
@@ -96,12 +95,12 @@ admitted: a composite key is a legitimate declaration and no rule forbids it.
 | FR-004-AC-1 | Each shipped object-type schema differs from every other in at least one required, forbidden, or item rule listed in the table; a schema with only `type: object` is absent. | Test |
 | FR-004-AC-2 | An entity record with one identity field validates against `Entity.json`; the same record with the identity flag removed fails; a record with no `fields` fails. | Test |
 | FR-004-AC-3 | A value-object record without identity fields validates against `ValueObject.json`; the same record with one identity field fails; a record carrying `relations` fails. | Test |
-| FR-004-AC-4 | An aggregate-root record with an identity field and one clause validates; the same record without `clauses` fails. | Test |
+| FR-004-AC-4 | An aggregate-root record with an identity field and one clause validates; the same record without `clauses` validates ([FR-012](./FR-012-optional-sections-optional-keys.md)) and one with an empty `clauses` fails. | Test |
 | FR-004-AC-5 | An event record with a `Timestamp` field and no identity field validates against `Event.json`; a record whose only fields are non-`Timestamp` fails; a record with an identity field fails; a record with `operations` fails. | Test |
 | FR-004-AC-6 | A repository record with one operation and no fields validates; a record with `fields` fails; a record with an empty `operations` array fails. | Test |
 | FR-004-AC-7 | A state-machine record with one operation validates, with `states` and `transitions` accepted when present; a transition missing `trigger` fails; a transition carrying a `guardExpression` expression record validates, and a transition carrying both `guard` and `guardExpression` fails; one whose expression lacks `text` or has a `kind` other than `expression` fails. | Test |
 | FR-004-AC-8 | A process record with an identity field validates, with `steps` and `emits` accepted when present; a step whose `kind` is outside `StepKind` fails. | Test |
-| FR-004-AC-9 | Empty records `{}` validate against `Domain.json`, `Enumeration.json`, `Population.json`, `VariantSet.json`, and `Graph.json` and fail against every other type; a domain, enumeration, or population record with `fields` fails; a population record with `extent` outside `closed`/`open` fails, and a `members` list of population members, each carrying only `type`, validates only against `Population.json`; a member carrying `extent` fails. | Test |
+| FR-004-AC-9 | Empty records `{}` validate against every type except `Entity.json`, `ValueObject.json` and `Repository.json` ([FR-012](./FR-012-optional-sections-optional-keys.md)); a domain, enumeration, or population record with `fields` fails; a population record with `extent` outside `closed`/`open` fails, and a `members` list of population members, each carrying only `type`, validates only against `Population.json`; a member carrying `extent` fails. | Test |
 | FR-004-AC-10 | A `type.target` of `ix://agent-ix/spec-objects-business/unresolved/Mystery` is accepted by the schema (it is a `SemanticId`) and reported by the extractor as `semantic.unresolved-type`; a bare `Mystery` string is rejected by the schema. | Test |
 | FR-004-AC-11 | A nested-entity record with one identity field validates against `NestedEntity.json`; a record carrying `owner` or `relations` fails (the owner is a bundle fact, FR-010). | Test |
 | FR-004-AC-12 | An entity, nested-entity, aggregate-root, state-machine, or process record carrying `operationExpressions` entries `{ operation, slot, expression }` with `slot` `pre` or `post` validates against its own schema; an entry with `slot` outside `pre`/`post`, or one missing `expression`, fails; `Repository.json` refuses `operationExpressions`. | Test |

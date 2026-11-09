@@ -8,7 +8,7 @@ object: aggregate_root
      - Frontmatter MUST carry id, title, type: aggregate_root, object: aggregate_root.
      - "## Properties" (H2): the root's own typed fields, at least one
        carrying `identity`.
-     - "## Invariants" (H2, required by AggregateRoot.json's `clauses`): the
+     - "## Invariants" (H2, optional; the `clauses` it feeds are not required by AggregateRoot.json): the
        root exists to enforce invariants, so it declares at least one.
      - Each invariant owns one `quire` fence holding a Quire expression.
      - "## Members" (H2, required): a `| Member | Multiplicity |` table naming

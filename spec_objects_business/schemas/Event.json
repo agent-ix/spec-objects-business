@@ -25,9 +25,6 @@
       "$ref": "https://schemas.agent-ix.org/semantic-core/0.3.3/SemanticId.json"
     }
   },
-  "required": [
-    "fields"
-  ],
   "unevaluatedProperties": {
     "not": {}
   },

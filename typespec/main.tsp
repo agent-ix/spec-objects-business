@@ -184,7 +184,7 @@ model Entity {
 model NestedEntity {
   @minItems(1)
   @contains(IdentityField)
-  fields: FieldDecl[];
+  fields?: FieldDecl[];
 
   clauses?: ClauseRef[];
   operations?: OperationDecl[];
@@ -212,10 +212,10 @@ model ValueObject {
 /** An aggregate root: the consistency boundary that exists to enforce invariants. */
 model AggregateRoot {
   @contains(IdentityField)
-  fields: FieldDecl[];
+  fields?: FieldDecl[];
 
   @minItems(1)
-  clauses: ClauseRef[];
+  clauses?: ClauseRef[];
 
   relations?: RelationDecl[];
   operations?: OperationDecl[];
@@ -277,7 +277,7 @@ model Event {
   @contains(IdentityField)
   @minContains(0)
   @maxContains(0)
-  fields: FieldDecl[];
+  fields?: FieldDecl[];
 
   clauses?: ClauseRef[];
   source?: SemanticId;
@@ -287,7 +287,7 @@ model Event {
 /** A state machine: one operation per transition command. */
 model StateMachine {
   @minItems(1)
-  operations: OperationDecl[];
+  operations?: OperationDecl[];
 
   operationExpressions?: OperationExpression[];
   fields?: FieldDecl[];
@@ -304,7 +304,7 @@ model StateMachine {
 model Process {
   @minItems(1)
   @contains(IdentityField)
-  fields: FieldDecl[];
+  fields?: FieldDecl[];
 
   steps?: ProcessStep[];
   states?: EnumValue[];
