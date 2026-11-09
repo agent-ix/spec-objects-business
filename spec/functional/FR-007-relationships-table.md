@@ -80,6 +80,7 @@ not admit.
 | FR-007-AC-8 | Through `validate_document`, the entity fixture whose row targets `aggregate_root_999` validates with one `semantic.unresolved-target` advisory at that row naming the missing bundle index. | Test |
 | FR-007-AC-9 | A `process` artifact with the row `done emits event_001 0..1` and a `repository` artifact with the row `orders persists aggregate_root_001 0..*` each validate, and extract `emits` and `persists` respectively holding the qualified target, no `relations`, one `relationSources` entry carrying the row's `Name`, `Verb`, `Target`, and `Multiplicity` cells and its line, and `availability.relations` `available` and not lossy; the same artifacts with a header-only table validate and extract `available` with the typed key present and empty. Each type is an explicit expected failure until `agent-ix/quire-rs#435`. | Test |
 | FR-007-AC-10 | Until `agent-ix/quire-rs#435` lands, each of those `process` and `repository` artifacts fails `validate_document` with exactly one `semantic.record-invalid` error at `relations`; this criterion is removed when AC-9 passes. | Test |
+| FR-007-AC-11 | `entity.allowed_links.references` admits `value_object`, so an entity can refer to a value object it does not own; `state_machine.allowed_links.references` admits `entity` and `aggregate_root`, so a lifecycle can name its subject. | Test |
 
 ## Dependencies
 

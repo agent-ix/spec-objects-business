@@ -134,7 +134,7 @@ object_types:
     specializes: [entity]
     contains: [nested_entity, value_object]
     owns: [state_machine]
-    references: [entity, aggregate_root, enumeration]
+    references: [entity, aggregate_root, value_object, enumeration]
   data_schema:
     schema: schemas/Entity.json
   body_extraction:
@@ -351,7 +351,7 @@ object_types:
     specializes: [state_machine]
     transitions_to: [state_machine]
     raises: [event]
-    references: [enumeration]
+    references: [entity, aggregate_root, enumeration]
   data_schema:
     schema: schemas/StateMachine.json
   body_extraction:
