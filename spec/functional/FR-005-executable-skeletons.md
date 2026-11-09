@@ -51,7 +51,7 @@ refuse.
 - The `entity`, `aggregate_root`, and `value_object` alternate skeletons SHALL author the same declarations as one ```` ```sysml ```` fence of `attribute <name> : <Type>[<mult>] { <constraints> }` and `ref item <name> : <Type>[<mult>]` lines.
 - Each alternate skeleton SHALL declare the same fields as its table skeleton, under that skeleton's frontmatter `id` and `title`; the module therefore ships two files under one id by intent, and the identity of their extracted `FieldDecl[]` is the obligation FR-005-AC-2 tests.
 - Exactly seven skeletons (`entity`, `nested_entity`, `value_object`, `aggregate_root`, `event`, `state_machine`, `process`) SHALL author `## Invariants` with one `### <clauseId>` per clause, each owning exactly one ```` ```quire ```` fence whose body is a Quire expression over `self`.
-- The `domain`, `repository`, `enumeration`, and `population` skeletons SHALL carry no `## Invariants` section.
+- The `domain`, `repository`, `enumeration`, `population`, `variant_set`, and `graph` skeletons SHALL carry no `## Invariants` section.
 - Every skeleton clause SHALL be a valid Quire expression by the FR-006 clause rules.
 - Each skeleton's frontmatter SHALL carry `object: <type name>` beside `type: <type name>`, because Quire runs the semantic layer (extraction and record validation) on the `object:` archetype of a document; a skeleton without it validates its headings only.
 - The manifest SHALL gain a `required: false` `section_body` locator for every `## Properties`, `## Invariants`, and `## Operations` section a skeleton introduces, so the section is asserted by the manifest and remains optional for existing artifacts.
@@ -80,14 +80,14 @@ refuse.
 
 | ID | Criteria | Verification |
 |----|----------|--------------|
-| FR-005-AC-1 | Every skeleton file (eleven types plus three alternates) passes `validate_document` against this module with `is_valid` true and no `semantic.record-invalid` error. | Test |
+| FR-005-AC-1 | Every skeleton file (every type plus three alternates) passes `validate_document` against this module with `is_valid` true and no `semantic.record-invalid` error. | Test |
 | FR-005-AC-2 | For `entity`, `aggregate_root`, and `value_object`, the table and `sysml` skeletons extract to identical normalized `fields` with `fieldsForm` `table` and `fence` respectively. | Test |
 | FR-005-AC-3 | Under a bundle index built from the skeleton frontmatter, every skeleton extracts with zero `error` diagnostics and zero `semantic.unresolved-type` findings, and every non-kernel `type.target` starts with `ix://agent-ix/spec-objects-business/type/`. | Test |
 | FR-005-AC-8 | Every skeleton `title` matches the `Identifier` pattern, is unique across the skeletons, and is not a `KernelScalar` name; every skeleton frontmatter carries `object` equal to `type`. | Test |
 | FR-005-AC-4 | Each skeleton's `availability` states match its type: `fields` `available` for `entity`, `nested_entity`, `value_object`, `aggregate_root`, `event`, `process`, and `state_machine`; `operations` `available` for `repository` and `state_machine`; `clauses` `available` for the seven Invariants-bearing types; `not_applicable` for every other kind. | Test |
 | FR-005-AC-5 | Every negative fixture fails validation with an error message containing its `expect:` code, and at least the eight cases listed in Behavior are present. | Test |
 | FR-005-AC-6 | Every skeleton's H2 set equals a subset of the headings the manifest asserts for its type and includes every `required: true` heading. | Test |
-| FR-005-AC-7 | The skeleton for each of the eleven types has no placeholder token and every asserted section body is non-empty. | Test |
+| FR-005-AC-7 | The skeleton for each type has no placeholder token and every asserted section body is non-empty. | Test |
 
 ## Dependencies
 

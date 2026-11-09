@@ -1,7 +1,7 @@
 manifest_version: 1.0.0
 name: spec-objects-business
 version: 0.9.0
-description: 'Filament Module: tier-2 business ObjectTypes (DDD: domain, entity, value_object, aggregate_root, nested_entity, repository, event, state_machine, process, enumeration, population)'
+description: 'Filament Module: tier-2 business ObjectTypes (DDD: domain, entity, value_object, aggregate_root, nested_entity, repository, event, state_machine, process, enumeration, population, variant_set, graph)'
 semantic:
   contract_version: 1.0.0
   semantic_core: 0.3.3
@@ -18,6 +18,8 @@ semantic:
   - process
   - enumeration
   - population
+  - variant_set
+  - graph
   imports: {}
   targets: [json-schema, markdown]
   mappings: [typed-table, sysml-fence, generalization, abstract-types, presence, subsetting, redefinition, effect-frames, relationships]
@@ -504,3 +506,43 @@ object_types:
           assert:
             columns: [Type]
             min_rows: 1
+- name: variant_set
+  frontmatter_schema_ref: schemas/ObjectFrontmatter.json
+  allowed_links:
+    references: [enumeration, value_object, variant_set]
+  data_schema:
+    schema: schemas/VariantSet.json
+  body_extraction:
+    yield_pattern:
+      match:
+        id: *id001
+        title: *id002
+        type: *id003
+        invariants:
+          from: section_body
+          after_heading: Invariants
+          required: false
+        variants:
+          from: table_row
+          under_section: Variants
+          required: true
+          assert:
+            columns: [Variant, Payload, Description]
+            min_rows: 1
+- name: graph
+  frontmatter_schema_ref: schemas/ObjectFrontmatter.json
+  allowed_links:
+    references: [entity, aggregate_root, value_object, enumeration, event, process, graph]
+  data_schema:
+    schema: schemas/Graph.json
+  body_extraction:
+    yield_pattern:
+      match:
+        id: *id001
+        title: *id002
+        type: *id003
+        graph:
+          from: code_block
+          after_heading: Graph
+          language: mermaid
+          required: true

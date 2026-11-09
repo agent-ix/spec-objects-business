@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/VariantDecl.json",
+  "type": "object",
+  "properties": {
+    "name": {
+      "$ref": "https://schemas.agent-ix.org/semantic-core/0.3.3/Identifier.json"
+    },
+    "payload": {
+      "$ref": "https://schemas.agent-ix.org/semantic-core/0.3.3/TypeRef.json"
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "unevaluatedProperties": {
+    "not": {}
+  },
+  "description": "One variant of a closed union. `payload` is the type the selected variant\ncarries; a variant with no payload omits it."
+}

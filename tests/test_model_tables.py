@@ -316,9 +316,10 @@ def test_skeleton_clauses_are_quire_and_contract_lines_are_pre_post(
         contract_lines += [
             (path.name, m.group(1)) for m in re.finditer(r"^(Pre|Post):", text, re.M)
         ]
-        assert (
-            not re.search(r"^```mermaid", text, re.M) or path.name == "domain.md"
-        ), path.name
+        assert not re.search(r"^```mermaid", text, re.M) or path.name in {
+            "domain.md",
+            "graph.md",
+        }, path.name
         record = extract(quire_engine, semantic_module, path, bundle_index)
         for clause in record.get("clauses") or []:
             assert clause["language"] == "quire", (path.name, clause)

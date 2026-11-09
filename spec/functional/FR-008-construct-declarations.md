@@ -82,7 +82,7 @@ module data rather than a hard-coded kind list.
 
 | ID | Criteria | Verification |
 |----|----------|--------------|
-| FR-008-AC-1 | Exactly the ten construct kinds declare a `construct:`, and `population` declares none while `agent-ix/filament-core-data#174` is open. | Test |
+| FR-008-AC-1 | Exactly the ten construct kinds declare a `construct:`; `population` declares none while `agent-ix/filament-core-data#174` is open, and `variant_set` and `graph` declare none because the FR-142 core vocabulary has no union or partial-order shape. | Test |
 | FR-008-AC-3 | Each `references` entry of a declaration names only roles an object type of the manifest carries, never `*` or a type name. | Test |
 | FR-008-AC-5 | The manifest `roles:` registry declares exactly `aggregate-member` and `composite-owner`, each with a description, and each type carries the roles the Behavior table's references admit. | Test |
 | FR-008-AC-6 | `event`'s `construct:` declares `immutable: true`; none of the other nine declarations declares `immutable`. | Test |

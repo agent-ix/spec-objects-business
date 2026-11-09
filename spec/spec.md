@@ -42,7 +42,7 @@ module activates against `filament-core`.
 
 ### In Scope
 
-- The Module manifest (`spec_objects_business/manifest.yaml`) and the eleven tier-2
+- The Module manifest (`spec_objects_business/manifest.yaml`) and the tier-2
   business ObjectTypes it contributes for DDD modelling.
 - The functional requirement that the manifest activates idempotently against
   `filament-core-service`, and the integration test that verifies it.
@@ -97,7 +97,7 @@ module activates against `filament-core`.
 ### System Description
 
 `spec-objects-business` is a Python package that publishes a Filament Module
-manifest declaring eleven tier-2 ObjectTypes for business / DDD modelling. The
+manifest declaring the tier-2 ObjectTypes for business / DDD modelling. The
 manifest is activated against `filament-core-service` over its HTTP API, which
 registers the declared archetypes, object types, grammars, and artifact types.
 
@@ -118,7 +118,7 @@ declares the semantic contract in the manifest; FR-004 fixes each type's
 role-distinct schema; FR-005 makes the skeletons executable fixtures; FR-006
 declares the object-type model tables the engine extracts; FR-007 declares the
 `## Relationships` table and the edge verbs its rows use; FR-008 declares each
-object type's semantic IR construct; FR-009 admits segmented document ids. Integration tests in
+object type's semantic IR construct; FR-009 admits segmented document ids; FR-010 adds the closed-union and graph object types. Integration tests in
 `integration/` verify the activation and Quoin-install boundaries; the third
 external boundary, the Quire engine (loader, extraction, record surface), has
 no IT artifact of its own — the FR-003 and FR-005 test harness is this

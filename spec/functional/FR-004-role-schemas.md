@@ -65,6 +65,8 @@ admitted: a composite key is a legitimate declaration and no rule forbids it.
 | process | `Process` | `fields` | `steps: ProcessStep[]`, `clauses`, `operations`, `emits: SemanticId[]` | `fields` has ≥ 1 item and ≥ 1 identity field (the correlation key); `relations` forbidden |
 | enumeration | `Enumeration` | none | `values: EnumValue[]`, `clauses` | `fields` and `operations` forbidden |
 | population | `Population` | none | `members: PopulationMember[]`, `extent`, `clauses` | `extent`, when present, is `closed` or `open`; `fields` and `operations` forbidden: a population declares which instances exist together, not data |
+| variant_set | `VariantSet` | none | `variants: VariantDecl[]`, `clauses` | `fields` and `operations` forbidden; see [FR-010](./FR-010-variant-set-and-graph.md) |
+| graph | `Graph` | none | `clauses` | `fields`, `operations`, `states` and `transitions` forbidden; see [FR-010](./FR-010-variant-set-and-graph.md) |
 
 - `Term` SHALL be `{ term: string (minLength 1), doc: string }`.
 - `Transition` SHALL be `{ from: Identifier, to: Identifier, trigger: Identifier, guard?: ClauseRef, guardExpression?: Expression, emits?: SemanticId }`, with `guard` and `guardExpression` mutually exclusive (a not-both-present constraint in `Transition.json`).
@@ -91,7 +93,7 @@ admitted: a composite key is a legitimate declaration and no rule forbids it.
 
 | ID | Criteria | Verification |
 |----|----------|--------------|
-| FR-004-AC-1 | Each of the eleven shipped object-type schemas differs from every other in at least one required, forbidden, or item rule listed in the table; a schema with only `type: object` is absent. | Test |
+| FR-004-AC-1 | Each shipped object-type schema differs from every other in at least one required, forbidden, or item rule listed in the table; a schema with only `type: object` is absent. | Test |
 | FR-004-AC-2 | An entity record with one identity field validates against `Entity.json`; the same record with the identity flag removed fails; a record with no `fields` fails. | Test |
 | FR-004-AC-3 | A value-object record without identity fields validates against `ValueObject.json`; the same record with one identity field fails; a record carrying `relations` fails. | Test |
 | FR-004-AC-4 | An aggregate-root record with an identity field and one clause validates; the same record without `clauses` fails. | Test |
@@ -99,7 +101,7 @@ admitted: a composite key is a legitimate declaration and no rule forbids it.
 | FR-004-AC-6 | A repository record with one operation and no fields validates; a record with `fields` fails; a record with an empty `operations` array fails. | Test |
 | FR-004-AC-7 | A state-machine record with one operation validates, with `states` and `transitions` accepted when present; a transition missing `trigger` fails; a transition carrying a `guardExpression` expression record validates, and a transition carrying both `guard` and `guardExpression` fails; one whose expression lacks `text` or has a `kind` other than `expression` fails. | Test |
 | FR-004-AC-8 | A process record with an identity field validates, with `steps` and `emits` accepted when present; a step whose `kind` is outside `StepKind` fails. | Test |
-| FR-004-AC-9 | Empty records `{}` validate against `Domain.json`, `Enumeration.json`, and `Population.json` and fail against every other type; a domain, enumeration, or population record with `fields` fails; a population record with `extent` outside `closed`/`open` fails, and a `members` list of population members, each carrying only `type`, validates only against `Population.json`; a member carrying `extent` fails. | Test |
+| FR-004-AC-9 | Empty records `{}` validate against `Domain.json`, `Enumeration.json`, `Population.json`, `VariantSet.json`, and `Graph.json` and fail against every other type; a domain, enumeration, or population record with `fields` fails; a population record with `extent` outside `closed`/`open` fails, and a `members` list of population members, each carrying only `type`, validates only against `Population.json`; a member carrying `extent` fails. | Test |
 | FR-004-AC-10 | A `type.target` of `ix://agent-ix/spec-objects-business/unresolved/Mystery` is accepted by the schema (it is a `SemanticId`) and reported by the extractor as `semantic.unresolved-type`; a bare `Mystery` string is rejected by the schema. | Test |
 | FR-004-AC-11 | A nested-entity record with one identity field validates against `NestedEntity.json`, with `owner` accepted when present; a record carrying `relations` fails. | Test |
 | FR-004-AC-12 | An entity, nested-entity, aggregate-root, state-machine, or process record carrying `operationExpressions` entries `{ operation, slot, expression }` with `slot` `pre` or `post` validates against its own schema; an entry with `slot` outside `pre`/`post`, or one missing `expression`, fails; `Repository.json` refuses `operationExpressions`. | Test |
