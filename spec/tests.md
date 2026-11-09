@@ -73,6 +73,7 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | FR-008 | FR-008-AC-1, AC-3, AC-5..7 | TC-099, TC-101, TC-106, TC-108, TC-109 | ✅ AC-1 holds `population` without a construct while filament-core-data#174 is open |
 | FR-009 | FR-009-AC-1..3 | TC-103..TC-105 | ✅ |
 | FR-011 | FR-011-AC-1, FR-011-AC-2, FR-011-AC-3, FR-011-AC-4 | TC-118, TC-119, TC-120, TC-121 | ✅ |
+| FR-012 | FR-012-AC-1..3, FR-012-CON-1 | TC-122, TC-123 | ✅ |
 
 ### Integration Test Coverage
 
@@ -167,6 +168,8 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | TC-119 | The `variants` locator declares the `Name`, `Payload`, `Description` table; the skeleton and fixture validate and the list form is refused | Integration | P0 | FR-011-AC-2 | ✅ |
 | TC-120 | The `graph` locator is a required mermaid block; the skeleton and fixture validate and prose alone is refused | Integration | P0 | FR-011-AC-3 | ✅ |
 | TC-121 | `VariantSet.json` and `Graph.json` accept the empty record, `clauses`, and (VariantSet) `variants`; both refuse `fields`, `operations`, `states` and `transitions` | Unit | P1 | FR-011-AC-4 | ✅ |
+| TC-122 | Every required schema key is a member its construct requires, and the five constructs' keys stay required | Unit | P0 | FR-012-AC-1, FR-012-CON-1 | ✅ |
+| TC-123 | A skeleton without its required member is refused as `semantic.record-invalid` naming the required property; a state machine whose Operations holds only subsections validates | Integration | P0 | FR-012-AC-2, FR-012-AC-3 | ✅ |
 | TC-075 | Every object type ships a typed schema a fixture reader can consume; an entity and an enumeration record are distinguishable by schema alone | Demonstration | P2 | StR-001-VC-3 | ✅ |
 
 ## Test Environment

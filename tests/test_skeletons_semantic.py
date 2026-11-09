@@ -318,3 +318,41 @@ def test_skeleton_titles_are_distinct_identifiers_and_object_equals_type():
         assert owner == stem, f"{title} is used by both {owner} and {stem}"
     declared = {ot["name"] for ot in object_types()}
     assert set(titles.values()) == declared
+
+
+#: Skeleton -> the section whose removal drops a member the construct requires.
+REQUIRED_MEMBER_REMOVED = (
+    ("nested_entity", "Properties"),
+    ("aggregate_root", "Properties"),
+    ("aggregate_root", "Invariants"),
+    ("event", "Properties"),
+)
+
+
+@pytest.mark.trace("TC-123", "FR-012-AC-2")
+@pytest.mark.parametrize(("name", "heading"), REQUIRED_MEMBER_REMOVED)
+def test_a_skeleton_without_a_required_member_is_refused_as_record_invalid(
+    quire_engine, name, heading
+):
+    text = (SKELETONS_DIR / f"{name}.md").read_text()
+    cut = re.sub(rf"(?ms)^## {heading}\n.*?(?=^## |\Z)", "", text)
+    assert cut != text
+    result = quire_engine.validate_document(
+        name, str(PACKAGE_ROOT), cut, bundle_package=BUNDLE_PACKAGE
+    )
+    messages = [e["message"] for e in result["errors"]]
+    assert any(
+        "semantic.record-invalid" in m and "is a required property" in m
+        for m in messages
+    ), messages
+
+
+@pytest.mark.trace("TC-123", "FR-012-AC-3")
+def test_an_operations_section_holding_only_subsections_validates(quire_engine):
+    text = (SKELETONS_DIR / "state_machine.md").read_text()
+    bare = re.sub(r"(?ms)(^## Operations\n)\n.*?(?=^### )", r"\1\n", text)
+    assert bare != text
+    result = quire_engine.validate_document(
+        "state_machine", str(PACKAGE_ROOT), bare, bundle_package=BUNDLE_PACKAGE
+    )
+    assert result["is_valid"], result["errors"]

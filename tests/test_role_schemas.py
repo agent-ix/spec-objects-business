@@ -16,8 +16,10 @@ from __future__ import annotations
 import json
 
 import pytest
+import yaml
 
 from tests.conftest import (
+    MANIFEST_PATH,
     MODEL_OF,
     OBJECT_TYPES,
     SCHEMAS_DIR,
@@ -360,3 +362,43 @@ def test_operation_expressions_validate_beside_operations_and_repository_refuses
         schema_registry("Repository"),
         {"operations": [OPERATION], "operationExpressions": [entry]},
     )
+
+
+def _required_keys(name: str) -> set:
+    return set(
+        json.loads((SCHEMAS_DIR / f"{MODEL_OF[name]}.json").read_text()).get(
+            "required", []
+        )
+    )
+
+
+@pytest.mark.trace("TC-122", "FR-012-AC-1", "FR-012-CON-1")
+def test_a_schema_requires_a_key_exactly_when_its_construct_requires_the_member():
+    manifest = yaml.safe_load(MANIFEST_PATH.read_text())
+    seen = set()
+    for object_type in manifest["object_types"]:
+        name = object_type["name"]
+        members = object_type.get("construct", {}).get("members")
+        if members is None or name not in MODEL_OF:
+            continue
+        declared = set(
+            json.loads((SCHEMAS_DIR / f"{MODEL_OF[name]}.json").read_text())[
+                "properties"
+            ]
+        )
+        for key in ("fields", "clauses", "operations"):
+            if key in declared:
+                seen.add((name, key))
+                assert (key in _required_keys(name)) == (
+                    members.get(key) == "required"
+                ), (name, key)
+    for pair in (
+        ("nested_entity", "fields"),
+        ("aggregate_root", "fields"),
+        ("aggregate_root", "clauses"),
+        ("event", "fields"),
+        ("process", "fields"),
+        ("state_machine", "operations"),
+    ):
+        assert pair in seen, pair
+        assert pair[1] in _required_keys(pair[0]), pair

@@ -117,7 +117,7 @@ declares the semantic contract in the manifest; FR-004 fixes each type's
 role-distinct schema; FR-005 makes the skeletons executable fixtures; FR-006
 declares the object-type model tables the engine extracts; FR-007 declares the
 `## Relationships` table and the edge verbs its rows use; FR-008 declares each
-object type's semantic IR construct; FR-009 admits segmented document ids; FR-010 gives every record key one owner; FR-011 adds the closed-union and graph object types. Integration tests in
+object type's semantic IR construct; FR-009 admits segmented document ids; FR-010 gives every record key one owner; FR-011 adds the closed-union and graph object types; FR-012 requires a record key in the schema exactly where its construct requires the member. Integration tests in
 `integration/` verify the activation and Quoin-install boundaries; the third
 external boundary, the Quire engine (loader, extraction, record surface), has
 no IT artifact of its own — the FR-003 and FR-005 test harness is this
