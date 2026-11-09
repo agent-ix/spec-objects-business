@@ -21,6 +21,8 @@ relationships:
     type: covers
   - target: "ix://agent-ix/spec-objects-business/FR-009"
     type: covers
+  - target: "ix://agent-ix/spec-objects-business/FR-010"
+    type: covers
 ---
 # Test Matrix
 
@@ -28,7 +30,7 @@ relationships:
 
 This matrix is the verification contract for the module: the manifest
 activation requirement (FR-001, issue #1 era) and the issue #4 semantic data
-schemas, model tables, relationships, construct declarations and object ids (US-001, FR-002..FR-009, IT-002). Coverage is complete when
+schemas, model tables, relationships, construct declarations and object ids (US-001, the functional requirements, IT-002). Coverage is complete when
 every acceptance criterion and named constraint maps to at least
 one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate --strict` reports no findings on this branch, and the rows still `🚧` are the ones whose evidence needs an environment this repository cannot provision (a running `filament-core-service`, a Quoin with the semantic installer).
 
@@ -110,7 +112,7 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | TC-038 | Empty record validates for Domain, Enumeration, and Population only; `fields` on any of them fails; a population `extent` outside `closed`/`open` fails; population `members` (type only) validate only against Population | Integration | P0 | FR-004-AC-9, FR-004-CON-2 | ✅ |
 | TC-039 | Placeholder `unresolved` target is accepted by the schema and reported by the extractor; a bare token is refused | Integration | P1 | FR-004-AC-10 | ✅ |
 | TC-040 | No module schema redeclares a semantic-core model; every grammar item is a `$ref` to semantic-core | Unit | P1 | FR-004-CON-1 | ✅ |
-| TC-041 | Nested entity: local identity validates; `relations` fails; `owner` accepted | Integration | P1 | FR-004-AC-11 | ✅ |
+| TC-041 | Nested entity: local identity validates; `relations` and `owner` fail | Integration | P1 | FR-004-AC-11 | ✅ |
 | TC-042 | Each of the five operation-bearing role schemas validates `operationExpressions` entries; a bad `slot` or a missing `expression` fails; `Repository` refuses the key | Integration | P1 | FR-004-AC-12 | ✅ |
 | TC-050 | Every skeleton (eleven plus three alternates) validates with no error | Integration | P0 | FR-005-AC-1 | ✅ |
 | TC-051 | Table and `sysml` skeletons extract to identical normalized fields with the recorded forms | Integration | P0 | FR-005-AC-2, FR-005-CON-2 | ✅ |
@@ -134,12 +136,12 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | TC-085 | The population fixture validates and extracts one member per `## Members` row with its type, plus the population's frontmatter `extent`; a repeated `Type` and a retired `Type | Extent` table are refused | Integration | P0 | FR-006-AC-6 | ✅ |
 | TC-086 | The manifest declares `specializes` as a structural edge with inverse `generalizes`, admitted by every field-bearing type | Unit | P1 | FR-006-AC-7 | ✅ |
 | TC-087 | Skeleton clauses are `quire` with no advisory; no skeleton carries `ocl` or a model-section diagram, and its operation contract lines are `Pre:`/`Post:` (the `state_machine` skeleton writes a `Post:` line) | Integration | P1 | FR-006-AC-5 | ✅ |
-| TC-089 | `semantic.mappings` includes `relationships`; only `entity`, `aggregate_root`, `process` and `repository` declare the `relationships` locator, with no `min_rows`; `edge_types` declares `specializes` and the fifteen domain verbs with their spec-artifacts-iso category and inverse, covering every `allowed_links` verb | Unit | P0 | FR-007-AC-1 | ✅ |
+| TC-089 | `semantic.mappings` includes `relationships`; only `domain`, `entity`, `aggregate_root`, `process` and `repository` declare the `relationships` locator, with no `min_rows`; `edge_types` declares `specializes` and the fifteen domain verbs with their spec-artifacts-iso category and inverse, covering every `allowed_links` verb | Unit | P0 | FR-007-AC-1 | ✅ |
 | TC-090 | Each skeleton `## Relationships` table validates under the bundle package and lowers one relation per row, in row order, with verb, category, `composite`, `ix://` target and multiplicity; no frontmatter domain relationship and no `specializes` row | Integration | P0 | FR-007-AC-2 | ✅ |
 | TC-091 | The entity relationships fixture validates and lowers every non-`specializes` entity verb, `composite` only for `contains` | Integration | P0 | FR-007-AC-3 | ✅ |
 | TC-092 | The unknown-verb, inverse-verb, target-not-allowed and bad-multiplicity fixtures each fail with exactly one `semantic.invalid-model-cell` at line 21 on both surfaces, their reason, `availability.relations` `unavailable` with `entry-errors: lines 21`, and no relation; the inverse-verb message names `aggregates` and `aggregate_root_001` | Integration | P0 | FR-007-AC-4 | ✅ |
 | TC-093 | A header-only Relationships table validates and extracts `available` with empty `relations` | Integration | P0 | FR-007-AC-5 | ✅ |
-| TC-094 | Only `Entity` and `AggregateRoot` declare `relations`; a Relationships table on `value_object`, populated or header-only, fails with one `semantic.record-invalid` naming `relations` as unexpected (a line is reported; the table line is `agent-ix/quire-rs#440`) | Integration | P0 | FR-007-AC-6 | ✅ |
+| TC-094 | Only `Entity`, `AggregateRoot` and `Domain` declare `relations`; a Relationships table on `value_object`, populated or header-only, fails with one `semantic.record-invalid` naming `relations` as unexpected (a line is reported; the table line is `agent-ix/quire-rs#440`) | Integration | P0 | FR-007-AC-6 | ✅ |
 | TC-095 | A list-form Relationships section fails with `semantic.feature-not-extractable` at the list line; a prose-only section warns `semantic.relationships-no-block` at the heading | Integration | P0 | FR-007-AC-7 | ✅ |
 | TC-096 | Through `validate_document`, a row targeting another artifact (`aggregate_root_999`) validates with one `semantic.unresolved-target` advisory at the row (`agent-ix/quoin#557`) | Integration | P1 | FR-007-AC-8 | ✅ |
 | TC-097 | Per type, a process `emits` row and a repository `persists` row validate and lower into `emits` and `persists` with the qualified target, not `relations`, with every row in `relationSources` and non-lossy availability; header-only extracts the typed key empty, with the object type's data schema on the extraction request | Integration | P1 | FR-007-AC-9 | ✅ |
@@ -148,6 +150,12 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | TC-103 | `ObjectFrontmatter.json` carries the segmented document id pattern; every object type references that frontmatter schema and has a required id locator without a second regex | Unit | P0 | FR-009-AC-1 | ✅ |
 | TC-104 | `ObjectFrontmatter.json` accepts underscore and QSpec style hyphenated ids, refuses malformed ids, every skeleton and fixture frontmatter validates, and a composed `FR` artifact with `object: enumeration` accepts `FR-271` | Integration | P0 | FR-009-AC-2 | ✅ |
 | TC-105 | Every skeleton validates with its current id and a well-formed hyphenated id, while a repeated hyphen is refused by its frontmatter schema | Integration | P0 | FR-009-AC-3 | ✅ |
+| TC-111 | Every top-level key of every record schema is allowed for its own object type (`members` only on `aggregate_root` and `population`), none declares `owner` or `ubiquitous_language`, `Domain` declares `relations` and no `members`, `Process` declares `states` | Unit | P0 | FR-010-AC-1 | ✅ |
+| TC-112 | `Process` `states` validate and a value-less entry fails; `Domain` `relations` validate and `members` or `ubiquitous_language` fail | Unit | P0 | FR-010-AC-2 | ✅ |
+| TC-113 | The manifest names `record-sections`, `event` declares the optional `source` locator, and the event skeleton `## Source` holds exactly one inline-code id of an `aggregate_root` skeleton | Unit | P0 | FR-010-AC-3 | ✅ |
+| TC-114 | `nested_entity` `## Parent` stays a required prose locator and no skeleton authors `## Owner`, `## Extent`, `## Emits` or `## Persists` | Unit | P0 | FR-010-AC-4 | ✅ |
+| TC-115 | The `aggregate_root` skeleton has a `## Members` table and no `aggregates` or `contains` Relationships row | Unit | P0 | FR-010-AC-5 | ✅ |
+| TC-116 | The `domain` skeleton validates under the bundle package and authors `contains` Relationships rows | Integration | P0 | FR-010-AC-6 | ✅ |
 | TC-106 | The manifest `roles:` registry declares `aggregate-member` and `composite-owner`, each with a description, and each type carries the roles its references admit | Unit | P0 | FR-008-AC-5 | ✅ |
 | TC-108 | `event`'s `construct:` declares `immutable: true`; every other of the ten kinds' `construct:` lacks the key | Unit | P0 | FR-008-AC-6 | ✅ |
 | TC-109 | Each QSpec FR-208 refusal this module's record schema can express fails validation, and the same record without the refused form passes: an operation on `ValueObject`/`Event`; a `clauses` key or a non-empty operation `pre`/`post` on `Repository`; a `fields`, `operations` or `clauses` key on `Domain`; and no `repository` or `domain` `allowed_links` admits `specializes` | Unit | P0 | FR-008-AC-7 | ✅ |
@@ -165,10 +173,10 @@ explicit expected failure while `agent-ix/filament-core-service#31` is open.
 A Relationships table whose columns do not match the locator assert reports that
 assert error twice (`agent-ix/quire-rs#441`); FR-007 tests pin no such error list.
 
-Rows over the declaration-record keys (`members`, `vocabulary`, `owner`,
+Rows over the declaration-record keys (`members`, `vocabulary`,
 `emits`, `persists`, `source`, `states`, `transitions`, `steps`, `values`,
 `relations`) are verified against hand-built records — TC-036, TC-037, TC-041
-in particular — and their tests say so; they are schema evidence. The
+and TC-112 in particular — and their tests say so; they are schema evidence. The
 extracted model tables are verified separately against the record's `model`
 (TC-081..TC-083, TC-085), and the extracted `relations` against the `## Relationships` rows (TC-090..TC-096).
 

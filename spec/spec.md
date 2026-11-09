@@ -68,13 +68,12 @@ module activates against `filament-core`.
   (`agent-ix/filament-core-data#19`) and published only behind the promotion
   gate (`agent-ix/quoin#290`); the semantic-core language packages are
   `agent-ix/filament-core-data#11`. None is produced or faked here.
-- Extraction of the record keys no model table declares from Markdown; the
-  schemas declare them as optional so the engine can fill them without a
-  schema change. Repository `persists`, event `source`, nested-entity
-  `owner`, and aggregate/process `emits` are `agent-ix/quire-rs#435`, and the
-  module's locators and skeleton sections for them are
-  `agent-ix/spec-objects-business#9`. `relations` are extracted from the
-  FR-007 `## Relationships` table.
+- Extraction of the record keys into the record from Markdown: the schemas
+  declare them as optional so the engine can fill them without a schema
+  change. Each key has one owner (FR-010, quoin FR-123): model entries are
+  copied by quire-rs, `emits` and `persists` derive from FR-007
+  `## Relationships` rows, event `source` is read from `## Source`, and the
+  nested-entity `owner` and domain `ubiquitous_language` are not record keys.
 - Extraction of inline Quire expressions in a transition `Guard` or an
   operation's `Pre:`/`Post:` lines (quire-rs FR-071, FR-075); the schemas admit
   the records it emits (`guardExpression`, `operationExpressions`).
@@ -118,7 +117,7 @@ declares the semantic contract in the manifest; FR-004 fixes each type's
 role-distinct schema; FR-005 makes the skeletons executable fixtures; FR-006
 declares the object-type model tables the engine extracts; FR-007 declares the
 `## Relationships` table and the edge verbs its rows use; FR-008 declares each
-object type's semantic IR construct; FR-009 admits segmented document ids. Integration tests in
+object type's semantic IR construct; FR-009 admits segmented document ids; FR-010 gives every record key one owner. Integration tests in
 `integration/` verify the activation and Quoin-install boundaries; the third
 external boundary, the Quire engine (loader, extraction, record surface), has
 no IT artifact of its own — the FR-003 and FR-005 test harness is this

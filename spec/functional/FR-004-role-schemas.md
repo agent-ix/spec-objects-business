@@ -18,8 +18,8 @@ emitted schema validates that type's declaration record
 required keys, forbidden keys, and item rules, so that no type is a
 placeholder and each DDD role refuses the records that violate its own
 rules; full pairwise disjointness is not claimed, because the keys that
-would separate a minimal entity from a nested entity or a process (`owner`,
-`steps`) are not yet populated by the extractor.
+would separate a minimal entity from a process (`steps`) are not yet populated
+by the extractor.
 
 ## Inputs
 
@@ -54,9 +54,9 @@ admitted: a composite key is a legitimate declaration and no rule forbids it.
 
 | Object type | Model | Required keys | Optional keys | Item rules |
 |---|---|---|---|---|
-| domain | `Domain` | none | `members: RelationDecl[]`, `vocabulary: Term[]`, `clauses: ClauseRef[]` | `fields` and `operations` are forbidden: a domain declares a boundary, not data |
+| domain | `Domain` | none | `relations: RelationDecl[]`, `vocabulary: Term[]` | `fields` and `operations` are forbidden: a domain declares a boundary, not data |
 | entity | `Entity` | `fields` | `relations`, `clauses`, `operations` | `fields` has ≥ 1 item and ≥ 1 identity field |
-| nested_entity | `NestedEntity` | `fields` | `owner: RelationDecl`, `clauses`, `operations` | `fields` has ≥ 1 item and ≥ 1 identity field (local to the owner); `relations` forbidden |
+| nested_entity | `NestedEntity` | `fields` | `clauses`, `operations` | `fields` has ≥ 1 item and ≥ 1 identity field (local to the owner); `relations` and `owner` forbidden |
 | value_object | `ValueObject` | `fields` | `clauses`, `operations` | `fields` has ≥ 1 item and 0 identity fields; `relations` forbidden |
 | aggregate_root | `AggregateRoot` | `fields`, `clauses` | `relations`, `operations`, `members: RelationDecl[]`, `emits: SemanticId[]` | `fields` has ≥ 1 identity field; `clauses` has ≥ 1 item (the root exists to enforce invariants) |
 | repository | `Repository` | `operations` | `clauses`, `persists: SemanticId[]` | `operations` has ≥ 1 item; `fields` forbidden |
@@ -72,12 +72,12 @@ admitted: a composite key is a legitimate declaration and no rule forbids it.
 - `Expression` SHALL be `{ kind: "expression", text: string (minLength 1), sourceSpan: SourceLocus }`, sealed: an inline Quire expression carried opaquely, as quire-rs FR-071 and FR-075 emit it.
 - `OperationExpression` SHALL be `{ operation: Identifier, slot: pre | post, expression: Expression }`, sealed. `Entity`, `NestedEntity`, `AggregateRoot`, `StateMachine`, and `Process` SHALL each admit an optional `operationExpressions: OperationExpression[]` beside `operations`, because `OperationDecl.pre` and `post` carry clause references only. `Repository` admits none: its operations carry no contract. `operation` names an `operations[].name` of the same record, a reader rule JSON Schema does not express.
 - `ProcessStep` SHALL be `{ name: Identifier, kind: StepKind, consumes?: SemanticId[], emits?: SemanticId[], doc?: string }` with `StepKind` the closed set `command`, `event`, `decision`, `compensation`, `wait`.
-- Every `fields`, `params`, `clauses`, `operations`, `relations`, `members`, `owner`, `values`, and `states` item SHALL be validated by `$ref` to the semantic-core model, never by a copied definition.
+- Every `fields`, `params`, `clauses`, `operations`, `relations`, `members`, `values`, and `states` item SHALL be validated by `$ref` to the semantic-core model, never by a copied definition.
 - The TypeSpec source SHALL express the item rules through the official emitter's decorators over open marker models: `@contains(IdentityField)` for "≥ 1 identity field", `@contains(IdentityField) @minContains(0) @maxContains(0)` for "0 identity fields", and, because JSON Schema admits one `contains` per array, the event occurrence rule as an `@extension("allOf", …)` clause whose `contains` references `OccurrenceField.json` (a marker whose `type.target` is `Timestamp`); the generator normalizes that relative `$ref` per FR-002.
-- Every cross-reference a declaration makes (`type.target`, `RelationDecl.target`, `emits`, `persists`, `source`, `Transition.emits`, `ProcessStep.consumes`/`emits`) SHALL be a `SemanticId` or `KernelScalar` per semantic-core, so a bare token is rejected by the schema; resolution against the bundle, and the placeholder `ix://<org>/<repo>/unresolved/<Token>` with its `semantic.unresolved-type` finding, exist today for `type.target` only (quire-rs FR-070) and for the other keys once `agent-ix/quoin#335` publishes their mapping.
+- Every cross-reference a declaration makes (`type.target`, `RelationDecl.target`, `emits`, `persists`, `source`, `Transition.emits`, `ProcessStep.consumes`/`emits`) SHALL be a `SemanticId` or `KernelScalar` per semantic-core, so a bare token is rejected by the schema; resolution against the bundle, and the placeholder `ix://<org>/<repo>/unresolved/<Token>` with its `semantic.unresolved-type` finding, exist today for `type.target` only (quire-rs FR-070) and for the other keys once the extractor implements quoin FR-123.
 - Each schema SHALL describe the declared shape only, never a runtime occurrence (an entity row, an emitted event instance), which is why `Event` carries no identity field and no `eventId`: occurrence identity belongs to the runtime record, not the declaration.
-- Where a key is declared but the current extractor does not populate it (`members`, `vocabulary`, `owner`, `emits`, `persists`, `source`, `states`, `transitions`, `steps`, `values`) — and likewise `relations` — the key SHALL be optional, so a record produced by today's extractor validates and a future extractor can fill it without a schema change.
-- The test suite SHALL verify every criterion over a key the extractor does not populate against a hand-built JSON record rather than an extracted one, naming that limitation in the test itself, so that no row claims extraction evidence it does not have; the extraction path for those keys is `agent-ix/quoin#335` (mapping) and its quire-rs successor.
+- Where a key is declared but the current extractor does not populate it (`members`, `vocabulary`, `emits`, `persists`, `source`, `states`, `transitions`, `steps`, `values`) — and likewise `relations` — the key SHALL be optional, so a record produced by today's extractor validates and a future extractor can fill it without a schema change.
+- The test suite SHALL verify every criterion over a key the extractor does not populate against a hand-built JSON record rather than an extracted one, naming that limitation in the test itself, so that no row claims extraction evidence it does not have; the extraction path for those keys is quoin FR-123 (mapping) and its quire-rs successor.
 - A `Transition` SHALL name a `states[].value` of the same record in `from` and in `to`, and an `operations[].name` of the same record in `trigger`. JSON Schema cannot express either rule, so both are reader rules stated here for the extractor that first populates `states` and `transitions`; neither is claimed as a schema refusal.
 
 ## Constraints
@@ -101,7 +101,7 @@ admitted: a composite key is a legitimate declaration and no rule forbids it.
 | FR-004-AC-8 | A process record with an identity field validates, with `steps` and `emits` accepted when present; a step whose `kind` is outside `StepKind` fails. | Test |
 | FR-004-AC-9 | Empty records `{}` validate against `Domain.json`, `Enumeration.json`, and `Population.json` and fail against every other type; a domain, enumeration, or population record with `fields` fails; a population record with `extent` outside `closed`/`open` fails, and a `members` list of population members, each carrying only `type`, validates only against `Population.json`; a member carrying `extent` fails. | Test |
 | FR-004-AC-10 | A `type.target` of `ix://agent-ix/spec-objects-business/unresolved/Mystery` is accepted by the schema (it is a `SemanticId`) and reported by the extractor as `semantic.unresolved-type`; a bare `Mystery` string is rejected by the schema. | Test |
-| FR-004-AC-11 | A nested-entity record with one identity field validates against `NestedEntity.json`, with `owner` accepted when present; a record carrying `relations` fails. | Test |
+| FR-004-AC-11 | A nested-entity record with one identity field validates against `NestedEntity.json`; a record carrying `owner` or `relations` fails (the owner is a bundle fact, FR-010). | Test |
 | FR-004-AC-12 | An entity, nested-entity, aggregate-root, state-machine, or process record carrying `operationExpressions` entries `{ operation, slot, expression }` with `slot` `pre` or `post` validates against its own schema; an entry with `slot` outside `pre`/`post`, or one missing `expression`, fails; `Repository.json` refuses `operationExpressions`. | Test |
 
 ## Dependencies

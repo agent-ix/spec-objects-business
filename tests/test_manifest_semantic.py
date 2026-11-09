@@ -65,6 +65,7 @@ def test_the_semantic_block_carries_the_nine_admitted_keys_and_eleven_exports(
         "redefinition",
         "effect-frames",
         "relationships",
+        "record-sections",
     ]
     assert semantic_block["compatibility_posture"] == "strict"
     assert semantic_block["legacy_forms"] == "warning"

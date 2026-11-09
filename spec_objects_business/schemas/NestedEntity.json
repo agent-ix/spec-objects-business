@@ -13,9 +13,6 @@
         "$ref": "https://schemas.agent-ix.org/agent-ix/spec-objects-business/IdentityField.json"
       }
     },
-    "owner": {
-      "$ref": "https://schemas.agent-ix.org/semantic-core/0.3.3/RelationDecl.json"
-    },
     "clauses": {
       "type": "array",
       "items": {
@@ -41,5 +38,5 @@
   "unevaluatedProperties": {
     "not": {}
   },
-  "description": "An entity whose identity is local to its owner. `relations` is forbidden by\nthe seal: a nested entity is reached through its owner. Identity locality is\nprose the schema does not express."
+  "description": "An entity whose identity is local to its owner. `relations` is forbidden by\nthe seal: a nested entity is reached through its owner. It carries no\n`owner` key: the owner is the single inbound composite edge a bundle\ndeclares for the artifact (a bundle rule, quoin FR-123), so no per-artifact\nextraction can fill it. Identity locality is prose the schema does not\nexpress."
 }
