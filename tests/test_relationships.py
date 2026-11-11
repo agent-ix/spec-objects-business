@@ -110,8 +110,6 @@ def data_schema(name: str) -> dict:
 
 
 def extract_relations(quire_engine, semantic_module, path, bundle):
-    # No `dataSchema`: with one, the engine lowers `emits` and `persists` rows
-    # into their typed keys and leaves them out of `relations`.
     text = path.read_text()
     front = frontmatter(text)
     return quire_engine.extract_semantic(
@@ -121,6 +119,7 @@ def extract_relations(quire_engine, semantic_module, path, bundle):
             "path": str(path),
             "sourceIdentity": f"ix://{BUNDLE_PACKAGE}/{front['id']}",
             "bodyExtraction": object_type(front["object"])["body_extraction"],
+            "dataSchema": data_schema(front["object"]),
             "bundle": bundle,
             "relationVocabulary": relation_vocabulary(front["object"]),
         }
@@ -152,6 +151,10 @@ def expected_relations(text: str) -> list[dict]:
     return relations
 
 
+# Rows whose verb is a typed record key lower into that key, not `relations`.
+TYPED_VERBS = {"emits", "persists"}
+
+
 def actual_relations(record: dict) -> list[dict]:
     return [
         {"name": source["name"], **relation}
@@ -179,7 +182,7 @@ def test_every_object_type_declares_the_relationships_table_and_every_verb_it_ad
             assert verb in edge_types, (ot["name"], verb)
 
 
-@pytest.mark.trace("TC-090", "FR-007-AC-2")
+@pytest.mark.trace("TC-090", "FR-007-AC-2", "FR-007-AC-9")
 def test_every_skeleton_relationships_table_extracts_row_for_row(
     quire_engine, semantic_module
 ):
@@ -208,7 +211,14 @@ def test_every_skeleton_relationships_table_extracts_row_for_row(
             if d.get("code") in ("semantic.unresolved-target",)
             or d.get("severity") == "error"
         ], (path.name, record.get("diagnostics"))
-        assert actual_relations(record) == expected_relations(text), path.name
+        rows = expected_relations(text)
+        assert actual_relations(record) == [
+            r for r in rows if r["verb"] not in TYPED_VERBS
+        ], path.name
+        assert len(record["relationSources"]) == len(record["relations"]), path.name
+        if front["object"] == "aggregate_root":
+            assert record["emits"] == [f"ix://{BUNDLE_PACKAGE}/event_001"], record
+            assert "emits" not in {r["verb"] for r in record["relations"]}, record
         verbs = [row[1] for row in table_rows(text, "Relationships")]
         assert "specializes" not in verbs, path.name
     assert authored == {"aggregate_root", "domain"}
