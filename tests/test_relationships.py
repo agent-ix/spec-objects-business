@@ -391,7 +391,12 @@ TYPED_KEY_ROWS = (
         "persists",
         "aggregate_root_001",
     ),
+    ("aggregate_root", "| placed | emits | event_001 | 0..1 |", "emits", "event_001"),
 )
+
+# Types whose records admit both `relations` and the typed key: the typed row
+# lowers into the key alone and leaves relationSources aligned with relations.
+RELATIONS_ALONGSIDE_KEY = {"aggregate_root"}
 
 
 RELATIONSHIPS_HEADER = (
@@ -400,7 +405,11 @@ RELATIONSHIPS_HEADER = (
 
 
 def typed_key_document(name: str, row: str) -> str:
-    return (SKELETONS_DIR / f"{name}.md").read_text() + RELATIONSHIPS_HEADER + row
+    skeleton = (SKELETONS_DIR / f"{name}.md").read_text()
+    # The skeleton may already author a table (last section); replace it, since
+    # a second `## Relationships` heading is refused.
+    base = skeleton.split("\n## Relationships", 1)[0].rstrip("\n") + "\n"
+    return base + RELATIONSHIPS_HEADER + row
 
 
 def extract_document(quire_engine, semantic_module, name: str, text: str) -> dict:
@@ -422,7 +431,7 @@ def extract_document(quire_engine, semantic_module, name: str, text: str) -> dic
 @pytest.mark.parametrize(
     ("name", "row", "key", "target"), TYPED_KEY_ROWS, ids=[r[0] for r in TYPED_KEY_ROWS]
 )
-def test_process_emits_and_repository_persists_rows_lower_into_typed_keys(
+def test_typed_verb_rows_lower_into_typed_keys(
     quire_engine, semantic_module, name, row, key, target
 ):
     assert locators(object_type(name))["relationships"] == RELATIONSHIPS_LOCATOR
@@ -434,15 +443,18 @@ def test_process_emits_and_repository_persists_rows_lower_into_typed_keys(
     record = extract_document(quire_engine, semantic_module, name, text)
     assert record[key] == [f"ix://{BUNDLE_PACKAGE}/{target}"], record
     assert not record.get("relations"), record
-    row_name, verb, cell_target, multiplicity = table_rows(text, "Relationships")[0]
-    (source,) = record["relationSources"]
-    assert {k: source[k] for k in ("name", "verb", "target", "multiplicity")} == {
-        "name": row_name,
-        "verb": verb,
-        "target": cell_target,
-        "multiplicity": multiplicity,
-    }, source
-    assert source["sourceSpan"]["startLine"] == text.splitlines().index(row) + 1
+    if name in RELATIONS_ALONGSIDE_KEY:
+        assert not record.get("relationSources"), record
+    else:
+        row_name, verb, cell_target, multiplicity = table_rows(text, "Relationships")[0]
+        (source,) = record["relationSources"]
+        assert {k: source[k] for k in ("name", "verb", "target", "multiplicity")} == {
+            "name": row_name,
+            "verb": verb,
+            "target": cell_target,
+            "multiplicity": multiplicity,
+        }, source
+        assert source["sourceSpan"]["startLine"] == text.splitlines().index(row) + 1
     availability = record["availability"]["relations"]
     assert availability["state"] == "available", availability
     assert not availability.get("lossy"), availability
