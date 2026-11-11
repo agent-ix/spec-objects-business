@@ -110,8 +110,6 @@ def data_schema(name: str) -> dict:
 
 
 def extract_relations(quire_engine, semantic_module, path, bundle):
-    # No `dataSchema`: with one, the engine lowers `emits` and `persists` rows
-    # into their typed keys and leaves them out of `relations`.
     text = path.read_text()
     front = frontmatter(text)
     return quire_engine.extract_semantic(
@@ -121,6 +119,7 @@ def extract_relations(quire_engine, semantic_module, path, bundle):
             "path": str(path),
             "sourceIdentity": f"ix://{BUNDLE_PACKAGE}/{front['id']}",
             "bodyExtraction": object_type(front["object"])["body_extraction"],
+            "dataSchema": data_schema(front["object"]),
             "bundle": bundle,
             "relationVocabulary": relation_vocabulary(front["object"]),
         }
@@ -152,6 +151,10 @@ def expected_relations(text: str) -> list[dict]:
     return relations
 
 
+# Rows whose verb is a typed record key lower into that key, not `relations`.
+TYPED_VERBS = {"emits", "persists"}
+
+
 def actual_relations(record: dict) -> list[dict]:
     return [
         {"name": source["name"], **relation}
@@ -179,7 +182,7 @@ def test_every_object_type_declares_the_relationships_table_and_every_verb_it_ad
             assert verb in edge_types, (ot["name"], verb)
 
 
-@pytest.mark.trace("TC-090", "FR-007-AC-2")
+@pytest.mark.trace("TC-090", "FR-007-AC-2", "FR-007-AC-9")
 def test_every_skeleton_relationships_table_extracts_row_for_row(
     quire_engine, semantic_module
 ):
@@ -208,7 +211,14 @@ def test_every_skeleton_relationships_table_extracts_row_for_row(
             if d.get("code") in ("semantic.unresolved-target",)
             or d.get("severity") == "error"
         ], (path.name, record.get("diagnostics"))
-        assert actual_relations(record) == expected_relations(text), path.name
+        rows = expected_relations(text)
+        assert actual_relations(record) == [
+            r for r in rows if r["verb"] not in TYPED_VERBS
+        ], path.name
+        assert len(record["relationSources"]) == len(record["relations"]), path.name
+        if front["object"] == "aggregate_root":
+            assert record["emits"] == [f"ix://{BUNDLE_PACKAGE}/event_001"], record
+            assert "emits" not in {r["verb"] for r in record["relations"]}, record
         verbs = [row[1] for row in table_rows(text, "Relationships")]
         assert "specializes" not in verbs, path.name
     assert authored == {"aggregate_root", "domain"}
@@ -381,7 +391,12 @@ TYPED_KEY_ROWS = (
         "persists",
         "aggregate_root_001",
     ),
+    ("aggregate_root", "| placed | emits | event_001 | 0..1 |", "emits", "event_001"),
 )
+
+# Types whose records admit both `relations` and the typed key: the typed row
+# lowers into the key alone and leaves relationSources aligned with relations.
+RELATIONS_ALONGSIDE_KEY = {"aggregate_root"}
 
 
 RELATIONSHIPS_HEADER = (
@@ -390,7 +405,11 @@ RELATIONSHIPS_HEADER = (
 
 
 def typed_key_document(name: str, row: str) -> str:
-    return (SKELETONS_DIR / f"{name}.md").read_text() + RELATIONSHIPS_HEADER + row
+    skeleton = (SKELETONS_DIR / f"{name}.md").read_text()
+    # The skeleton may already author a table (last section); replace it, since
+    # a second `## Relationships` heading is refused.
+    base = skeleton.split("\n## Relationships", 1)[0].rstrip("\n") + "\n"
+    return base + RELATIONSHIPS_HEADER + row
 
 
 def extract_document(quire_engine, semantic_module, name: str, text: str) -> dict:
@@ -412,7 +431,7 @@ def extract_document(quire_engine, semantic_module, name: str, text: str) -> dic
 @pytest.mark.parametrize(
     ("name", "row", "key", "target"), TYPED_KEY_ROWS, ids=[r[0] for r in TYPED_KEY_ROWS]
 )
-def test_process_emits_and_repository_persists_rows_lower_into_typed_keys(
+def test_typed_verb_rows_lower_into_typed_keys(
     quire_engine, semantic_module, name, row, key, target
 ):
     assert locators(object_type(name))["relationships"] == RELATIONSHIPS_LOCATOR
@@ -424,15 +443,18 @@ def test_process_emits_and_repository_persists_rows_lower_into_typed_keys(
     record = extract_document(quire_engine, semantic_module, name, text)
     assert record[key] == [f"ix://{BUNDLE_PACKAGE}/{target}"], record
     assert not record.get("relations"), record
-    row_name, verb, cell_target, multiplicity = table_rows(text, "Relationships")[0]
-    (source,) = record["relationSources"]
-    assert {k: source[k] for k in ("name", "verb", "target", "multiplicity")} == {
-        "name": row_name,
-        "verb": verb,
-        "target": cell_target,
-        "multiplicity": multiplicity,
-    }, source
-    assert source["sourceSpan"]["startLine"] == text.splitlines().index(row) + 1
+    if name in RELATIONS_ALONGSIDE_KEY:
+        assert not record.get("relationSources"), record
+    else:
+        row_name, verb, cell_target, multiplicity = table_rows(text, "Relationships")[0]
+        (source,) = record["relationSources"]
+        assert {k: source[k] for k in ("name", "verb", "target", "multiplicity")} == {
+            "name": row_name,
+            "verb": verb,
+            "target": cell_target,
+            "multiplicity": multiplicity,
+        }, source
+        assert source["sourceSpan"]["startLine"] == text.splitlines().index(row) + 1
     availability = record["availability"]["relations"]
     assert availability["state"] == "available", availability
     assert not availability.get("lossy"), availability
