@@ -51,18 +51,18 @@ module data rather than a hard-coded kind list.
 
 | Object type | Identity | Shape | Members | References | Rules | Meaning | Immutable |
 |---|---|---|---|---|---|---|---|
-| `domain` | `none` | `namespace` | `members`, `vocabulary` required; `fields`, `operations` forbidden | — | `no_fields`, `no_operations`, `exclusive_membership`, `members_not_namespace` | `quire.meaning.model.namespace/v1` | — |
-| `entity` | `identified` | `record` | `fields`, `identityFields` required | — | `identity_field_required` | `quire.meaning.model.object-type/v1` | — |
-| `value_object` | `value` | `record` | `fields` required | — | `identity_field_forbidden` | `quire.meaning.model.record-value-type/v1` | — |
-| `aggregate_root` | `identified` | `record` | `fields`, `identityFields`, `clauses`, `members` required | `members`: `aggregate-member` | `identity_field_required`, `min_clauses` | `quire.meaning.model.object-type/v1` | — |
-| `nested_entity` | `identified` | `record` | `fields`, `identityFields`, `owner` required | `owner`: `composite-owner` | `identity_field_required`, `single_owner` | `quire.meaning.model.object-type/v1` | — |
-| `repository` | `none` | `interface` | `operations`, `persists` required; `fields` forbidden | `persists`: `persistable` | `no_fields`, `min_operations` | `quire.meaning.model.persistence-interface/v1` | — |
-| `event` | `none` | `record` | `fields`, `occurrenceField` required | — | `identity_field_forbidden`, `occurrence_field_required` | `quire.meaning.model.event-type/v1` | `true` |
-| `state_machine` | `none` | `state_machine` | `operations`, `states`, `transitions` required | `transitions`: `event-like` | `min_operations` | `quire.meaning.model.state-machine/v1` | — |
-| `process` | `identified` | `sequence` | `fields`, `identityFields`, `steps` required | `steps`: `event-like` | `identity_field_required` | `quire.meaning.model.process/v1` | — |
-| `enumeration` | `none` | `enumeration` | `variants` required; `fields`, `relationships`, `operations` forbidden | — | none | `quire.meaning.model.variant-type/v1` | — |
+| `domain` | `none` | `namespace` | `members`, `vocabulary` required; `fields`, `operations` forbidden | — | `no_fields`, `no_operations`, `exclusive_membership`, `members_not_namespace` | `filament.meaning.model.namespace/v1` | — |
+| `entity` | `identified` | `record` | `fields`, `identityFields` required | — | `identity_field_required` | `filament.meaning.model.object-type/v1` | — |
+| `value_object` | `value` | `record` | `fields` required | — | `identity_field_forbidden` | `filament.meaning.model.record-value-type/v1` | — |
+| `aggregate_root` | `identified` | `record` | `fields`, `identityFields`, `clauses`, `members` required | `members`: `aggregate-member` | `identity_field_required`, `min_clauses` | `filament.meaning.model.object-type/v1` | — |
+| `nested_entity` | `identified` | `record` | `fields`, `identityFields`, `owner` required | `owner`: `composite-owner` | `identity_field_required`, `single_owner` | `filament.meaning.model.object-type/v1` | — |
+| `repository` | `none` | `interface` | `operations`, `persists` required; `fields` forbidden | `persists`: `persistable` | `no_fields`, `min_operations` | `filament.meaning.model.persistence-interface/v1` | — |
+| `event` | `none` | `record` | `fields`, `occurrenceField` required | — | `identity_field_forbidden`, `occurrence_field_required` | `filament.meaning.model.event-type/v1` | `true` |
+| `state_machine` | `none` | `state_machine` | `operations`, `states`, `transitions` required | `transitions`: `event-like` | `min_operations` | `filament.meaning.model.state-machine/v1` | — |
+| `process` | `identified` | `sequence` | `fields`, `identityFields`, `steps` required | `steps`: `event-like` | `identity_field_required` | `filament.meaning.model.process/v1` | — |
+| `enumeration` | `none` | `enumeration` | `variants` required; `fields`, `relationships`, `operations` forbidden | — | none | `filament.meaning.model.variant-type/v1` | — |
 
-- `population` SHALL declare a construct whose meaning is `quire.meaning.model.population/v1` (QSpec FR-208). Known gap: the FR-142 core vocabulary has no population shape, so the manifest carries no `population` construct until `agent-ix/filament-core-data#174` adds one.
+- `population` SHALL declare a construct whose meaning is `filament.meaning.model.population/v1` (QSpec FR-208). Known gap: the FR-142 core vocabulary has no population shape, so the manifest carries no `population` construct until `agent-ix/filament-core-data#174` adds one.
 - `event`'s `construct:` SHALL declare `immutable: true`; no other of the ten kinds' `construct:` SHALL declare `immutable`, because absence already means `false` and `event` is the only kind whose instances filament-core-data renders read-only, frozen, with no setters.
 - `entity`, `value_object`, `nested_entity` and `enumeration` SHALL carry the role `aggregate-member`; `entity`, `aggregate_root` and `nested_entity` SHALL carry the role `composite-owner`.
 - The manifest SHALL declare `aggregate-member` and `composite-owner` in its top-level `roles:` registry (FR-040 form: `<role>: { description: "..." }`), so that a registry loading this module beside spec-artifacts-iso reports no `UnknownRole` for either.

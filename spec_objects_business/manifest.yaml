@@ -68,7 +68,7 @@ object_types:
     shape: namespace
     members: {members: required, vocabulary: required, fields: forbidden, operations: forbidden}
     rules: [no_fields, no_operations, exclusive_membership, members_not_namespace]
-    meaning: quire.meaning.model.namespace/v1
+    meaning: filament.meaning.model.namespace/v1
   allowed_links:
     contains: [entity, aggregate_root, value_object, repository, event, state_machine, process, enumeration]
   data_schema:
@@ -136,7 +136,7 @@ object_types:
     shape: record
     members: {fields: required, identityFields: required}
     rules: [identity_field_required]
-    meaning: quire.meaning.model.object-type/v1
+    meaning: filament.meaning.model.object-type/v1
   allowed_links:
     specializes: [entity]
     contains: [nested_entity, value_object]
@@ -172,7 +172,7 @@ object_types:
     shape: record
     members: {fields: required}
     rules: [identity_field_forbidden]
-    meaning: quire.meaning.model.record-value-type/v1
+    meaning: filament.meaning.model.record-value-type/v1
   allowed_links:
     specializes: [value_object]
     composes: [value_object, enumeration]
@@ -207,7 +207,7 @@ object_types:
     references:
       members: [aggregate-member]
     rules: [identity_field_required, min_clauses]
-    meaning: quire.meaning.model.object-type/v1
+    meaning: filament.meaning.model.object-type/v1
   allowed_links:
     specializes: [aggregate_root]
     aggregates: [entity, nested_entity]
@@ -253,7 +253,7 @@ object_types:
     references:
       owner: [composite-owner]
     rules: [identity_field_required, single_owner]
-    meaning: quire.meaning.model.object-type/v1
+    meaning: filament.meaning.model.object-type/v1
   allowed_links:
     specializes: [nested_entity]
     contains: [value_object]
@@ -287,7 +287,7 @@ object_types:
     references:
       persists: [persistable]
     rules: [no_fields, min_operations]
-    meaning: quire.meaning.model.persistence-interface/v1
+    meaning: filament.meaning.model.persistence-interface/v1
   allowed_links:
     persists: [aggregate_root, entity]
     references: [data_schema]
@@ -317,7 +317,7 @@ object_types:
     shape: record
     members: {fields: required, occurrenceField: required}
     rules: [identity_field_forbidden, occurrence_field_required]
-    meaning: quire.meaning.model.event-type/v1
+    meaning: filament.meaning.model.event-type/v1
     immutable: true
   allowed_links:
     specializes: [event]
@@ -357,7 +357,7 @@ object_types:
     references:
       transitions: [event-like]
     rules: [min_operations]
-    meaning: quire.meaning.model.state-machine/v1
+    meaning: filament.meaning.model.state-machine/v1
   allowed_links:
     specializes: [state_machine]
     transitions_to: [state_machine]
@@ -407,7 +407,7 @@ object_types:
     references:
       steps: [event-like]
     rules: [identity_field_required]
-    meaning: quire.meaning.model.process/v1
+    meaning: filament.meaning.model.process/v1
   allowed_links:
     specializes: [process]
     triggers: [process, action]
@@ -468,7 +468,7 @@ object_types:
     shape: enumeration
     members: {variants: required, fields: forbidden, relationships: forbidden, operations: forbidden}
     rules: []
-    meaning: quire.meaning.model.variant-type/v1
+    meaning: filament.meaning.model.variant-type/v1
   allowed_links:
     references: [enumeration]
   data_schema:
