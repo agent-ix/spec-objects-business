@@ -121,7 +121,7 @@ def table_rows(text: str, heading: str) -> list[list[str]]:
     return [[c.strip() for c in ln.strip("|").split("|")] for ln in lines[2:]]
 
 
-@pytest.mark.trace("TC-080", "FR-006-AC-1", "FR-013-AC-1")
+@pytest.mark.trace("TC-080", "FR-006-AC-1", "FR-013-AC-1", "FR-013-CON-2")
 def test_every_model_table_locator_declares_the_engine_column_set():
     declared = {}
     for ot in object_types():
@@ -181,7 +181,8 @@ def test_every_model_table_locator_declares_the_engine_column_set():
         assert set(loc["assert"]) == expected_assert, (name, key)
 
 
-@pytest.mark.trace("TC-124", "FR-013-AC-2", "FR-013-AC-3", "FR-013-AC-4", "FR-013-AC-5")
+@pytest.mark.trace("TC-124", "FR-013-AC-2", "FR-013-AC-3")
+@pytest.mark.trace("FR-013-AC-4", "FR-013-AC-5", "FR-013-CON-3")
 @pytest.mark.xfail(
     strict=True,
     condition=QUIRE_ENGINE_VERSION < (0, 63, 2),
