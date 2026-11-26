@@ -255,14 +255,7 @@ def bundle_index(semantic_block: dict[str, Any]) -> dict[str, Any]:
         "objects": objects,
         "enumerations": enumerations,
         "artifacts": artifacts,
-        "imports": {"agent-ix/spec-artifacts-process": ["RoleSpec"]},
-        "importedArtifacts": [
-            {
-                "package": "agent-ix/spec-artifacts-process",
-                "id": "ROLE",
-                "object": "RoleSpec",
-            }
-        ],
+        "imports": {},
     }
 
 

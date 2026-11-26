@@ -207,6 +207,17 @@ def test_process_step_receiver_is_optional_typed_and_resolves_in_the_bundle(
         "roles": {ot["name"]: ot.get("roles", []) for ot in object_types()},
         "allowedLinks": {ot["name"]: ot["allowed_links"] for ot in object_types()},
     }
+    receiver_bundle = {
+        **bundle_index,
+        "imports": {"agent-ix/spec-artifacts-process": ["RoleSpec"]},
+        "importedArtifacts": [
+            {
+                "package": "agent-ix/spec-artifacts-process",
+                "id": "ROLE",
+                "object": "RoleSpec",
+            }
+        ],
+    }
     path = POSITIVE_DIR / "process-step-receiver.md"
 
     def extract(text):
@@ -223,7 +234,7 @@ def test_process_step_receiver_is_optional_typed_and_resolves_in_the_bundle(
                     step_kind_schema["$id"]: step_kind_schema,
                 },
                 "objectType": "process",
-                "bundle": bundle_index,
+                "bundle": receiver_bundle,
                 "relationVocabulary": relation_vocabulary,
             }
         )

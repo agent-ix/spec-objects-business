@@ -97,16 +97,9 @@ def relationship_bundle(semantic_module) -> dict:
         "package": BUNDLE_PACKAGE,
         "objects": [],
         "enumerations": [],
-        "imports": {"agent-ix/spec-artifacts-process": ["RoleSpec"]},
+        "imports": {},
         "artifacts": [
             {"id": i, "object": o, "operations": []} for i, o in artifacts.items()
-        ],
-        "importedArtifacts": [
-            {
-                "package": "agent-ix/spec-artifacts-process",
-                "id": "ROLE",
-                "object": "RoleSpec",
-            }
         ],
     }
 
