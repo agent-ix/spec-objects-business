@@ -10,8 +10,10 @@ object: process
        `identity` — the correlation key that ties every step to one run.
      - "## Invariants" (H2): one `### <clauseId>` per clause, each owning one
        `quire` fence holding a Quire expression.
-     - "## Workflow" (H2, required): a
-       `| Step | Kind | Consumes | Emits | Description |` table. Kind is one
+     - "## Workflow" (H2, required): the receiverless legacy
+       `| Step | Kind | Consumes | Emits | Description |` table. For a handoff,
+       use `## Steps` with an optional `Receiver` RoleSpec SemanticId column
+       after `Emits` (requires Quire engine 0.63.2 or later). Kind is one
        of command, event, decision, compensation, wait.
      - "## States" (H2, optional): a `| State | Description |` table.
      - Only the declared tables belong under Workflow and States; a diagram

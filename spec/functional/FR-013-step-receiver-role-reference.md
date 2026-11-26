@@ -16,17 +16,20 @@ relationships:
 
 ## Description
 
-When a business process step hands off work, the `Workflow` table SHALL accept
-one typed receiver reference to a `RoleSpec` artifact. The validator SHALL
-reject an unresolved receiver or a receiver that targets another artifact
-type. Processes without a receiving role SHALL remain valid when the `Receiver`
-column is absent or empty.
+When a business process step hands off work, the `Steps` table SHALL accept one
+typed receiver reference to a `RoleSpec` artifact. The validator SHALL reject
+an unresolved receiver or a receiver that targets another artifact type.
+Existing receiverless `Workflow` tables remain valid; a receiverless `Steps`
+table is also valid when the `Receiver` column is absent or empty.
 
 ## Behavior
 
-- The `Workflow` table SHALL admit an optional `Receiver` column after `Emits`
-  and before `Description`. An empty cell or an absent column SHALL mean that
-  the step does not declare a receiving role.
+- The `Steps` table SHALL admit an optional `Receiver` column after `Emits` and
+  before `Description`. An empty cell or an absent column SHALL mean that the
+  step does not declare a receiving role.
+- The existing `Workflow` table SHALL keep its five-column receiverless shape.
+  The process locator SHALL accept either `Workflow` (legacy) or `Steps` (typed
+  receiver form), preserving existing process documents.
 - A non-empty `Receiver` cell SHALL contain one `SemanticId` that identifies a
   `RoleSpec` artifact declared by `spec-artifacts-process`.
 - Extraction SHALL preserve the receiver on the corresponding structured
@@ -43,19 +46,19 @@ column is absent or empty.
 
 | ID | Constraint | Type | Validation |
 |----|------------|------|------------|
-| FR-013-CON-1 | The module's qualification suite SHALL mark receiver extraction and target-kind validation as unavailable until the engine emits structured `ProcessStep` records and resolves receiver `SemanticId` values against the composed bundle. | Compatibility | Inspection |
-| FR-013-CON-2 | The Business manifest SHALL mark `Receiver` as an optional column once the module-manifest schema admits the optional-column facet. | Compatibility | Test |
+| FR-013-CON-1 | Quire engine 0.63.1 does not extract or type-check the receiver column; qualification SHALL use the engine build that supports FR-081 typed row references, and SHALL identify that unreleased dependency until it is published. | Compatibility | Inspection |
+| FR-013-CON-2 | The Business manifest SHALL mark `Receiver` as optional in the `Steps` table locator for Quire 0.63.2 or later; this does not claim compatibility with engine 0.63.1. | Compatibility | Test |
 | FR-013-CON-3 | Existing process documents without a `Receiver` column SHALL remain valid when checked by an engine that supports the optional-column facet. | Compatibility | Test |
 
 ## Acceptance Criteria
 
 | ID | Criteria | Verification |
 |----|----------|--------------|
-| FR-013-AC-1 | The process `Workflow` locator declares `Receiver` after `Emits` and before `Description`, and marks it optional. | Inspection |
-| FR-013-AC-2 | A process with no `Receiver` column and a process with an empty `Receiver` cell both remain valid and preserve their existing step data. | Test |
+| FR-013-AC-1 | The process `Steps` locator declares `Receiver` after `Emits` and before `Description`, and marks it optional; the receiverless `Workflow` locator remains available. | Inspection |
+| FR-013-AC-2 | A receiverless `Workflow` process and a `Steps` process with an absent or empty `Receiver` value remain valid and preserve their step data. | Test |
 | FR-013-AC-3 | A populated `Receiver` cell containing a `RoleSpec` SemanticId is extracted on its corresponding `ProcessStep` and resolves to the declared role artifact in a composed bundle. | Integration |
-| FR-013-AC-4 | A receiver that resolves to a non-`RoleSpec` artifact is rejected with `disallowed-edge-target`. | Integration |
-| FR-013-AC-5 | A receiver that names no artifact is rejected as an unresolved target. | Integration |
+| FR-013-AC-4 | A receiver that resolves to a non-`RoleSpec` artifact is rejected with `semantic.reference-kind-mismatch`. | Integration |
+| FR-013-AC-5 | A receiver naming no artifact in an imported package is rejected with `semantic.invalid-model-cell` and reason `target-not-id`. | Integration |
 | FR-013-AC-6 | A receiving-role reference is descriptive metadata only; it does not trigger a step, grant authority, or assign a person. | Inspection |
 
 ## Dependencies

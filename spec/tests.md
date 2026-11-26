@@ -74,6 +74,7 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | FR-009 | FR-009-AC-1..3 | TC-103..TC-105 | ✅ |
 | FR-011 | FR-011-AC-1, FR-011-AC-2, FR-011-AC-3, FR-011-AC-4 | TC-118, TC-119, TC-120, TC-121 | ✅ |
 | FR-012 | FR-012-AC-1..3, FR-012-CON-1 | TC-122, TC-123 | ✅ |
+| FR-013 | FR-013-AC-1..6, FR-013-CON-1..3 | TC-080, TC-124 | 🚧 TC-124 passes on a local 0.63.2 build; the released 0.63.1 CLI limitation remains for PLAT-1934; AC-6 is covered by the authoring note |
 
 ### Integration Test Coverage
 
@@ -99,7 +100,7 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | TC-017 | The build uses the official `@typespec/json-schema` emitter only and no emitted file is hand-edited | Inspection | P2 | FR-002-CON-1 | ✅ |
 | TC-018 | No `.npmrc`, no `file:`/`link:` dependency | Inspection | P2 | FR-002-CON-2 | ✅ |
 | TC-019 | `package-lock.json` resolves every package from npmjs except `@agent-ix/semantic-core` (GitHub Packages) | Unit | P2 | FR-002-CON-4 | ✅ |
-| TC-020 | The `semantic` block equals the eight admitted keys and `exports` equals every object type | Unit | P0 | FR-003-AC-1, FR-003-CON-1 | ✅ |
+| TC-020 | The `semantic` block equals the nine admitted keys and `exports` equals every object type | Unit | P0 | FR-003-AC-1, FR-003-CON-1 | ✅ |
 | TC-021 | Every exported type's `data_schema` is the reference form | Unit | P0 | FR-003-AC-2 | ✅ |
 | TC-024 | `quire.Registry.load_from` lists every archetype | Integration | P0 | FR-003-AC-4 | ✅ |
 | TC-025 | `validate_document` on every skeleton reports no `semantic.*` load failure | Integration | P0 | FR-003-AC-4 | ✅ |
@@ -170,6 +171,7 @@ one test case. Rows are `🚧` until a tagged test asserts them; `quoin validate
 | TC-121 | `VariantSet.json` and `Graph.json` accept the empty record, `clauses`, and (VariantSet) `variants`; both refuse `fields`, `operations`, `states` and `transitions` | Unit | P1 | FR-011-AC-4 | ✅ |
 | TC-122 | Every required schema key is a member its construct requires, and the five constructs' keys stay required | Unit | P0 | FR-012-AC-1, FR-012-CON-1 | ✅ |
 | TC-123 | A skeleton without its required member is refused as `semantic.record-invalid` naming the required property; a state machine whose Operations holds only subsections validates | Integration | P0 | FR-012-AC-2, FR-012-AC-3 | ✅ |
+| TC-124 | A process receiver resolves to an imported `RoleSpec`; absent and empty receiver values remain valid, and wrong-kind or missing targets are refused | Integration | P0 | FR-013-AC-2..5 | ✅ local Quire 0.63.2 wheel built from the tree of merged engine commit 1d83811 (PR head 99c2c9e); released 0.63.1 is an expected failure until PLAT-1934 |
 | TC-075 | Every object type ships a typed schema a fixture reader can consume; an entity and an enumeration record are distinguishable by schema alone | Demonstration | P2 | StR-001-VC-3 | ✅ |
 
 ## Test Environment

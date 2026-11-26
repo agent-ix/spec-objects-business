@@ -19,7 +19,11 @@ semantic:
   - population
   - variant_set
   - graph
-  imports: {}
+  imports:
+    agent-ix/spec-artifacts-process: 0.3.0
+  import_types:
+    agent-ix/spec-artifacts-process:
+    - RoleSpec
   targets: [json-schema, markdown]
   mappings: [typed-table, sysml-fence, generalization, abstract-types, presence, subsetting, redefinition, effect-frames, relationships, record-sections]
   compatibility_posture: strict
@@ -45,6 +49,7 @@ edge_types:
   writes: { description: "Mutating data access.", category: dataflow }
   consumes: { description: "Asynchronous reception from a channel.", category: dataflow }
   emits: { description: "Source produces the target domain event.", category: dataflow, inverse: emitted_by }
+  receiver: { description: "A process step's receiving role for a handoff.", category: behavioral }
   carries: { description: "Channel/event carries a payload type.", category: dataflow }
   persists: { description: "Repository persists an aggregate/entity.", category: dependency }
   owns: { description: "Entity owns a state machine.", category: dependency }
@@ -413,6 +418,7 @@ object_types:
     triggers: [process, action]
     consumes: [event]
     emits: [event]
+    receiver: [RoleSpec]
     reads: [aggregate_root, entity]
     writes: [aggregate_root, entity]
     operates_on: [domain-object]
@@ -433,11 +439,19 @@ object_types:
           after_heading: Invariants
           required: false
         steps:
-          from: table_row
+        - from: table_row
           under_section: Workflow
           required: true
           assert:
             columns: [Step, Kind, Consumes, Emits, Description]
+            optional_columns: [Consumes, Emits, Description]
+            min_rows: 1
+        - from: table_row
+          under_section: Steps
+          required: false
+          assert:
+            columns: [Step, Kind, Consumes, Emits, Receiver, Description]
+            optional_columns: [Consumes, Emits, Receiver, Description]
             min_rows: 1
         states:
           from: table_row

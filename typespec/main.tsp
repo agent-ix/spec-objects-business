@@ -140,6 +140,8 @@ model ProcessStep {
   kind: StepKind;
   consumes?: SemanticId[];
   emits?: SemanticId[];
+  /** The role responsible for accepting a handoff from this step. */
+  receiver?: SemanticId;
   doc?: string;
   ...Record<never>;
 }

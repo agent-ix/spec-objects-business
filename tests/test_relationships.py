@@ -57,6 +57,7 @@ DOMAIN_VERBS = {
     "owns": ("dependency", None),
     "operates_on": ("realization", None),
     "references": ("traceability", None),
+    "receiver": ("behavioral", None),
 }
 
 # Each relationships negative fixture and the FR-076 refusal reason it carries.
@@ -96,9 +97,16 @@ def relationship_bundle(semantic_module) -> dict:
         "package": BUNDLE_PACKAGE,
         "objects": [],
         "enumerations": [],
-        "imports": {},
+        "imports": {"agent-ix/spec-artifacts-process": ["RoleSpec"]},
         "artifacts": [
             {"id": i, "object": o, "operations": []} for i, o in artifacts.items()
+        ],
+        "importedArtifacts": [
+            {
+                "package": "agent-ix/spec-artifacts-process",
+                "id": "ROLE",
+                "object": "RoleSpec",
+            }
         ],
     }
 

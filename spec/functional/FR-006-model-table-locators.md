@@ -57,7 +57,7 @@ form the manifest does not declare.
   | `aggregate_root` | `members` | `Members` | `Member, Multiplicity` | none | true |
   | `state_machine` | `states` | `States` | `State, Description` | `Description` | true |
   | `state_machine` | `transitions` | `Transitions` | `From, To, Trigger, Guard, Emits` | `Guard, Emits` | true |
-  | `process` | `steps` | `Workflow` | `Step, Kind, Consumes, Emits, Receiver, Description` | `Consumes, Emits, Receiver, Description` | true |
+  | `process` | `steps` | `Workflow` (legacy) or `Steps` (receiver) | `Step, Kind, Consumes, Emits, Description` or `Step, Kind, Consumes, Emits, Receiver, Description` | `Consumes, Emits, Description` or `Consumes, Emits, Receiver, Description` | true |
   | `process` | `states` | `States` | `State, Description` | `Description` | false |
 
 - Until the FR-035 module-manifest schema admits `assert.optional_columns` (`agent-ix/filament-core-service#31`), the manifest SHALL list every column in `assert.columns` and declare no `optional_columns`; an author leaves an optional value unset with an empty cell.
@@ -86,7 +86,7 @@ form the manifest does not declare.
 
 | ID | Criteria | Verification |
 |----|----------|--------------|
-| FR-006-AC-1 | The `table_row` locators whose first `assert.columns` entry is a model-table key are exactly the eight in Behavior, with the listed section, `required` flag, `min_rows: 1`, and every column belonging to that table; `Receiver` is the optional process-step column required by FR-013. | Test |
+| FR-006-AC-1 | The `table_row` locators whose first `assert.columns` entry is a model-table key are exactly the eight in Behavior, with the listed section, `required` flag, `min_rows: 1`, and every column belonging to that table; the process `steps` locator accepts the legacy `Workflow` form and typed `Steps` form defined by FR-013. | Test |
 | FR-006-AC-2 | The `population`, `enumeration`, `domain`, `aggregate_root`, `state_machine`, and `process` skeletons extract with `availability.model` `available`, no error, no `semantic.feature-not-extractable`, and one model entry per table row, in row order, keyed by the table's first column. | Test |
 | FR-006-AC-3 | The declared-model positive fixture validates, and its record carries the `specializes` target, `abstract: true`, the `Presence`, `Subsets`, and `Redefines` cells, one operation frame with its `Pre:`, `Post:`, `Modifies:`, `Creates:`, and `Deletes:` lines, and the transition guard and emitted event; its `current_state` is typed by the `ReturnStatus` enumeration fixture whose values equal its `## States` rows. | Test |
 | FR-006-AC-4 | Each of the twelve negative fixtures in Behavior fails `validate_document` with an error carrying its `expect:` code, and every model table has at least one. | Test |

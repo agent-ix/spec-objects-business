@@ -21,6 +21,10 @@
         "$ref": "https://schemas.agent-ix.org/semantic-core/0.3.3/SemanticId.json"
       }
     },
+    "receiver": {
+      "$ref": "https://schemas.agent-ix.org/semantic-core/0.3.3/SemanticId.json",
+      "description": "The role responsible for accepting a handoff from this step."
+    },
     "doc": {
       "type": "string"
     }

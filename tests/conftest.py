@@ -44,8 +44,7 @@ SEMANTIC_CORE_VERSION = json.loads((REPO_ROOT / "package.json").read_text())[
     "devDependencies"
 ]["@agent-ix/semantic-core"]
 SEMANTIC_CORE_BASE = (
-    "https://schemas.agent-ix.org/semantic-core/"
-    f"{SEMANTIC_CORE_VERSION}/"
+    "https://schemas.agent-ix.org/semantic-core/" f"{SEMANTIC_CORE_VERSION}/"
 )
 
 QUIRE_MISSING = (
@@ -150,7 +149,11 @@ def object_type(name: str) -> dict[str, Any]:
 
 def locators(ot: dict[str, Any]) -> dict[str, dict[str, Any]]:
     body = ot.get("body_extraction") or {}
-    return ((body.get("yield_pattern") or {}).get("match")) or {}
+    declared = ((body.get("yield_pattern") or {}).get("match")) or {}
+    return {
+        key: value[0] if isinstance(value, list) else value
+        for key, value in declared.items()
+    }
 
 
 def frontmatter(markdown: str) -> dict[str, Any]:
@@ -200,6 +203,7 @@ def semantic_module(semantic_block: dict[str, Any]) -> dict[str, Any]:
         "package": semantic_block["package"],
         "exports": semantic_block["exports"],
         "imports": semantic_block["imports"],
+        "importTypes": semantic_block["import_types"],
         "compatibilityPosture": semantic_block["compatibility_posture"],
         "legacyForms": semantic_block["legacy_forms"],
         "mappings": semantic_block["mappings"],
@@ -251,7 +255,14 @@ def bundle_index(semantic_block: dict[str, Any]) -> dict[str, Any]:
         "objects": objects,
         "enumerations": enumerations,
         "artifacts": artifacts,
-        "imports": {},
+        "imports": {"agent-ix/spec-artifacts-process": ["RoleSpec"]},
+        "importedArtifacts": [
+            {
+                "package": "agent-ix/spec-artifacts-process",
+                "id": "ROLE",
+                "object": "RoleSpec",
+            }
+        ],
     }
 
 
