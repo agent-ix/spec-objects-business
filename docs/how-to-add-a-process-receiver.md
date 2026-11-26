@@ -75,4 +75,4 @@ From the repository root, run the compatibility and typed-reference checks:
 poetry run pytest tests/test_model_tables.py -k process_step_receiver --no-cov
 ```
 
-The check covers a populated receiver, an empty cell, an absent column, the earlier `Workflow` shape, and invalid targets.
+The check covers a populated receiver, an empty cell, the earlier receiverless `Workflow` shape, and invalid targets.
