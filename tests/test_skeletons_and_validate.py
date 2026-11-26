@@ -50,7 +50,11 @@ def _type_names() -> list[str]:
 
 def _locators(ot: dict) -> dict[str, dict]:
     be = ot.get("body_extraction") or {}
-    return ((be.get("yield_pattern") or {}).get("match")) or {}
+    declared = ((be.get("yield_pattern") or {}).get("match")) or {}
+    return {
+        key: value[0] if isinstance(value, list) else value
+        for key, value in declared.items()
+    }
 
 
 def _skeleton_path(name: str) -> pathlib.Path:

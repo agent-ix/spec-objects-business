@@ -5,7 +5,9 @@ manifest does not declare is refused.
 
 from __future__ import annotations
 
+import json
 import re
+from importlib.metadata import version as package_version
 
 import pytest
 
@@ -14,6 +16,7 @@ from tests.conftest import (
     NEGATIVE_DIR,
     PACKAGE_ROOT,
     POSITIVE_DIR,
+    SCHEMAS_DIR,
     SKELETONS_DIR,
     TABLE_SPECS,
     frontmatter,
@@ -44,6 +47,10 @@ ENTRY_KEY = {
     "members": "target",
     "vocabulary": "term",
 }
+
+QUIRE_ENGINE_VERSION = tuple(
+    int(part) for part in package_version("quire").split(".")[:3]
+)
 
 # The key column of each model table, as the Markdown names it.
 KEY_COLUMN = {
@@ -114,7 +121,7 @@ def table_rows(text: str, heading: str) -> list[list[str]]:
     return [[c.strip() for c in ln.strip("|").split("|")] for ln in lines[2:]]
 
 
-@pytest.mark.trace("TC-080", "FR-006-AC-1")
+@pytest.mark.trace("TC-080", "FR-006-AC-1", "FR-013-AC-1")
 def test_every_model_table_locator_declares_the_engine_column_set():
     declared = {}
     for ot in object_types():
@@ -139,7 +146,162 @@ def test_every_model_table_locator_declares_the_engine_column_set():
         loc = locators(object_type(name))[key]
         assert loc["required"] is required, (name, key)
         assert loc["assert"]["min_rows"] == 1, (name, key)
-        assert set(loc["assert"]) == {"columns", "min_rows"}, (name, key)
+        expected_assert = {"columns", "min_rows"}
+        if (name, key) == ("process", "steps"):
+            expected_assert.add("optional_columns")
+            assert loc["assert"]["optional_columns"] == [
+                "Consumes",
+                "Emits",
+                "Description",
+            ]
+            receiver_locator = object_type(name)["body_extraction"]["yield_pattern"][
+                "match"
+            ][key][1]
+            assert receiver_locator["under_section"] == "Steps"
+            assert receiver_locator["assert"]["columns"] == [
+                "Step",
+                "Kind",
+                "Consumes",
+                "Emits",
+                "Receiver",
+                "Description",
+            ]
+            assert receiver_locator["assert"]["optional_columns"] == [
+                "Consumes",
+                "Emits",
+                "Receiver",
+                "Description",
+            ]
+            assert object_type(name)["allowed_links"]["receiver"] == ["RoleSpec"]
+            step_schema = json.loads((SCHEMAS_DIR / "ProcessStep.json").read_text())
+            assert step_schema["properties"]["receiver"]["$ref"].endswith(
+                "/SemanticId.json"
+            )
+            assert "receiver" not in step_schema["required"]
+        assert set(loc["assert"]) == expected_assert, (name, key)
+
+
+@pytest.mark.trace("TC-124", "FR-013-AC-2", "FR-013-AC-3", "FR-013-AC-4", "FR-013-AC-5")
+@pytest.mark.xfail(
+    strict=True,
+    condition=QUIRE_ENGINE_VERSION < (0, 63, 2),
+    reason="typed model-table references require the unreleased Quire 0.63.2 engine",
+)
+def test_process_step_receiver_is_optional_typed_and_resolves_in_the_bundle(
+    quire_engine, semantic_module, bundle_index
+):
+    manifest = load_manifest()
+    process_schema = json.loads((SCHEMAS_DIR / "Process.json").read_text())
+    step_schema = json.loads((SCHEMAS_DIR / "ProcessStep.json").read_text())
+    step_kind_schema = json.loads((SCHEMAS_DIR / "StepKind.json").read_text())
+    edge_types = {}
+    for verb, entry in manifest["edge_types"].items():
+        edge_types[verb] = {"category": entry["category"]}
+        if "inverse" in entry:
+            edge_types[verb]["inverse"] = entry["inverse"]
+        if entry.get("composite"):
+            edge_types[verb]["composite"] = True
+    relation_vocabulary = {
+        "objectType": "process",
+        "edgeTypes": edge_types,
+        "roles": {ot["name"]: ot.get("roles", []) for ot in object_types()},
+        "allowedLinks": {ot["name"]: ot["allowed_links"] for ot in object_types()},
+    }
+    receiver_bundle = {
+        **bundle_index,
+        "imports": {"agent-ix/spec-artifacts-process": ["RoleSpec"]},
+        "importedArtifacts": [
+            {
+                "package": "agent-ix/spec-artifacts-process",
+                "id": "ROLE",
+                "object": "RoleSpec",
+            }
+        ],
+    }
+    path = POSITIVE_DIR / "process-step-receiver.md"
+
+    def extract(text):
+        return quire_engine.extract_semantic(
+            {
+                "markdown": text,
+                "module": semantic_module,
+                "path": str(path),
+                "sourceIdentity": "ix://agent-ix/spec-objects-business/PROCESS-RECEIVER-SYN-001",
+                "bodyExtraction": object_type("process")["body_extraction"],
+                "dataSchema": process_schema,
+                "schemaDocuments": {
+                    step_schema["$id"]: step_schema,
+                    step_kind_schema["$id"]: step_kind_schema,
+                },
+                "objectType": "process",
+                "bundle": receiver_bundle,
+                "relationVocabulary": relation_vocabulary,
+            }
+        )
+
+    text = path.read_text()
+    valid = extract(text)
+    assert not any(
+        diagnostic.get("severity") == "error"
+        for diagnostic in valid.get("diagnostics", [])
+    ), valid
+    assert valid.get("record", {}).get("steps", [{}])[0].get("receiver") == (
+        "ix://agent-ix/spec-artifacts-process/ROLE"
+    ), valid
+    assert any(
+        relation["validationPath"] == "/record/steps/0/receiver"
+        for relation in valid["recordRelations"]
+    ), valid
+
+    no_receiver = extract((SKELETONS_DIR / "process.md").read_text())
+    assert not any(
+        diagnostic.get("severity") == "error"
+        for diagnostic in no_receiver.get("diagnostics", [])
+    ), no_receiver
+    assert [step["name"] for step in no_receiver["model"]["steps"]] == [
+        "receive_order",
+        "reserve_stock",
+        "stock_reserved",
+        "capture_payment",
+        "payment_captured",
+        "release_reservation",
+        "release_to_warehouse",
+        "await_shipment",
+    ]
+    empty_receiver = extract(
+        text.replace(
+            "ix://agent-ix/spec-artifacts-process/ROLE |",
+            "|",
+        )
+    )
+    assert not any(
+        diagnostic.get("severity") == "error"
+        for diagnostic in empty_receiver.get("diagnostics", [])
+    ), empty_receiver
+    assert "receiver" not in empty_receiver["record"]["steps"][0]
+
+    wrong_kind = extract(
+        text.replace(
+            "ix://agent-ix/spec-artifacts-process/ROLE",
+            "ix://agent-ix/spec-objects-business/entity_001",
+        )
+    )
+    assert any(
+        diagnostic.get("code") == "semantic.reference-kind-mismatch"
+        for diagnostic in wrong_kind.get("diagnostics", [])
+    ), wrong_kind
+
+    missing = extract(
+        text.replace(
+            "ix://agent-ix/spec-artifacts-process/ROLE",
+            "ix://agent-ix/spec-artifacts-process/MISSING",
+        )
+    )
+    assert any(
+        diagnostic.get("code") == "semantic.invalid-model-cell"
+        and diagnostic.get("reason") == "target-not-id"
+        for diagnostic in missing.get("diagnostics", [])
+    ), missing
 
 
 @pytest.mark.trace("TC-088", "FR-006-CON-1")

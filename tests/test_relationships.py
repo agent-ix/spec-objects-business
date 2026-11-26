@@ -57,6 +57,7 @@ DOMAIN_VERBS = {
     "owns": ("dependency", None),
     "operates_on": ("realization", None),
     "references": ("traceability", None),
+    "receiver": ("behavioral", None),
 }
 
 # Each relationships negative fixture and the FR-076 refusal reason it carries.

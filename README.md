@@ -46,8 +46,19 @@ quire validate spec/**/*.md --module node_modules/@agent-ix/spec-objects-busines
 | Repository | `repository` | The collection-like access point that loads and saves whole aggregates, with each operation's signature, behaviour, and failure semantics. |
 | Event | `event` | A domain/integration event whose payload contract is given as a JSON Schema. |
 | State machine | `state_machine` | An object lifecycle expressed as a mermaid `stateDiagram-v2` of states and transitions. |
-| Process | `process` | A long-running workflow/saga diagrammed in mermaid (one or more flows), with optional state diagrams, specification, and algorithm. |
+| Process | `process` | A workflow/saga with optional state diagrams, specification, and algorithm. With Quire engine 0.63.2 or later, a process step may include an optional `Receiver` SemanticId naming the receiving `RoleSpec` in a `Steps` table. |
 | Enumeration | `enumeration` | A controlled label vocabulary (state names, kinds, codes) as a `Value | Description` table referenced by exact string. |
+
+### Process handoff receivers
+
+For a handoff, use a `## Steps` table with an optional `Receiver` column after
+`Emits`. Its cell is an
+`ix://agent-ix/spec-artifacts-process/<RoleSpec-id>` reference, for example
+`ix://agent-ix/spec-artifacts-process/SYNTHETIC-ROLE`. Existing receiverless
+`## Workflow` tables remain valid. The reference is descriptive; it does not
+assign a person or authorize an action. Typed extraction and target-kind checks
+require Quire engine 0.63.2 or later; the released 0.63.1 engine does not
+qualify this column.
 
 ## How this module is used
 

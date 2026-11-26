@@ -28,6 +28,7 @@ ADMITTED_KEYS = {
     "mappings",
     "compatibility_posture",
     "legacy_forms",
+    "import_types",
 }
 
 
@@ -45,14 +46,17 @@ def module_copy(tmp_path, mutate=None):
 
 
 @pytest.mark.trace("TC-020", "FR-003-AC-1", "FR-003-CON-1")
-def test_the_semantic_block_carries_the_eight_admitted_keys_and_eleven_exports(
+def test_the_semantic_block_declares_its_imports_and_thirteen_exports(
     semantic_block,
 ):
     assert set(semantic_block) == ADMITTED_KEYS
     assert semantic_block["contract_version"] == "1.0.0"
     assert semantic_block["package"] == "agent-ix/spec-objects-business"
     assert semantic_block["exports"] == list(OBJECT_TYPES)
-    assert semantic_block["imports"] == {}
+    assert semantic_block["imports"] == {"agent-ix/spec-artifacts-process": "0.3.0"}
+    assert semantic_block["import_types"] == {
+        "agent-ix/spec-artifacts-process": ["RoleSpec"]
+    }
     assert semantic_block["targets"] == ["json-schema", "markdown"]
     assert semantic_block["mappings"] == [
         "typed-table",
