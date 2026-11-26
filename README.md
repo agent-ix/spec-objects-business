@@ -51,14 +51,9 @@ quire validate spec/**/*.md --module node_modules/@agent-ix/spec-objects-busines
 
 ### Process handoff receivers
 
-For a handoff, use a `## Steps` table with an optional `Receiver` column after
-`Emits`. Its cell is an
-`ix://agent-ix/spec-artifacts-process/<RoleSpec-id>` reference, for example
-`ix://agent-ix/spec-artifacts-process/SYNTHETIC-ROLE`. Existing receiverless
-`## Workflow` tables remain valid. The reference is descriptive; it does not
-assign a person or authorize an action. Typed extraction and target-kind checks
-require Quire engine 0.63.2 or later; the released 0.63.1 engine does not
-qualify this column.
+Use an optional receiving-role reference to describe a handoff. See
+[Add a receiving role to a process step](docs/how-to-add-a-process-receiver.md)
+for the table shape, compatibility forms, and extraction command.
 
 ## How this module is used
 
