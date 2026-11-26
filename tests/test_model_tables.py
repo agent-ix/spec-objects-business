@@ -121,7 +121,7 @@ def table_rows(text: str, heading: str) -> list[list[str]]:
     return [[c.strip() for c in ln.strip("|").split("|")] for ln in lines[2:]]
 
 
-@pytest.mark.trace("TC-080", "FR-006-AC-1", "FR-013-AC-1")
+@pytest.mark.trace("TC-080", "FR-006-AC-1", "FR-013-AC-1", "FR-013-CON-2")
 def test_every_model_table_locator_declares_the_engine_column_set():
     declared = {}
     for ot in object_types():
@@ -181,7 +181,14 @@ def test_every_model_table_locator_declares_the_engine_column_set():
         assert set(loc["assert"]) == expected_assert, (name, key)
 
 
-@pytest.mark.trace("TC-124", "FR-013-AC-2", "FR-013-AC-3", "FR-013-AC-4", "FR-013-AC-5")
+@pytest.mark.trace(
+    "TC-124",
+    "FR-013-AC-2",
+    "FR-013-AC-3",
+    "FR-013-AC-4",
+    "FR-013-AC-5",
+    "FR-013-CON-3",
+)
 @pytest.mark.xfail(
     strict=True,
     condition=QUIRE_ENGINE_VERSION < (0, 63, 2),
@@ -279,6 +286,19 @@ def test_process_step_receiver_is_optional_typed_and_resolves_in_the_bundle(
         for diagnostic in empty_receiver.get("diagnostics", [])
     ), empty_receiver
     assert "receiver" not in empty_receiver["record"]["steps"][0]
+
+    absent_receiver_column = extract(
+        text.replace(" | Receiver", "")
+        .replace("|---|---|---|---|---|---|", "|---|---|---|---|---|")
+        .replace(" | ix://agent-ix/spec-artifacts-process/ROLE", "")
+    )
+    assert not any(
+        diagnostic.get("severity") == "error"
+        for diagnostic in absent_receiver_column.get("diagnostics", [])
+    ), absent_receiver_column
+    assert (
+        absent_receiver_column["record"]["steps"] == empty_receiver["record"]["steps"]
+    ), "omitting the Receiver column preserves the receiverless step"
 
     wrong_kind = extract(
         text.replace(
